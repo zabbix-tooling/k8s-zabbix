@@ -1,6 +1,7 @@
 import json
 import logging
 import re
+from typing import List, Dict
 
 from pyzabbix import ZabbixMetric
 
@@ -9,12 +10,12 @@ from .k8sobject import K8sObject
 logger = logging.getLogger(__file__)
 
 
-def get_pvc_data(api, node, timeout_seconds: str, namespace_exclude_re: str):
-    query_params = []
-    form_params = []
+def get_pvc_data(api, node, timeout_seconds: str, namespace_exclude_re: str) -> List[Dict]:
+    query_params: List[str] = []
+    form_params: List[str] = []
     header_params = {}
     body_params = None
-    local_var_files = {}
+    local_var_files: Dict[str, str] = {}
     header_params['Accept'] = api.api_client.select_header_accept(
         ['application/json', 'application/yaml', 'application/vnd.kubernetes.protobuf', 'application/json;stream=watch',
          'application/vnd.kubernetes.protobuf;stream=watch'])  # noqa: E501
@@ -42,7 +43,7 @@ def get_pvc_data(api, node, timeout_seconds: str, namespace_exclude_re: str):
 
     loaded_json = json.loads(ret.data)
 
-    pvc_volumes = []
+    pvc_volumes: List[Dict] = []
     for item in loaded_json['pods']:
         if "volume" not in item:
             continue

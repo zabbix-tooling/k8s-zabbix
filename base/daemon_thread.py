@@ -56,8 +56,7 @@ class CheckKubernetesDaemon:
     thread_lock = threading.Lock()
 
     def __init__(self, config: Configuration,
-                 resources: List[str], resources_excluded: List[str], resources_excluded_web: List[str],
-                 resources_excluded_zabbix: List[str],
+                 resources: List[str],
                  discovery_interval: int, data_resend_interval: int,
                  ):
         self.manage_threads: List[TimedThread] = []
@@ -93,21 +92,23 @@ class CheckKubernetesDaemon:
         self.extensions_v1 = KubernetesApi(self.api_client).extensions_v1
 
         self.zabbix_sender = ZabbixSender(zabbix_server=config.zabbix_server)
-        self.zabbix_resources = CheckKubernetesDaemon.exclude_resources(resources, resources_excluded_zabbix)
+        self.zabbix_resources = CheckKubernetesDaemon.exclude_resources(resources,
+                                                                        self.config.zabbix_resources_exclude)
         self.zabbix_host = config.zabbix_host
         self.zabbix_debug = config.zabbix_debug
         self.zabbix_single_debug = config.zabbix_single_debug
         self.zabbix_dry_run = config.zabbix_dry_run
 
         self.web_api_enable = config.web_api_enable
-        self.web_api_resources = CheckKubernetesDaemon.exclude_resources(resources, resources_excluded_web)
+        self.web_api_resources = CheckKubernetesDaemon.exclude_resources(resources,
+                                                                         self.config.web_api_resources_exclude)
 
         self.web_api_host = config.web_api_host
         self.web_api_token = config.web_api_token
         self.web_api_cluster = config.web_api_cluster
         self.web_api_verify_ssl = config.web_api_verify_ssl
 
-        self.resources = CheckKubernetesDaemon.exclude_resources(resources, resources_excluded)
+        self.resources = CheckKubernetesDaemon.exclude_resources(resources, self.config.resources_exclude)
 
         self.logger.info(f"Init K8S-ZABBIX Watcher for resources: {','.join(self.resources)}")
         self.logger.info(f"Zabbix Host: {self.zabbix_host} / Zabbix Proxy or Server: {config.zabbix_server}")

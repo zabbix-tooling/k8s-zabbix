@@ -78,8 +78,6 @@ if __name__ == '__main__':
 
     mgmt_daemon = CheckKubernetesDaemon(config,
                                         ['nodes'],
-                                        config.resources_exclude, config.web_api_resources_exclude,
-                                        config.zabbix_resources_exclude,
                                         config.discovery_interval_slow, config.resend_data_interval_slow)
     daemons.append(mgmt_daemon)
 
@@ -87,8 +85,6 @@ if __name__ == '__main__':
         CheckKubernetesDaemon(config,
                               # ['components', 'services', 'pvcs'],
                               ['components', 'pvcs'],
-                              config.resources_exclude, config.web_api_resources_exclude,
-                              config.zabbix_resources_exclude,
                               config.discovery_interval_slow, config.resend_data_interval_fast))
 
     daemons.append(
@@ -96,14 +92,11 @@ if __name__ == '__main__':
                               # ['deployments', 'statefulsets', 'daemonsets', 'pods', 'containers',
                               # 'ingresses', 'containers', 'pods'],
                               ['deployments', 'statefulsets'],
-                              config.resources_exclude, config.web_api_resources_exclude,
-                              config.zabbix_resources_exclude,
                               config.discovery_interval_slow, config.resend_data_interval_slow))
 
     if config.debug_k8s_events:
         for daemon in daemons:
             daemon.debug_k8s_events = True
-
 
     # SIGNAL processing
     def _signal_handler(signum, *args):
