@@ -34,8 +34,8 @@ lint: deps
 .PHONY: lint
 
 type-check: deps
-	${activate} && python3 -m mypy --no-color-output base k8sobjects
+	${activate} && python3 -m mypy --no-color-output --pretty base k8sobjects
 .PHONY: type-check
 
 test: deps
-	${activate} && python3 -m pytest
+	${activate} && python3 -m pytest tests

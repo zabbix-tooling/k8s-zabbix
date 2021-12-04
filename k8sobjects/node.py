@@ -4,7 +4,7 @@ import cachetools.func
 from pyzabbix import ZabbixMetric
 from .k8sobject import K8sObject, transform_value
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 
 
 # TODO: remove after refactoring

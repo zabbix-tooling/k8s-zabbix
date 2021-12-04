@@ -2,7 +2,7 @@ import logging
 
 from .k8sobject import K8sObject
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 
 
 class Ingress(K8sObject):

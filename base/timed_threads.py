@@ -20,7 +20,7 @@ class TimedThread(threading.Thread):
         self.delay_first_run = delay_first_run
         self.delay_first_run_seconds = delay_first_run_seconds
         threading.Thread.__init__(self, target=self.run)
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger = logging.getLogger(__file__)
 
     def stop(self):
         self.logger.info('OK: Thread "' + self.resource + '" is stopping"')

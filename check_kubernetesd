@@ -6,37 +6,29 @@
 """
 import argparse
 import faulthandler
-import importlib.util
 import logging
 import os
-import re
 import signal
 import sys
 
 import coloredlogs as coloredlogs
 import sentry_sdk
 import time
-from base.daemon_thread import CheckKubernetesDaemon, str2bool
+
+from base.daemon_thread import CheckKubernetesDaemon
+from base.config import Configuration
 
 KNOWN_ACTIONS = ['discover', 'get']
 
-formatter = logging.Formatter(
-    '%(asctime)s - %(threadName)s : {%(pathname)s:%(lineno)d} : %(levelname)s : %(name)s - %(message)s')
+formatter_string = '%(asctime)s - %(threadName)s : {%(name)s:%(lineno)d} : %(levelname)s : %(message)s'
+formatter = logging.Formatter(formatter_string)
 stream = logging.StreamHandler(sys.stdout)
 stream.setFormatter(formatter)
+coloredlogs.install(fmt=formatter_string)
 
-coloredlogs.install()
+logger = logging.getLogger(__file__)
 
-logger = logging.getLogger()
-
-
-def to_array(list_string):
-    if isinstance(list_string, list):
-        return list_string
-    else:
-        return re.split(r"[\s,]+", config.web_api_resources_exclude.strip())
-
-
+logger.info("woops")
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Monitoring daemon for kubernetes'
@@ -44,40 +36,29 @@ if __name__ == '__main__':
 
     args, remaining_args = parser.parse_known_args()
 
-    if len(remaining_args) < 1:
-        parser.error('add <CONFIG_NAME> or <executable>')
-        sys.exit(1)
+    config = Configuration()
 
-    if remaining_args[0].startswith("/bin/"):
-        os.system(remaining_args[0])
-        sys.exit(1)
+    if len(remaining_args) > 0:
+        if remaining_args[0].startswith("/bin/"):
+            os.system(remaining_args[0])
+            sys.exit(1)
+        else:
+            try:
+                config.load_config_file(remaining_args[0])
+            except Exception as e:
+                logger.fatal(e)
+                sys.exit(1)
 
-    config_name = remaining_args[0]
-    try:
-        config_name = re.sub(r"\.py", "", config_name)
-        config = importlib.import_module(config_name)
-    except ImportError:
-        print("config file %s.py not found. ABORTING!" % config_name)
-        sys.exit(1)
+    config.load_from_environment_variables()
 
-    defaults_file = os.path.realpath(os.path.dirname(sys.argv[0])) + "/" + config_name + ".py"
-    with open(defaults_file, 'r') as fh:
-        content_lines = fh.read().split('\n')
-
-    for key, val in [x.split('=') for x in content_lines if x]:
-        key = key.strip()
-        if key.upper() in os.environ and os.environ[key.upper()] != "":
-            print("setting %s by environment variable %s" % (key, key.upper()))
-            setattr(config, key, os.environ[key.upper()])
-
-    if str2bool(config.sentry_enabled):
+    if config.sentry_enabled:
         logger.info("starting with sentry DSN %s" % config.sentry_dsn)
         config.sentry_enabled = True
         if not config.sentry_dsn:
             print("sentry enabled but no DNS set: '%s'! ABORTING!" % config.sentry_dsn)
         sentry_sdk.init(config.sentry_dsn)
 
-    if str2bool(config.zabbix_debug):
+    if config.zabbix_debug:
         logger.info("starting with zabbix debug")
         config.zabbix_debug = True
         log = logging.getLogger('pyzabbix')
@@ -86,7 +67,7 @@ if __name__ == '__main__':
         log = logging.getLogger('pyzabbix')
         log.setLevel(logging.INFO)
 
-    if str2bool(config.debug):
+    if config.debug:
         stream.setLevel(logging.DEBUG)
         logger.setLevel(logging.DEBUG)
     else:
@@ -95,35 +76,27 @@ if __name__ == '__main__':
 
     daemons = list()
 
-    web_api_resources_exclude = to_array(config.web_api_resources_exclude)
-    zabbix_resources_exclude = to_array(config.zabbix_resources_exclude)
-    resources_exclude = to_array(config.resources_exclude)
-
-    mgmt_daemon = CheckKubernetesDaemon(config, config_name,
+    mgmt_daemon = CheckKubernetesDaemon(config,
                                         ['nodes'],
-                                        resources_exclude, web_api_resources_exclude, zabbix_resources_exclude,
                                         config.discovery_interval_slow, config.resend_data_interval_slow)
     daemons.append(mgmt_daemon)
 
     daemons.append(
-        CheckKubernetesDaemon(config, config_name,
+        CheckKubernetesDaemon(config,
                               # ['components', 'services', 'pvcs'],
                               ['components', 'pvcs'],
-                              resources_exclude, web_api_resources_exclude, zabbix_resources_exclude,
                               config.discovery_interval_slow, config.resend_data_interval_fast))
 
     daemons.append(
-        CheckKubernetesDaemon(config, config_name,
+        CheckKubernetesDaemon(config,
                               # ['deployments', 'statefulsets', 'daemonsets', 'pods', 'containers',
                               # 'ingresses', 'containers', 'pods'],
                               ['deployments', 'statefulsets'],
-                              resources_exclude, web_api_resources_exclude, zabbix_resources_exclude,
                               config.discovery_interval_slow, config.resend_data_interval_slow))
 
     if config.debug_k8s_events:
         for daemon in daemons:
             daemon.debug_k8s_events = True
-
 
     # SIGNAL processing
     def _signal_handler(signum, *args):

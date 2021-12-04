@@ -2,7 +2,7 @@ import logging
 
 from pyzabbix import ZabbixMetric
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 
 
 def get_container_zabbix_metrics(zabbix_host, name_space, pod_base_name, container_name, data):

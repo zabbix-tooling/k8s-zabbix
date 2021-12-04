@@ -15,7 +15,7 @@ class WatcherThread(threading.Thread):
         self.daemon = daemon
         self.daemon_method = daemon_method
         threading.Thread.__init__(self, target=self.run)
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger = logging.getLogger(__file__)
 
     def stop(self):
         self.logger.info('OK: Thread "' + self.resource + '" is stopping"')

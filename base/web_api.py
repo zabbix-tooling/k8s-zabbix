@@ -3,7 +3,7 @@ import logging
 
 from k8sobjects.k8sobject import K8S_RESOURCES
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__file__)
 
 
 class WebApi:
