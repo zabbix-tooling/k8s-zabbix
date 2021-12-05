@@ -6,7 +6,8 @@ import sys
 import threading
 import time
 from datetime import datetime, timedelta
-from typing import Dict, List
+from pprint import pformat
+from typing import Dict, List, Union
 
 from kubernetes import client, watch
 from kubernetes import config as kube_config
@@ -52,7 +53,7 @@ class KubernetesApi:
 
 
 class CheckKubernetesDaemon:
-    data: Dict[str, Dict] = {}
+    data: Dict[str, K8sResourceManager] = {}
     discovery_sent: Dict[str, datetime] = {}
     thread_lock = threading.Lock()
 
@@ -60,7 +61,7 @@ class CheckKubernetesDaemon:
                  resources: List[str],
                  discovery_interval: int, data_resend_interval: int,
                  ):
-        self.manage_threads: List[TimedThread] = []
+        self.manage_threads: List[Union[TimedThread, WatcherThread]] = []
         self.config = config
         self.logger = logging.getLogger(__file__)
         self.discovery_interval = int(discovery_interval)
@@ -137,28 +138,19 @@ class CheckKubernetesDaemon:
 
             with self.thread_lock:
                 for r, d in self.data.items():
-                    rd = dict()
-                    if hasattr(d, 'objects'):
-                        for obj_name, obj_d in d.objects.items():
-                            rd[obj_name] = dict(
-                                last_sent_zabbix=obj_d.last_sent_zabbix,
-                                last_sent_web=obj_d.last_sent_web,
-                            )
-                    else:
-                        rd = d
-                    self.logger.info('%s: %s' % (r, rd))
+                    for obj_name, obj_d in d.objects.items():
+                        self.logger.info(
+                            f"resource={r}, last_sent_zabbix={obj_d.last_sent_zabbix}, last_sent_web={obj_d.last_sent_web}")
+                for r, d in self.discovery_sent.items():
+                    self.logger.info(
+                        f"resource={r}, last_discovery_sent={d}")
         elif signum in [signal.SIGUSR2]:
             self.logger.info('=== Listing all data hold in CheckKubernetesDaemon.data ===')
-
             with self.thread_lock:
                 for r, d in self.data.items():
-                    rd = dict()
-                    if hasattr(d, 'objects'):
-                        for obj_uid, obj in d.objects.items():
-                            rd[obj_uid] = obj.data
-                    else:
-                        rd = d
-                    self.logger.info('%s: %s\n' % (r, rd))
+                    for obj_name, obj_d in d.objects.items():
+                        self.logger.info(
+                            f"resource={r}, object_name={obj_name}, object_data={pformat(obj_d.data, width=10)}")
 
     def run(self):
         self.start_data_threads()
@@ -426,7 +418,7 @@ class CheckKubernetesDaemon:
                         obj.is_dirty_zabbix = False
                 if len(metrics) > 0:
                     if resource not in self.discovery_sent:
-                            self.logger.debug(
+                        self.logger.debug(
                             'skipping resend_data zabbix , discovery for %s - %s/%s not sent yet!' % (
                                 resource, obj.name_space, obj.name))
                     else:
@@ -501,7 +493,7 @@ class CheckKubernetesDaemon:
 
     def send_heartbeat_info(self, *args):
         result = self.send_to_zabbix([
-            ZabbixMetric(self.zabbix_host, 'check_kubernetesd[discover,api]', int(time.time()))
+            ZabbixMetric(self.zabbix_host, 'check_kubernetesd[discover,api]', str(int(time.time())))
         ])
         if result.failed > 0:
             self.logger.error("failed to send heartbeat to zabbix")

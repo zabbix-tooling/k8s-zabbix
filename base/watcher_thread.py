@@ -7,7 +7,6 @@ from urllib3.exceptions import ProtocolError
 class WatcherThread(threading.Thread):
     stop_thread = False
     restart_thread = False
-    daemon: bool = False
 
     def __init__(self, resource, exit_flag, daemon_object, daemon_method):
         self.exit_flag = exit_flag

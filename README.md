@@ -143,8 +143,8 @@ Unix Signals
 Unix signals are usefuil for debugging:
 
  * SIGQUIT: Dumps the stacktraces of all threads and terminates the daemon
- * SIGUSR1: Listing count of data hold in CheckKubernetesDaemon.data
- * SIGUSR2: Listing all data hold in CheckKubernetesDaemon.data
+ * SIGUSR1: Display a overview of data hold in CheckKubernetesDaemon.data and CheckKubernetesDaemon.discovery_sent
+ * SIGUSR2: Display detailed data hold in CheckKubernetesDaemon.data and CheckKubernetesDaemon.discovery_sent
 
 Authors
 =======
