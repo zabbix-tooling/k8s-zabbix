@@ -178,30 +178,30 @@ class CheckKubernetesDaemon:
                 pass
             elif resource == 'components':
                 thread = TimedThread(resource, self.data_resend_interval, exit_flag,
-                                     daemon=self, daemon_method='watch_data')
+                                     daemon_object=self, daemon_method='watch_data')
                 self.manage_threads.append(thread)
                 thread.start()
             elif resource == 'pvcs':
                 thread = TimedThread(resource, self.data_resend_interval, exit_flag,
-                                     daemon=self, daemon_method='watch_data')
+                                     daemon_object=self, daemon_method='watch_data')
                 self.manage_threads.append(thread)
                 thread.start()
             else:
                 thread = WatcherThread(resource, exit_flag,
-                                       daemon=self, daemon_method='watch_data')
+                                       daemon_object=self, daemon_method='watch_data')
                 self.manage_threads.append(thread)
                 thread.start()
 
             # additional looping data threads
             if resource == 'services':
                 thread = TimedThread(resource, self.data_resend_interval, exit_flag,
-                                     daemon=self, daemon_method='report_global_data_zabbix',
+                                     daemon_object=self, daemon_method='report_global_data_zabbix',
                                      delay_first_run_seconds=self.discovery_interval + 5)
                 self.manage_threads.append(thread)
                 thread.start()
             elif resource == 'containers':
                 thread = TimedThread(resource, self.data_resend_interval, exit_flag,
-                                     daemon=self, daemon_method='report_global_data_zabbix',
+                                     daemon_object=self, daemon_method='report_global_data_zabbix',
                                      delay_first_run_seconds=self.discovery_interval + 5)
                 self.manage_threads.append(thread)
                 thread.start()
@@ -212,14 +212,14 @@ class CheckKubernetesDaemon:
             return
 
         thread = TimedThread('api_heartbeat', self.api_zabbix_interval, exit_flag,
-                             daemon=self, daemon_method='send_heartbeat_info')
+                             daemon_object=self, daemon_method='send_heartbeat_info')
         self.manage_threads.append(thread)
         thread.start()
 
     def start_loop_send_discovery_threads(self):
         for resource in self.resources:
             send_discovery_thread = TimedThread(resource, self.discovery_interval, exit_flag,
-                                                daemon=self, daemon_method='send_zabbix_discovery',
+                                                daemon_object=self, daemon_method='send_zabbix_discovery',
                                                 delay_first_run=True,
                                                 delay_first_run_seconds=30)
             self.manage_threads.append(send_discovery_thread)
@@ -228,7 +228,7 @@ class CheckKubernetesDaemon:
     def start_resend_threads(self):
         for resource in self.resources:
             resend_thread = TimedThread(resource, self.data_resend_interval, exit_flag,
-                                        daemon=self, daemon_method='resend_data',
+                                        daemon_object=self, daemon_method='resend_data',
                                         delay_first_run=True,
                                         delay_first_run_seconds=60,
                                         )
