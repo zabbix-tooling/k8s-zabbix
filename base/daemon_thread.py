@@ -52,7 +52,8 @@ class KubernetesApi:
 
 
 class CheckKubernetesDaemon:
-    data: Dict[str, Dict] = {'zabbix_discovery_sent': {}, 'objects': {}}
+    data: Dict[str, Dict] = {}
+    discovery_sent: Dict[str, datetime] = {}
     thread_lock = threading.Lock()
 
     def __init__(self, config: Configuration,
@@ -138,7 +139,7 @@ class CheckKubernetesDaemon:
                 for r, d in self.data.items():
                     rd = dict()
                     if hasattr(d, 'objects'):
-                        for obj_name, obj_d in d['objects'].items():
+                        for obj_name, obj_d in d.objects.items():
                             rd[obj_name] = dict(
                                 last_sent_zabbix=obj_d.last_sent_zabbix,
                                 last_sent_web=obj_d.last_sent_web,
@@ -153,7 +154,7 @@ class CheckKubernetesDaemon:
                 for r, d in self.data.items():
                     rd = dict()
                     if hasattr(d, 'objects'):
-                        for obj_uid, obj in d['objects'].items():
+                        for obj_uid, obj in d.objects.items():
                             rd[obj_uid] = obj.data
                     else:
                         rd = d
@@ -345,9 +346,9 @@ class CheckKubernetesDaemon:
 
     def report_global_data_zabbix(self, resource):
         """ aggregate and report information for some speciality in resources """
-        if self.data['zabbix_discovery_sent'].get(resource) is None:
+        if resource not in self.discovery_sent:
             self.logger.debug('skipping report_global_data_zabbix for %s, disovery not send yet!' % resource)
-            return
+        return
 
         data_to_send = list()
 
@@ -413,7 +414,7 @@ class CheckKubernetesDaemon:
                 # Zabbix
                 for obj_uid, obj in self.data[resource].objects.items():
                     zabbix_send = False
-                    if self.data['zabbix_discovery_sent'].get(resource) is not None:
+                    if resource in self.discovery_sent:
                         zabbix_send = True
                     elif obj.last_sent_zabbix < (datetime.now() - timedelta(seconds=self.data_resend_interval)):
                         self.logger.debug("resend zabbix : %s  - %s/%s data because its outdated" % (
@@ -424,8 +425,8 @@ class CheckKubernetesDaemon:
                         obj.last_sent_zabbix = datetime.now()
                         obj.is_dirty_zabbix = False
                 if len(metrics) > 0:
-                    if self.data['zabbix_discovery_sent'].get(resource) is None:
-                        self.logger.debug(
+                    if resource not in self.discovery_sent:
+                            self.logger.debug(
                             'skipping resend_data zabbix , discovery for %s - %s/%s not sent yet!' % (
                                 resource, obj.name_space, obj.name))
                     else:
@@ -471,7 +472,7 @@ class CheckKubernetesDaemon:
             else:
                 self.logger.debug('no discovery data for %s' % resource)
 
-            self.data['zabbix_discovery_sent'][resource] = datetime.now()
+            self.discovery_sent[resource] = datetime.now()
 
     def send_object(self, resource, resourced_obj, event_type, send_zabbix_data=False, send_web=False):
         # send single object for updates
