@@ -28,7 +28,6 @@ coloredlogs.install(fmt=formatter_string)
 
 logger = logging.getLogger(__file__)
 
-logger.info("woops")
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Monitoring daemon for kubernetes'

@@ -23,7 +23,6 @@ RUN  apk update && \
 COPY --chown=nobody:users base /app/base
 COPY --chown=nobody:users k8sobjects /app/k8sobjects
 COPY --chown=nobody:users check_kubernetesd /app/check_kubernetesd
-COPY --chown=nobody:users template_*.py /app/
 
 USER nobody
 WORKDIR /app

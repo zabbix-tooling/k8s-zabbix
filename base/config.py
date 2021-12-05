@@ -87,4 +87,4 @@ class Configuration:
         for field_name in self.__dataclass_fields__:
             if field_name.upper() in os.environ and os.environ[field_name.upper()] != "":
                 print("setting %s by environment variable %s" % (field_name, field_name.upper()))
-                setattr(self, field_name, self._convert_to_type(field_name.os.environ[field_name.upper()]))
+                setattr(self, field_name, self._convert_to_type(field_name, os.environ[field_name.upper()]))
