@@ -10,7 +10,7 @@ from .k8sobject import K8sObject
 logger = logging.getLogger(__file__)
 
 
-def get_pvc_data(api, node, timeout_seconds: str, namespace_exclude_re: str) -> List[Dict]:
+def get_pvc_data(api, node, timeout_seconds: int, namespace_exclude_re: str) -> List[Dict]:
     query_params: List[str] = []
     form_params: List[str] = []
     header_params = {}

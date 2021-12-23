@@ -1,5 +1,5 @@
 FROM python:3.9
-LABEL maintainer="operations@vico-research.com"
+LABEL maintainer="ms-github@256bit.org"
 LABEL Description="zabbix-kubernetes - efficent kubernetes monitoring for zabbix"
 
 MAINTAINER operations@vico-research.com

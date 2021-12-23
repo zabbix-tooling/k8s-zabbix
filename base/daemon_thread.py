@@ -29,11 +29,11 @@ class DryResult:
     pass
 
 
-def get_data_timeout_datetime():
+def get_data_timeout_datetime() -> datetime:
     return datetime.now() - timedelta(minutes=1)
 
 
-def get_discovery_timeout_datetime():
+def get_discovery_timeout_datetime() -> datetime:
     return datetime.now() - timedelta(hours=1)
 
 
@@ -135,15 +135,16 @@ class CheckKubernetesDaemon:
             sys.exit(0)
         elif signum in [signal.SIGUSR1]:
             self.logger.info('=== Listing count of data hold in CheckKubernetesDaemon.data ===')
-
             with self.thread_lock:
                 for r, d in self.data.items():
                     for obj_name, obj_d in d.objects.items():
                         self.logger.info(
-                            f"resource={r}, last_sent_zabbix={obj_d.last_sent_zabbix}, last_sent_web={obj_d.last_sent_web}")
-                for r, d in self.discovery_sent.items():
+                            f"resource={r}, last_sent_zabbix={obj_d.last_sent_zabbix}, " +
+                            f"last_sent_web={obj_d.last_sent_web}"
+                        )
+                for resource_discovered, resource_discovered_time in self.discovery_sent.items():
                     self.logger.info(
-                        f"resource={r}, last_discovery_sent={d}")
+                        f"resource={resource_discovered}, last_discovery_sent={resource_discovered_time}")
         elif signum in [signal.SIGUSR2]:
             self.logger.info('=== Listing all data hold in CheckKubernetesDaemon.data ===')
             with self.thread_lock:
@@ -340,7 +341,7 @@ class CheckKubernetesDaemon:
         """ aggregate and report information for some speciality in resources """
         if resource not in self.discovery_sent:
             self.logger.debug('skipping report_global_data_zabbix for %s, disovery not send yet!' % resource)
-        return
+            return
 
         data_to_send = list()
 
@@ -354,9 +355,11 @@ class CheckKubernetesDaemon:
                         num_ingress_services += 1
 
             data_to_send.append(
-                ZabbixMetric(self.zabbix_host, 'check_kubernetes[get,services,num_services]', num_services))
-            data_to_send.append(ZabbixMetric(self.zabbix_host, 'check_kubernetes[get,services,num_ingress_services]',
-                                             num_ingress_services))
+                ZabbixMetric(self.zabbix_host, 'check_kubernetes[get,services,num_services]',
+                             str(num_services)))
+            data_to_send.append(
+                ZabbixMetric(self.zabbix_host, 'check_kubernetes[get,services,num_ingress_services]',
+                             str(num_ingress_services)))
             self.send_data_to_zabbix(resource, None, data_to_send)
         elif resource == 'containers':
             # aggregate pod data to containers for each namespace
@@ -542,7 +545,9 @@ class CheckKubernetesDaemon:
         else:
             self.logger.warning('No obj or metrics found for send_discovery_to_zabbix [%s]' % resource)
 
-    def send_data_to_zabbix(self, resource, obj=None, metrics=[]):
+    def send_data_to_zabbix(self, resource: str, obj=None, metrics=None):
+        if metrics is None:
+            metrics = list()
         if resource not in self.zabbix_resources:
             return
 

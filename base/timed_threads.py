@@ -28,9 +28,11 @@ class TimedThread(threading.Thread):
     def run(self):
         # manage first run
         if self.delay_first_run:
-            self.logger.info('%s -> %s | delaying first run by %is [interval %is]' %
-                             (self.resource, self.daemon_method, self.delay_first_run_seconds,
-                              self.cycle_interval_seconds))
+            self.logger.info(
+                '%s -> %s | delaying first run by %is [interval %is]' %
+                (self.resource, self.daemon_method, self.delay_first_run_seconds,
+                 self.cycle_interval_seconds)
+            )
             time.sleep(self.delay_first_run_seconds)
             try:
                 self.run_requests(first_run=True)
@@ -45,7 +47,8 @@ class TimedThread(threading.Thread):
                 self.logger.exception(e)
                 self.logger.warning(
                     'looprun failed on timed thread %s.%s [interval %is]\nback off ... retrying in %s seconds' %
-                    (self.resource, self.daemon_method, self.cycle_interval_seconds, self.cycle_interval_seconds))
+                    (self.resource, self.daemon_method, self.cycle_interval_seconds, self.cycle_interval_seconds)
+                )
                 time.sleep(self.cycle_interval_seconds)
 
         self.logger.info('terminating looprun thread %s.%s' % (self.resource, self.daemon_method))

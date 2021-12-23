@@ -4,6 +4,7 @@ import importlib
 import json
 import logging
 import re
+from typing import Union
 
 from pyzabbix import ZabbixMetric
 
@@ -23,6 +24,8 @@ K8S_RESOURCES = dict(
     pvcs='pvc'
 )
 
+INITIAL_DATE = datetime.datetime(2000, 1, 1, 0, 0)
+
 
 def json_encoder(obj) -> str:
     if isinstance(obj, (datetime.date, datetime.datetime)):
@@ -32,7 +35,7 @@ def json_encoder(obj) -> str:
 
 def transform_value(value: str) -> str:
     if value is None:
-        return 0
+        return "0"
     m = re.match(r'^(\d+)(Ki)$', str(value))
     if m:
         if m.group(2) == "Ki":
@@ -45,7 +48,7 @@ def transform_value(value: str) -> str:
     return value
 
 
-def slugit(name_space, name, maxlen):
+def slugit(name_space: str, name: str, maxlen: int) -> str:
     if name_space:
         slug = name_space + '/' + name
     else:
@@ -59,54 +62,9 @@ def slugit(name_space, name, maxlen):
     return slug[:prefix_pos] + "~" + slug[suffix_pos:]
 
 
-class K8sResourceManager:
-    def __init__(self, resource, zabbix_host=None):
-        self.resource = resource
-        self.zabbix_host = zabbix_host
-
-        self.objects = dict()
-        self.containers = dict()  # containers only used for pods
-
-        mod = importlib.import_module('k8sobjects')
-        class_label = K8S_RESOURCES[resource]
-        self.resource_class = getattr(mod, class_label.capitalize(), None)
-
-    def add_obj(self, obj):
-        if not self.resource_class:
-            logger.error('No Resource Class found for "%s"' % self.resource)
-            return
-
-        new_obj = self.resource_class(obj, self.resource, manager=self)
-        if new_obj.uid not in self.objects:
-            # new object
-            self.objects[new_obj.uid] = new_obj
-        elif self.objects[new_obj.uid].data_checksum != new_obj.data_checksum:
-            # existing object with modified data
-            new_obj.last_sent_zabbix_discovery = self.objects[new_obj.uid].last_sent_zabbix_discovery
-            new_obj.last_sent_zabbix = self.objects[new_obj.uid].last_sent_zabbix
-            new_obj.last_sent_web = self.objects[new_obj.uid].last_sent_web
-            new_obj.is_dirty_web = True
-            new_obj.is_dirty_zabbix = True
-            self.objects[new_obj.uid] = new_obj
-
-        # return created or updated object
-        return self.objects[new_obj.uid]
-
-    def del_obj(self, obj):
-        if not self.resource_class:
-            logger.error('No Resource Class found for "%s"' % self.resource)
-            return
-
-        resourced_obj = self.resource_class(obj, self.resource, manager=self)
-        if resourced_obj.uid in self.objects:
-            del self.objects[resourced_obj.uid]
-        return resourced_obj
-
-
-INITIAL_DATE = datetime.datetime(2000, 1, 1, 0, 0)
-
-
 class K8sObject:
+    object_type: str = "UNDEFINED"
+
     def __init__(self, obj_data, resource, manager=None):
         self.is_dirty_zabbix = True
         self.is_dirty_web = True
@@ -200,3 +158,47 @@ class K8sObject:
 
     def get_zabbix_metrics(self):
         return []
+
+
+class K8sResourceManager:
+    def __init__(self, resource, zabbix_host=None):
+        self.resource = resource
+        self.zabbix_host = zabbix_host
+
+        self.objects = dict()
+        self.containers = dict()  # containers only used for pods
+
+        mod = importlib.import_module('k8sobjects')
+        class_label = K8S_RESOURCES[resource]
+        self.resource_class = getattr(mod, class_label.capitalize(), None)
+
+    def add_obj(self, obj: K8sObject) -> Union[K8sObject, None]:
+        if not self.resource_class:
+            logger.error('No Resource Class found for "%s"' % self.resource)
+            return None
+
+        new_obj = self.resource_class(obj, self.resource, manager=self)
+        if new_obj.uid not in self.objects:
+            # new object
+            self.objects[new_obj.uid] = new_obj
+        elif self.objects[new_obj.uid].data_checksum != new_obj.data_checksum:
+            # existing object with modified data
+            new_obj.last_sent_zabbix_discovery = self.objects[new_obj.uid].last_sent_zabbix_discovery
+            new_obj.last_sent_zabbix = self.objects[new_obj.uid].last_sent_zabbix
+            new_obj.last_sent_web = self.objects[new_obj.uid].last_sent_web
+            new_obj.is_dirty_web = True
+            new_obj.is_dirty_zabbix = True
+            self.objects[new_obj.uid] = new_obj
+
+        # return created or updated object
+        return self.objects[new_obj.uid]
+
+    def del_obj(self, obj: K8sObject) -> Union[K8sObject, None]:
+        if not self.resource_class:
+            logger.error('No Resource Class found for "%s"' % self.resource)
+            return None
+
+        resourced_obj = self.resource_class(obj, self.resource, manager=self)
+        if resourced_obj.uid in self.objects:
+            del self.objects[resourced_obj.uid]
+        return resourced_obj
