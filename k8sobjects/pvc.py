@@ -5,6 +5,7 @@ from typing import List, Dict
 
 from pyzabbix import ZabbixMetric
 
+from . import get_node_names
 from .k8sobject import K8sObject
 
 logger = logging.getLogger(__file__)
@@ -48,6 +49,16 @@ def get_pvc_data(api, node, timeout_seconds: int, namespace_exclude_re: str) -> 
         if "volume" not in item:
             continue
         pvc_volumes = _check_volume(item, namespace_exclude_re, node, pvc_volumes)
+    return pvc_volumes
+
+
+def get_pvc_volumes_for_all_nodes(api, timeout: int, namespace_exclude_re: str):
+    pvc_volumes: List[Dict] = list()
+    for node in get_node_names(api):
+        for pvc_volume in get_pvc_data(api, node,
+                                       timeout_seconds=timeout,
+                                       namespace_exclude_re=namespace_exclude_re):
+            pvc_volumes.append(pvc_volume)
     return pvc_volumes
 
 

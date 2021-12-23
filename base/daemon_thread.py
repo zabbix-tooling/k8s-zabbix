@@ -20,7 +20,7 @@ from base.watcher_thread import WatcherThread
 from k8sobjects import get_node_names
 from k8sobjects.container import get_container_zabbix_metrics
 from k8sobjects.k8sobject import K8sResourceManager
-from k8sobjects.pvc import get_pvc_data
+from k8sobjects.pvc import get_pvc_data, get_pvc_volumes_for_all_nodes
 
 exit_flag = threading.Event()
 
@@ -273,14 +273,14 @@ class CheckKubernetesDaemon:
                 with self.thread_lock:
                     for obj in api.list_component_status(watch=False).to_dict().get('items'):
                         self.data[resource].add_obj(obj)
-                time.sleep(self.data_resend_interval)
+                time.sleep(self.data_resend_interval)/api
+
             elif resource == 'pvcs':
                 with self.thread_lock:
-                    for node in get_node_names(api):
-                        for pvc_volume in get_pvc_data(api, node,
-                                                       timeout_seconds=timeout,
-                                                       namespace_exclude_re=self.config.namespace_exclude_re):
-                            self.data[resource].add_obj(pvc_volume)
+                    pvc_volumes = get_pvc_volumes_for_all_nodes(api=api, timeout=timeout,
+                                                                namespace_exclude_re=self.config.namespace_exclude_re)
+                    for obj in pvc_volumes:
+                        self.data[resource].add_obj(obj)
                 time.sleep(self.data_resend_interval)
             elif resource == 'ingresses':
                 for obj in w.stream(api.list_ingress_for_all_namespaces, timeout_seconds=timeout):

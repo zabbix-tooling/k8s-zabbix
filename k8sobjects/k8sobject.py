@@ -4,7 +4,7 @@ import importlib
 import json
 import logging
 import re
-from typing import Union
+from typing import Union, Dict
 
 from pyzabbix import ZabbixMetric
 
@@ -172,7 +172,7 @@ class K8sResourceManager:
         class_label = K8S_RESOURCES[resource]
         self.resource_class = getattr(mod, class_label.capitalize(), None)
 
-    def add_obj(self, obj: K8sObject) -> Union[K8sObject, None]:
+    def add_obj(self, obj: Union[K8sObject, Dict]) -> Union[K8sObject, Dict, None]:
         if not self.resource_class:
             logger.error('No Resource Class found for "%s"' % self.resource)
             return None
