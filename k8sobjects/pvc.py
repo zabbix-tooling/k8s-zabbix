@@ -52,7 +52,7 @@ def get_pvc_data(api, node, timeout_seconds: int, namespace_exclude_re: str) -> 
     return pvc_volumes
 
 
-def get_pvc_volumes_for_all_nodes(api, timeout: int, namespace_exclude_re: str):
+def get_pvc_volumes_for_all_nodes(api, timeout: int, namespace_exclude_re: str) -> List[Dict]:
     pvc_volumes: List[Dict] = list()
     for node in get_node_names(api):
         for pvc_volume in get_pvc_data(api, node,

@@ -17,10 +17,9 @@ from pyzabbix import ZabbixMetric, ZabbixSender
 from base.config import Configuration, ClusterAccessConfigType
 from base.timed_threads import TimedThread
 from base.watcher_thread import WatcherThread
-from k8sobjects import get_node_names
 from k8sobjects.container import get_container_zabbix_metrics
 from k8sobjects.k8sobject import K8sResourceManager
-from k8sobjects.pvc import get_pvc_data, get_pvc_volumes_for_all_nodes
+from k8sobjects.pvc import get_pvc_volumes_for_all_nodes
 
 exit_flag = threading.Event()
 
@@ -101,6 +100,7 @@ class CheckKubernetesDaemon:
         self.zabbix_single_debug = config.zabbix_single_debug
         self.zabbix_dry_run = config.zabbix_dry_run
 
+        self.web_api = None
         self.web_api_enable = config.web_api_enable
         self.web_api_resources = CheckKubernetesDaemon.exclude_resources(resources,
                                                                          self.config.web_api_resources_exclude)
@@ -273,7 +273,7 @@ class CheckKubernetesDaemon:
                 with self.thread_lock:
                     for obj in api.list_component_status(watch=False).to_dict().get('items'):
                         self.data[resource].add_obj(obj)
-                time.sleep(self.data_resend_interval)/api
+                time.sleep(self.data_resend_interval)
 
             elif resource == 'pvcs':
                 with self.thread_lock:
