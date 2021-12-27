@@ -40,3 +40,6 @@ type-check: deps
 
 test: deps
 	${activate} && ${python} -m pytest tests
+
+run: deps
+	${activate} && ${python} check_kubernetesd config_flip-dev.ini

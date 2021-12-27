@@ -166,14 +166,14 @@ class K8sResourceManager:
         self.resource = resource
         self.zabbix_host = zabbix_host
 
-        self.objects = dict()
+        self.objects: Dict[str, K8sObject] = dict()
         self.containers = dict()  # containers only used for pods
 
         mod = importlib.import_module('k8sobjects')
         class_label = K8S_RESOURCES[resource]
         self.resource_class = getattr(mod, class_label.capitalize(), None)
 
-    def add_obj(self, obj: Union[K8sObject, Dict]) -> Union[K8sObject, Dict, None]:
+    def add_obj(self, obj: K8sObject) -> Union[K8sObject, None]:
         if not self.resource_class:
             logger.error('No Resource Class found for "%s"' % self.resource)
             return None
