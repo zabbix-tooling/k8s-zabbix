@@ -16,7 +16,6 @@ class Statefulset(K8sObject):
         return data
 
     def get_zabbix_metrics(self):
-        data = self.resource_data
         data_to_send = []
 
         for status_type in self.data['status']:
@@ -28,9 +27,5 @@ class Statefulset(K8sObject):
                 'check_kubernetesd[get,statefulsets,%s,%s,%s]' % (self.name_space, self.name, status_type),
                 transform_value(self.data['status'][status_type]))
             )
-
-        #data_to_send.append(ZabbixMetric(
-        #    self.zabbix_host,
-        #    'check_kubernetesd[get,statefulsets,%s,%s,available_status]' % (self.name_space, self.name), data['status']))
 
         return data_to_send
