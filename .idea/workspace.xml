@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e11d6900-3673-418a-af28-b507bfb4f29d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base/daemon_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/daemon_thread.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8sobjects/k8sobject.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/k8sobject.py" afterDir="false" />
-    </list>
+    <list default="true" id="e11d6900-3673-418a-af28-b507bfb4f29d" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -242,6 +238,7 @@
       <workItem from="1640281261403" duration="5401000" />
       <workItem from="1640525662772" duration="6136000" />
       <workItem from="1640624292193" duration="1091000" />
+      <workItem from="1640625425481" duration="513000" />
     </task>
     <servers />
   </component>
@@ -263,7 +260,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd.coverage" NAME="check_kubernetesd Coverage Results" MODIFIED="1640625337304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd.coverage" NAME="check_kubernetesd Coverage Results" MODIFIED="1640625701444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/k8s_zabbix$.coverage" NAME=" Coverage Results" MODIFIED="1638545879189" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/unit" />
   </component>
 </project>
