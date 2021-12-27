@@ -43,3 +43,6 @@ test: deps
 
 run: deps
 	${activate} && ${python} check_kubernetesd config_flip-dev.ini
+
+publish:
+	./build.sh default publish_image scoopex666
