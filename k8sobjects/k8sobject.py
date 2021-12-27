@@ -157,6 +157,7 @@ class K8sObject:
         )
 
     def get_zabbix_metrics(self):
+        logger.fatal(f"get_zabbix_metrics: not implemented for {self.object_type}")
         return []
 
 

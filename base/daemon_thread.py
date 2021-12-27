@@ -150,8 +150,8 @@ class CheckKubernetesDaemon:
             with self.thread_lock:
                 for r, d in self.data.items():
                     for obj_name, obj_d in d.objects.items():
-                        self.logger.info(
-                            f"resource={r}, object_name={obj_name}, object_data={pformat(obj_d.data, width=10)}")
+                        data_print = pformat(obj_d.data, indent=2)
+                        self.logger.info(f"resource={r}, object_name={obj_name}, object_data={data_print}")
 
     def run(self):
         self.start_data_threads()
@@ -451,7 +451,7 @@ class CheckKubernetesDaemon:
 
     def send_zabbix_discovery(self, resource: str):
         # aggregate data and send to zabbix
-        self.logger.info(f"Sending discovery data for {resource}")
+        self.logger.info(f"send_zabbix_discovery: {resource}")
         with self.thread_lock:
             if resource not in self.data:
                 self.logger.warning('send_zabbix_discovery: resource "%s" not in self.data... skipping!' % resource)
@@ -463,10 +463,10 @@ class CheckKubernetesDaemon:
 
             if data:
                 metric = obj.get_discovery_for_zabbix(data)
-                self.logger.debug('sending discovery for [%s]: %s' % (resource, metric))
+                self.logger.debug('send_zabbix_discovery: resource "%s": %s' % (resource, metric))
                 self.send_discovery_to_zabbix(resource, metric=[metric])
             else:
-                self.logger.warning('no discovery data for %s' % resource)
+                self.logger.warning('send_zabbix_discovery: resource "%s" has no discovery data' % resource)
 
             self.discovery_sent[resource] = datetime.now()
 

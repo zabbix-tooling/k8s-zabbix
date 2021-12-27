@@ -1,6 +1,7 @@
 SHELL = bash
 
 activate = source venv/bin/activate
+python = python3.9
 
 all: deps
 .PHONY: all
@@ -10,7 +11,7 @@ deps: venv/bin/activate
 
 
 venv/bin/activate: requirements.txt
-	python3 -m venv venv
+	${python} -m venv venv
 	@# TODO: installation of wheel solves a pip install error, we have to check if that is needed permamently
 	@# because it seems to be a packaging issue
 	${activate} && \
@@ -30,12 +31,12 @@ check:
 
 
 lint: deps
-	${activate} && python3 -m flake8 base k8sobjects
+	${activate} && ${python} -m flake8 base k8sobjects
 .PHONY: lint
 
 type-check: deps
-	${activate} && python3 -m mypy --no-color-output --pretty base k8sobjects
+	${activate} && ${python} -m mypy --no-color-output --pretty base k8sobjects
 .PHONY: type-check
 
 test: deps
-	${activate} && python3 -m pytest tests
+	${activate} && ${python} -m pytest tests
