@@ -276,9 +276,9 @@ class CheckKubernetesDaemon:
                 time.sleep(self.data_resend_interval)
 
             elif resource == 'pvcs':
+                pvc_volumes = get_pvc_volumes_for_all_nodes(api=api, timeout=timeout,
+                                                            namespace_exclude_re=self.config.namespace_exclude_re)
                 with self.thread_lock:
-                    pvc_volumes = get_pvc_volumes_for_all_nodes(api=api, timeout=timeout,
-                                                                namespace_exclude_re=self.config.namespace_exclude_re)
                     for obj in pvc_volumes:
                         self.data[resource].add_obj(obj)
                 time.sleep(self.data_resend_interval)
@@ -449,8 +449,9 @@ class CheckKubernetesDaemon:
         # TODO: trigger zabbix discovery, srsly?
         self.send_to_web_api(resource_type, resourced_obj, "deleted")
 
-    def send_zabbix_discovery(self, resource):
+    def send_zabbix_discovery(self, resource: str):
         # aggregate data and send to zabbix
+        self.logger.info(f"Sending discovery data for {resource}")
         with self.thread_lock:
             if resource not in self.data:
                 self.logger.warning('send_zabbix_discovery: resource "%s" not in self.data... skipping!' % resource)
@@ -465,7 +466,7 @@ class CheckKubernetesDaemon:
                 self.logger.debug('sending discovery for [%s]: %s' % (resource, metric))
                 self.send_discovery_to_zabbix(resource, metric=[metric])
             else:
-                self.logger.debug('no discovery data for %s' % resource)
+                self.logger.warning('no discovery data for %s' % resource)
 
             self.discovery_sent[resource] = datetime.now()
 

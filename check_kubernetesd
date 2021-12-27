@@ -10,6 +10,7 @@ import logging
 import os
 import signal
 import sys
+from typing import List
 
 import coloredlogs as coloredlogs
 import sentry_sdk
@@ -73,7 +74,7 @@ if __name__ == '__main__':
         logger.setLevel(logging.INFO)
     logger.addHandler(stream)
 
-    daemons = list()
+    daemons: List[CheckKubernetesDaemon] = list()
 
     mgmt_daemon = CheckKubernetesDaemon(config,
                                         ['nodes'],
