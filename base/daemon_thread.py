@@ -18,7 +18,7 @@ from base.config import Configuration, ClusterAccessConfigType
 from base.timed_threads import TimedThread
 from base.watcher_thread import WatcherThread
 from k8sobjects.container import get_container_zabbix_metrics
-from k8sobjects.k8sobject import K8sResourceManager
+from k8sobjects.k8sresourcemanager import K8sResourceManager
 from k8sobjects.pvc import get_pvc_volumes_for_all_nodes
 
 exit_flag = threading.Event()
@@ -82,7 +82,7 @@ class CheckKubernetesDaemon:
             self.api_configuration.api_key = {"authorization": "Bearer " + config.k8s_api_token}
             self.api_client = client.ApiClient(self.api_configuration)
         else:
-            self.logger.fatal(f"k8s_config_type = {config.k8s_config_type} is not implmented")
+            self.logger.fatal(f"k8s_config_type = {config.k8s_config_type} is not implemented")
             sys.exit(1)
 
         self.logger.info(f"Initialized cluster access for {config.k8s_config_type}")
@@ -272,12 +272,12 @@ class CheckKubernetesDaemon:
                 # The api does not support watching on component status
                 with self.thread_lock:
                     for obj in api.list_component_status(watch=False).to_dict().get('items'):
-                        self.data[resource].add_obj(obj)
+                        self.data[resource].add_obj_from_data(obj)
                 time.sleep(self.data_resend_interval)
-
             elif resource == 'pvcs':
                 pvc_volumes = get_pvc_volumes_for_all_nodes(api=api, timeout=timeout,
-                                                            namespace_exclude_re=self.config.namespace_exclude_re)
+                                                            namespace_exclude_re=self.config.namespace_exclude_re,
+                                                            resource_manager=self.data[resource])
                 with self.thread_lock:
                     for obj in pvc_volumes:
                         self.data[resource].add_obj(obj)
@@ -318,14 +318,14 @@ class CheckKubernetesDaemon:
 
         if event_type.lower() == 'added':
             with self.thread_lock:
-                resourced_obj = self.data[resource].add_obj(obj)
+                resourced_obj = self.data[resource].add_obj_from_data(obj)
             if resourced_obj.is_dirty_zabbix or resourced_obj.is_dirty_web:
                 self.send_object(resource, resourced_obj, event_type,
                                  send_zabbix_data=resourced_obj.is_dirty_zabbix,
                                  send_web=resourced_obj.is_dirty_web)
         elif event_type.lower() == 'modified':
             with self.thread_lock:
-                resourced_obj = self.data[resource].add_obj(obj)
+                resourced_obj = self.data[resource].add_obj_from_data(obj)
             if resourced_obj.is_dirty_zabbix or resourced_obj.is_dirty_web:
                 self.send_object(resource, resourced_obj, event_type,
                                  send_zabbix_data=resourced_obj.is_dirty_zabbix,

@@ -122,7 +122,7 @@ if __name__ == '__main__':
         for daemon in daemons:
             daemon.run()
         while True:
-            time.sleep(60)
+            time.sleep(10)
     except KeyboardInterrupt:
         logger.info("got SIGINT, shutting down")
         for daemon in daemons:

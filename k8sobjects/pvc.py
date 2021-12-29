@@ -7,11 +7,14 @@ from pyzabbix import ZabbixMetric
 
 from . import get_node_names
 from .k8sobject import K8sObject
+from .k8sresourcemanager import K8sResourceManager
 
 logger = logging.getLogger(__file__)
 
 
-def get_pvc_data(api, node, timeout_seconds: int, namespace_exclude_re: str) -> List[Dict]:
+def _get_pvc_data_for_node(api, node: str, pvc_volumes: List[K8sObject], timeout_seconds: int,
+                           namespace_exclude_re: str,
+                           resource_manager: K8sResourceManager) -> List[K8sObject]:
     query_params: List[str] = []
     form_params: List[str] = []
     header_params = {}
@@ -44,34 +47,32 @@ def get_pvc_data(api, node, timeout_seconds: int, namespace_exclude_re: str) -> 
 
     loaded_json = json.loads(ret.data)
 
-    pvc_volumes: List[Dict] = []
     for item in loaded_json['pods']:
         if "volume" not in item:
             continue
-        pvc_volumes = _check_volume(item, namespace_exclude_re, node, pvc_volumes)
+        pvc_volumes = _process_volume(item=item, namespace_exclude_re=namespace_exclude_re, node=node,
+                                      pvc_volumes=pvc_volumes,
+                                      resource_manager=resource_manager)
     return pvc_volumes
 
 
-def get_pvc_volumes_for_all_nodes(api, timeout: int, namespace_exclude_re: str) -> List[Dict]:
-    pvc_volumes: List[Dict] = list()
-    for node in get_node_names(api):
-        for pvc_volume in get_pvc_data(api, node,
-                                       timeout_seconds=timeout,
-                                       namespace_exclude_re=namespace_exclude_re):
-            pvc_volumes.append(pvc_volume)
-    return pvc_volumes
-
-
-def _check_volume(item, namespace_exclude_re, node, pvc_volumes):
+def _process_volume(item: Dict, namespace_exclude_re: str, node: str,
+                    pvc_volumes: List[K8sObject],
+                    resource_manager: K8sResourceManager) -> List[K8sObject]:
     for volume in item['volume']:
         if 'pvcRef' not in volume:
             continue
 
         namespace = volume['pvcRef']['namespace']
+        name = volume['pvcRef']['name']
+
         if namespace_exclude_re and re.match(namespace_exclude_re, namespace):
             continue
 
-        name = volume['pvcRef']['name']
+        for check_volume in pvc_volumes:
+            if check_volume.name_space == namespace and name == check_volume.name:
+                logger.warning(f"pvc already exists {namespace} / {name}")
+
         data = {
             'metadata': {
                 'name': name,
@@ -80,7 +81,6 @@ def _check_volume(item, namespace_exclude_re, node, pvc_volumes):
             'item': volume
         }
         data['item']['nodename'] = node
-
         data['item']['usedBytesPercentage'] = float(float(
             data['item']['usedBytes'] / data['item']['capacityBytes'])) * 100
 
@@ -89,7 +89,22 @@ def _check_volume(item, namespace_exclude_re, node, pvc_volumes):
 
         for key in ['name', 'pvcRef', 'time', 'availableBytes', 'inodesFree']:
             data['item'].pop(key, None)
-        pvc_volumes.append(data)
+        pvc = Pvc(obj_data=data, resource="pvcs", manager=resource_manager)
+        pvc_volumes.append(pvc)
+
+    return pvc_volumes
+
+
+def get_pvc_volumes_for_all_nodes(api, timeout: int, namespace_exclude_re: str,
+                                  resource_manager: K8sResourceManager) -> List[K8sObject]:
+    pvc_volumes: List[K8sObject] = list()
+    for node in get_node_names(api):
+        pvc_volumes = _get_pvc_data_for_node(api=api, node=node,
+                                             pvc_volumes=pvc_volumes,
+                                             timeout_seconds=timeout,
+                                             namespace_exclude_re=namespace_exclude_re,
+                                             resource_manager=resource_manager,
+                                             )
     return pvc_volumes
 
 

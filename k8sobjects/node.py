@@ -1,15 +1,17 @@
 import logging
+from typing import List
 
 import cachetools.func
 from pyzabbix import ZabbixMetric
+
 from .k8sobject import K8sObject, transform_value
 
 logger = logging.getLogger(__file__)
 
 
 # TODO: remove after refactoring
-@cachetools.func.ttl_cache(maxsize=1, ttl=60*10)
-def get_node_names(api):
+@cachetools.func.ttl_cache(maxsize=1, ttl=60 * 10)
+def get_node_names(api) -> List[str]:
     ret = api.list_node(watch=False)
     nodenames = []
     for item in ret.items:

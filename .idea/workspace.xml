@@ -2,11 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e11d6900-3673-418a-af28-b507bfb4f29d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/config_flip-dev.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/k8sobjects/k8sresourcemanager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/base/daemon_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/daemon_thread.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/base/timed_threads.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/timed_threads.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/base/watcher_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/watcher_thread.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/check_kubernetesd" beforeDir="false" afterPath="$PROJECT_DIR$/check_kubernetesd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/k8sobjects/k8sobject.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/k8sobject.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8sobjects/statefulset.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/statefulset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8sobjects/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8sobjects/pvc.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/pvc.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +50,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/check_kubernetesd" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/k8sobjects/k8sresourcemanager.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -174,7 +178,7 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests in config_loading.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests in /home/marc/src/github/k8s-zabbix/tests/unit/config_loading.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="k8s-zabbix" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -195,12 +199,12 @@
       <item itemvalue="Python tests.Python tests for config_loading.test_load_config_ini" />
       <item itemvalue="Python tests.Python tests for k8sobject.test_transform_value" />
       <item itemvalue="Python tests.Python tests for tests.unit.config_loading.test_load_config_ini" />
-      <item itemvalue="Python tests.Python tests in config_loading.py" />
+      <item itemvalue="Python tests.Python tests in /home/marc/src/github/k8s-zabbix/tests/unit/config_loading.py" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python tests.Python tests for config_loading.test_load_config" />
-        <item itemvalue="Python tests.Python tests in config_loading.py" />
+        <item itemvalue="Python tests.Python tests in /home/marc/src/github/k8s-zabbix/tests/unit/config_loading.py" />
         <item itemvalue="Python tests.Python tests for k8sobject.test_transform_value" />
         <item itemvalue="Python tests.Python tests for config_loading.test_load_config_ini" />
         <item itemvalue="Python tests.Python tests for tests.unit.config_loading.test_load_config_ini" />
@@ -244,7 +248,7 @@
       <workItem from="1640281261403" duration="5401000" />
       <workItem from="1640525662772" duration="6136000" />
       <workItem from="1640624292193" duration="1091000" />
-      <workItem from="1640625425481" duration="1817000" />
+      <workItem from="1640625425481" duration="22170000" />
     </task>
     <servers />
   </component>
@@ -265,8 +269,23 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints-defaults>
+        <breakpoint type="python-line" />
+      </breakpoints-defaults>
+      <default-breakpoints>
+        <breakpoint log-message="true" log-stack="true" type="javascript-exception" />
+        <breakpoint enabled="true" log-stack="true" type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd.coverage" NAME="check_kubernetesd Coverage Results" MODIFIED="1640627227700" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd.coverage" NAME="check_kubernetesd Coverage Results" MODIFIED="1640779637574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/k8s_zabbix$.coverage" NAME=" Coverage Results" MODIFIED="1638545879189" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/unit" />
   </component>
 </project>
