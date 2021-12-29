@@ -34,6 +34,8 @@ if __name__ == '__main__':
         description='Monitoring daemon for kubernetes'
     )
 
+    parser.add_argument('--show_effective_config', action='store_true')
+    parser.add_argument('--show_ini', action='store_true')
     args, remaining_args = parser.parse_known_args()
 
     config = Configuration()
@@ -50,6 +52,8 @@ if __name__ == '__main__':
                 sys.exit(1)
 
     config.load_from_environment_variables()
+    if args.show_effective_config:
+        config.show_effective_config(show_as_ini_variables=args.show_ini)
 
     if config.sentry_enabled:
         logger.info("starting with sentry DSN %s" % config.sentry_dsn)

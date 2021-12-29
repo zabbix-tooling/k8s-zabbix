@@ -13,4 +13,6 @@ def test_load_config():
     assert (cfg.discovery_interval_fast == 12)
     assert ("jacco" in cfg.zabbix_resources_exclude)
     assert ("wacco" in cfg.zabbix_resources_exclude)
+    print("")
+    cfg.show_effective_config()
 

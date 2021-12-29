@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 from configparser import ConfigParser
@@ -17,6 +18,9 @@ class ClusterAccessConfigType(Enum):
     KUBECONFIG = "kubeconfig"
     INCLUSTER = "incluster"
     TOKEN = "token"
+
+
+logger = logging.getLogger(__file__)
 
 
 @dataclass(order=True)
@@ -88,3 +92,25 @@ class Configuration:
             if field_name.upper() in os.environ and os.environ[field_name.upper()] != "":
                 print("setting %s by environment variable %s" % (field_name, field_name.upper()))
                 setattr(self, field_name, self._convert_to_type(field_name, os.environ[field_name.upper()]))
+
+    def show_effective_config(self, show_as_ini_variables: bool = False):
+        name_len = 0
+        value_len = 0
+        for field_name in self.__dataclass_fields__:
+            name_len = max(name_len, len(field_name))
+            value_len = max(value_len, len(str(getattr(self, field_name))))
+
+        format_string = f"** %-{name_len + 2}s %-{value_len}s **"
+        print("*" * (name_len + value_len + 9))
+        print(format_string % ("EFFECTIVE CONFIG", ""))
+        print(format_string % ("", ""))
+        for field_name in self.__dataclass_fields__:
+            field_name_show = field_name
+            if show_as_ini_variables:
+                field_name_show = field_name.upper()
+            print(format_string % (field_name_show, getattr(self, field_name)))
+        print(format_string % ("", ""))
+        print("*" * (name_len + value_len + 9))
+
+
+logger.info("*" * 60)
