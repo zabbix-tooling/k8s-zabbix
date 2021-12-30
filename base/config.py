@@ -106,7 +106,7 @@ class Configuration:
         print(format_string % ("", ""))
         for field_name in self.__dataclass_fields__:
             field_name_show = field_name
-            if show_as_ini_variables:
+            if not show_as_ini_variables:
                 field_name_show = field_name.upper()
             print(format_string % (field_name_show, getattr(self, field_name)))
         print(format_string % ("", ""))
