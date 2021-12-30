@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.4</version>
-    <date>2021-12-30T09:05:22Z</date>
+    <date>2021-12-30T10:12:34Z</date>
     <groups>
         <group>
             <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
@@ -1032,6 +1032,211 @@
                     <key>check_kubernetesd[discover,statefulsets]</key>
                     <delay>0</delay>
                     <lifetime>4h</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>2148ca284b604067a11a3f1009a8c5f8</uuid>
+                            <name>{#NAMESPACE} / {#NAME} - available_replicas</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},available_replicas]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>7d7e66081f71460a85a511923d1df898</uuid>
+                            <name>{#NAMESPACE} / {#NAME} - available_status</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},available_status]</key>
+                            <delay>0</delay>
+                            <history>5d</history>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>2a609b50505f4440bb565ecc9b2c2343</uuid>
+                            <name>{#NAMESPACE} / {#NAME} - collision_count</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},collision_count]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>aebc0337b9fd435caaf908e6e2e0c25b</uuid>
+                            <name>{#NAMESPACE} / {#NAME} - observed_generation</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},observed_generation]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>fe420e8c2de4445193ec8a1f847eebcb</uuid>
+                                    <expression>(last(/Custom - Service - Kubernetes/check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},observed_generation],#1)&lt;&gt;last(/Custom - Service - Kubernetes/check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},observed_generation],#2))=1</expression>
+                                    <name>Statefulset {#NAMESPACE} / {#NAME} - observed_generation changed</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>a105ed5068b8468fa128d25cd0d30756</uuid>
+                            <name>{#NAMESPACE} / {#NAME} - ready_replicas</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},ready_replicas]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>97ae66a6acf14ca2b8cd851293843a95</uuid>
+                            <name>{#NAMESPACE} / {#NAME} - replicas</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},replicas]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>be5256a72f7d40c08efd802434bbeaf2</uuid>
+                            <name>{#NAMESPACE} / {#NAME} - unavailable_replicas</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},unavailable_replicas]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>b6a94961c2094480b5b71266c93acbca</uuid>
+                            <name>{#NAMESPACE} / {#NAME} - updated_replicas</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},updated_replicas]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <uuid>7fb8e6db1da9440189af68f23bb3bc53</uuid>
+                            <expression>find(/Custom - Service - Kubernetes/check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},available_status],,&quot;like&quot;,&quot;OK&quot;)&lt;&gt;1 and (last(/Custom - Service - Kubernetes/check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},observed_generation]) = last(/Custom - Service - Kubernetes/check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},observed_generation]))</expression>
+                            <name>Statefulset {#NAMESPACE} / {#NAME} - available_status failed: {ITEM.LASTVALUE1}</name>
+                            <priority>AVERAGE</priority>
+                            <description>Raise a alarm if the available status is not rrue and no deployment is currently in progress.
+(the generation has not changed)</description>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>6615649d5cec4b49a825a291fc5aefe7</uuid>
+                            <name>Statefulset {#NAMESPACE} / {#NAME} - Misc</name>
+                            <height>300</height>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},collision_count]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>F63100</color>
+                                    <yaxisside>RIGHT</yaxisside>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},observed_generation]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                        <graph_prototype>
+                            <uuid>fb73fa16aca6487385452314134feb46</uuid>
+                            <name>Statefulset {#NAMESPACE} / {#NAME} - Replicas</name>
+                            <height>300</height>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},ready_replicas]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>CCCC00</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},replicas]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>2</sortorder>
+                                    <color>EE0000</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},unavailable_replicas]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                    <request_method>POST</request_method>
                 </discovery_rule>
                 <discovery_rule>
                     <uuid>d0afb25d8cb44e8382baf63185cb2146</uuid>
@@ -1435,11 +1640,6 @@
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
-                                            <name>columns</name>
-                                            <value>1</value>
-                                        </field>
-                                        <field>
-                                            <type>INTEGER</type>
                                             <name>rows</name>
                                             <value>1</value>
                                         </field>
@@ -1447,6 +1647,11 @@
                                             <type>INTEGER</type>
                                             <name>source_type</name>
                                             <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
                                         </field>
                                         <field>
                                             <type>GRAPH_PROTOTYPE</type>
