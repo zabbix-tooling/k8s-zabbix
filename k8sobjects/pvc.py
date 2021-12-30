@@ -122,7 +122,7 @@ class Pvc(K8sObject):
             data_to_send.append(
                 ZabbixMetric(
                     self.zabbix_host,
-                    f'check_kubernetesd[get,pvc,{self.name_space},{self.name},{key}]', value
+                    f'check_kubernetesd[get,pvcs,{self.name_space},{self.name},{key}]', value
                 ))
 
         return data_to_send

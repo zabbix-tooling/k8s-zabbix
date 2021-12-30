@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>5.2</version>
-    <date>2021-09-20T15:56:46Z</date>
+    <version>5.4</version>
+    <date>2021-12-30T09:05:22Z</date>
     <groups>
         <group>
+            <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
             <name>Templates</name>
         </group>
     </groups>
     <templates>
         <template>
+            <uuid>8f04444064e9401ebf6b5c72a883909c</uuid>
             <template>Custom - Service - Kubernetes</template>
             <name>Custom - Service - Kubernetes</name>
             <groups>
@@ -16,95 +18,79 @@
                     <name>Templates</name>
                 </group>
             </groups>
-            <applications>
-                <application>
-                    <name>Custom - Service - Kubernetes - Components</name>
-                </application>
-                <application>
-                    <name>Custom - Service - Kubernetes - Containers</name>
-                </application>
-                <application>
-                    <name>Custom - Service - Kubernetes - Deployments</name>
-                </application>
-                <application>
-                    <name>Custom - Service - Kubernetes - Global</name>
-                </application>
-                <application>
-                    <name>Custom - Service - Kubernetes - Nodes</name>
-                </application>
-                <application>
-                    <name>Custom - Service - Kubernetes - Pods</name>
-                </application>
-                <application>
-                    <name>Custom - Service - Kubernetes - Services</name>
-                </application>
-                <application>
-                    <name>Custom - Service - Kubernetes - TLS</name>
-                </application>
-            </applications>
             <items>
                 <item>
+                    <uuid>43053f04cbd04521b6c96daebd5e324f</uuid>
                     <name>Cluster API Monitoring Heartbeat</name>
                     <type>TRAP</type>
                     <key>check_kubernetesd[discover,api]</key>
                     <delay>0</delay>
                     <history>14d</history>
                     <trends>0</trends>
-                    <applications>
-                        <application>
-                            <name>Custom - Service - Kubernetes - Global</name>
-                        </application>
-                    </applications>
                     <request_method>POST</request_method>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Custom - Service - Kubernetes - Global</value>
+                        </tag>
+                    </tags>
                     <triggers>
                         <trigger>
-                            <expression>{nodata(90m)}=1</expression>
+                            <uuid>16cfa018b58549dc80d523e53e336670</uuid>
+                            <expression>nodata(/Custom - Service - Kubernetes/check_kubernetesd[discover,api],90m)=1</expression>
                             <name>Cluster Discovery</name>
                             <priority>AVERAGE</priority>
                         </trigger>
                     </triggers>
                 </item>
                 <item>
+                    <uuid>dbdda211283f4264955aa26760507c5b</uuid>
                     <name>Cluster Items Send</name>
                     <type>TRAP</type>
                     <key>check_kubernetesd[get,items]</key>
                     <delay>0</delay>
                     <history>14d</history>
                     <trends>0d</trends>
-                    <applications>
-                        <application>
-                            <name>Custom - Service - Kubernetes - Global</name>
-                        </application>
-                    </applications>
                     <request_method>POST</request_method>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Custom - Service - Kubernetes - Global</value>
+                        </tag>
+                    </tags>
                 </item>
                 <item>
+                    <uuid>00ee4d8958bc4ceba842e95b5e8c633f</uuid>
                     <name>Number of ingress services</name>
                     <type>TRAP</type>
                     <key>check_kubernetes[get,services,num_ingress_services]</key>
                     <delay>0</delay>
                     <history>7d</history>
-                    <applications>
-                        <application>
-                            <name>Custom - Service - Kubernetes - Services</name>
-                        </application>
-                    </applications>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Custom - Service - Kubernetes - Services</value>
+                        </tag>
+                    </tags>
                 </item>
                 <item>
+                    <uuid>c4c9f89302284f1caf207c456b27382a</uuid>
                     <name>Number of services</name>
                     <type>TRAP</type>
                     <key>check_kubernetes[get,services,num_services]</key>
                     <delay>0</delay>
                     <history>7d</history>
-                    <applications>
-                        <application>
-                            <name>Custom - Service - Kubernetes - Services</name>
-                        </application>
-                    </applications>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Custom - Service - Kubernetes - Services</value>
+                        </tag>
+                    </tags>
                 </item>
             </items>
             <discovery_rules>
                 <discovery_rule>
+                    <uuid>0aa66b7634504af8b84dd8b8cac6bf0b</uuid>
                     <name>Custom - Service - Kubernetes - Components</name>
                     <type>TRAP</type>
                     <key>check_kubernetesd[discover,components]</key>
@@ -112,32 +98,36 @@
                     <lifetime>4h</lifetime>
                     <item_prototypes>
                         <item_prototype>
+                            <uuid>fd10c0295fa94d4ea9166c923b010836</uuid>
                             <name>Component {#NAME} - available_status</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,components,{#NAME},available_status]</key>
                             <delay>0</delay>
                             <trends>0</trends>
                             <value_type>CHAR</value_type>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Components</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Custom - Service - Kubernetes - Components</value>
+                                </tag>
+                            </tags>
                             <trigger_prototypes>
                                 <trigger_prototype>
-                                    <expression>{str(&quot;OK&quot;)}&lt;&gt;1</expression>
+                                    <uuid>00832de3b5f6486aab9a412c5ffcd462</uuid>
+                                    <expression>find(/Custom - Service - Kubernetes/check_kubernetesd[get,components,{#NAME},available_status],,&quot;like&quot;,&quot;OK&quot;)&lt;&gt;1</expression>
                                     <name>Component   {#NAME} - available_status failed: {ITEM.LASTVALUE1}</name>
                                     <priority>AVERAGE</priority>
                                     <dependencies>
                                         <dependency>
                                             <name>Component   {#NAME} - available_status nodata for &gt; 90m</name>
-                                            <expression>{Custom - Service - Kubernetes:check_kubernetesd[get,components,{#NAME},available_status].nodata(90m)}=1</expression>
+                                            <expression>nodata(/Custom - Service - Kubernetes/check_kubernetesd[get,components,{#NAME},available_status],90m)=1</expression>
                                         </dependency>
                                     </dependencies>
                                 </trigger_prototype>
                                 <trigger_prototype>
-                                    <expression>{nodata(90m)}=1</expression>
+                                    <uuid>4c0ac16443484ebcbad81c9dc385ab5c</uuid>
+                                    <expression>nodata(/Custom - Service - Kubernetes/check_kubernetesd[get,components,{#NAME},available_status],90m)=1</expression>
                                     <name>Component   {#NAME} - available_status nodata for &gt; 90m</name>
                                     <priority>AVERAGE</priority>
                                     <description>No data received for component {#NAME}, probably the monitoring pod crashed</description>
@@ -148,57 +138,68 @@
                     <request_method>POST</request_method>
                 </discovery_rule>
                 <discovery_rule>
+                    <uuid>0433791979414883ae4a00a36171eabb</uuid>
                     <name>Custom - Service - Kubernetes - Containers</name>
                     <type>TRAP</type>
                     <key>check_kubernetesd[discover,containers]</key>
                     <delay>0</delay>
+                    <status>DISABLED</status>
                     <lifetime>4h</lifetime>
                     <description>currently not implemented</description>
                     <item_prototypes>
                         <item_prototype>
+                            <uuid>a6a903f38f30426a9a3a8d2982d36da0</uuid>
                             <name>{#NAMESPACE} / {#NAME} / {#CONTAINER} - not_ready</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},not_ready]</key>
                             <delay>0</delay>
                             <history>14d</history>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Containers</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Container {#NAMESPACE} / {#NAME} / {#CONTAINER}</value>
+                                </tag>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Custom - Service - Kubernetes - Containers</value>
+                                </tag>
+                            </tags>
                             <trigger_prototypes>
                                 <trigger_prototype>
-                                    <expression>{min(35m)}&lt;&gt;0</expression>
+                                    <uuid>a05dfd08e0ce4151b16ec5f9cc459636</uuid>
+                                    <expression>min(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},not_ready],35m)&lt;&gt;0</expression>
                                     <name>Pod {#NAMESPACE} / {#NAME} - not ready pods for 30minutes</name>
                                     <priority>WARNING</priority>
                                 </trigger_prototype>
                             </trigger_prototypes>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>aa9dbfce7ff44962996f095bbedecb1a</uuid>
                             <name>{#NAMESPACE} / {#NAME} / {#CONTAINER} - ready</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},ready]</key>
                             <delay>0</delay>
                             <history>14d</history>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Containers</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Container {#NAMESPACE} / {#NAME} / {#CONTAINER}</value>
+                                </tag>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Custom - Service - Kubernetes - Containers</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>72d45df9a90e4243bf939ebc99592ecf</uuid>
                             <name>{#NAMESPACE} / {#NAME} / {#CONTAINER} - restart_count</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},restart_count]</key>
                             <delay>0</delay>
                             <history>14d</history>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Containers</name>
-                                </application>
-                            </applications>
                             <preprocessing>
                                 <step>
                                     <type>SIMPLE_CHANGE</type>
@@ -208,20 +209,33 @@
                                 </step>
                             </preprocessing>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Container {#NAMESPACE} / {#NAME} / {#CONTAINER}</value>
+                                </tag>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Custom - Service - Kubernetes - Containers</value>
+                                </tag>
+                            </tags>
                             <trigger_prototypes>
                                 <trigger_prototype>
-                                    <expression>{last()}&gt;0</expression>
+                                    <uuid>aa16ae9f633d4cd283ef5d886eba81de</uuid>
+                                    <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},restart_count])&gt;0</expression>
                                     <name>Pod {#NAMESPACE} / {#NAME} - restart_count &gt; 0</name>
                                     <priority>WARNING</priority>
                                 </trigger_prototype>
                                 <trigger_prototype>
-                                    <expression>{sum(30m)}&gt;{$POD_RESTART_AVERAGE_LIMIT_30M}</expression>
+                                    <uuid>c17f835439b8453a97454bde9538de78</uuid>
+                                    <expression>sum(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},restart_count],30m)&gt;{$POD_RESTART_AVERAGE_LIMIT_30M}</expression>
                                     <name>Pod {#NAMESPACE} / {#NAME} - restart_count &gt; {$POD_RESTART_AVERAGE_LIMIT_30M}  in 30m</name>
                                     <priority>AVERAGE</priority>
                                 </trigger_prototype>
                             </trigger_prototypes>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>b8cb7277d4924cf4bf069d5a56f91393</uuid>
                             <name>{#NAMESPACE} / {#NAME} / {#CONTAINER} - status</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},status]</key>
@@ -229,14 +243,20 @@
                             <history>14d</history>
                             <trends>0</trends>
                             <value_type>CHAR</value_type>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Containers</name>
-                                </application>
-                            </applications>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Container {#NAMESPACE} / {#NAME} / {#CONTAINER}</value>
+                                </tag>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Custom - Service - Kubernetes - Containers</value>
+                                </tag>
+                            </tags>
                             <trigger_prototypes>
                                 <trigger_prototype>
-                                    <expression>{str(&quot;ERROR&quot;)}=1</expression>
+                                    <uuid>e6ffc66ca8bc4e0ea3493deaf793231f</uuid>
+                                    <expression>find(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},status],,&quot;like&quot;,&quot;ERROR&quot;)=1</expression>
                                     <name>Pod {#NAMESPACE} / {#NAME} - status - {ITEM.VALUE}</name>
                                     <opdata>{ITEM.VALUE}</opdata>
                                     <priority>WARNING</priority>
@@ -246,6 +266,7 @@
                     </item_prototypes>
                     <graph_prototypes>
                         <graph_prototype>
+                            <uuid>c0044b5686a248a2b2bf27f23f553efa</uuid>
                             <name>Pod {#NAMESPACE} / {#NAME} - Launch Statistics</name>
                             <height>300</height>
                             <ymin_type_1>FIXED</ymin_type_1>
@@ -283,6 +304,7 @@
                     <request_method>POST</request_method>
                 </discovery_rule>
                 <discovery_rule>
+                    <uuid>3ee88ce18d754f4d83405bacc196bac7</uuid>
                     <name>Custom - Service - Kubernetes - Deployments</name>
                     <type>TRAP</type>
                     <key>check_kubernetesd[discover,deployments]</key>
@@ -290,19 +312,22 @@
                     <lifetime>4h</lifetime>
                     <item_prototypes>
                         <item_prototype>
+                            <uuid>acf6cd4b61f746f8a2b7f9f400c772b7</uuid>
                             <name>{#NAMESPACE} / {#NAME} - available_replicas</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},available_replicas]</key>
                             <delay>0</delay>
                             <history>3d</history>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Deployments</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Deployment {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>ef0b92bea1174bf8afe279d9696a6f77</uuid>
                             <name>{#NAMESPACE} / {#NAME} - available_status</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},available_status]</key>
@@ -310,102 +335,117 @@
                             <history>5d</history>
                             <trends>0</trends>
                             <value_type>TEXT</value_type>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Deployments</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Deployment {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>97ee4bd5a6094b67b2ce56749e747a6b</uuid>
                             <name>{#NAMESPACE} / {#NAME} - collision_count</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},collision_count]</key>
                             <delay>0</delay>
                             <history>3d</history>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Deployments</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Deployment {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>c7179934e86e40deb23872f39b03c602</uuid>
                             <name>{#NAMESPACE} / {#NAME} - observed_generation</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},observed_generation]</key>
                             <delay>0</delay>
                             <history>3d</history>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Deployments</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Deployment {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                             <trigger_prototypes>
                                 <trigger_prototype>
-                                    <expression>{diff()}=1</expression>
+                                    <uuid>726b611789d44decb038c5355230c163</uuid>
+                                    <expression>(last(/Custom - Service - Kubernetes/check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},observed_generation],#1)&lt;&gt;last(/Custom - Service - Kubernetes/check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},observed_generation],#2))=1</expression>
                                     <name>Deployment {#NAMESPACE} / {#NAME} - observed_generation changed</name>
                                     <priority>INFO</priority>
                                 </trigger_prototype>
                             </trigger_prototypes>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>c7c1868830674fa58ddf295deebfcbd6</uuid>
                             <name>{#NAMESPACE} / {#NAME} - ready_replicas</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},ready_replicas]</key>
                             <delay>0</delay>
                             <history>3d</history>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Deployments</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Deployment {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>d946afda16e14ec394227d526f1da378</uuid>
                             <name>{#NAMESPACE} / {#NAME} - replicas</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},replicas]</key>
                             <delay>0</delay>
                             <history>3d</history>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Deployments</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Deployment {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>35ad3d69758c4cf3b44e870fd7a9db17</uuid>
                             <name>{#NAMESPACE} / {#NAME} - unavailable_replicas</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},unavailable_replicas]</key>
                             <delay>0</delay>
                             <history>3d</history>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Deployments</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Deployment {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>dcf3e2ee0c184ab6a7c72623254a420a</uuid>
                             <name>{#NAMESPACE} / {#NAME} - updated_replicas</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},updated_replicas]</key>
                             <delay>0</delay>
                             <history>3d</history>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Deployments</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Deployment {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Custom - Service - Kubernetes:check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},available_status].str(&quot;OK&quot;)}&lt;&gt;1 and ({Custom - Service - Kubernetes:check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},observed_generation].last(60)} = {Custom - Service - Kubernetes:check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},observed_generation].last()})</expression>
+                            <uuid>181c4b79ba9e4a4082c55c5cd1b545b4</uuid>
+                            <expression>find(/Custom - Service - Kubernetes/check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},available_status],,&quot;like&quot;,&quot;OK&quot;)&lt;&gt;1 and (last(/Custom - Service - Kubernetes/check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},observed_generation]) = last(/Custom - Service - Kubernetes/check_kubernetesd[get,deployments,{#NAMESPACE},{#NAME},observed_generation]))</expression>
                             <name>Deployment {#NAMESPACE} / {#NAME} - available_status failed: {ITEM.LASTVALUE1}</name>
                             <priority>AVERAGE</priority>
                             <description>Raise a alarm if the available status is not rrue and no deployment is currently in progress.
@@ -414,6 +454,7 @@
                     </trigger_prototypes>
                     <graph_prototypes>
                         <graph_prototype>
+                            <uuid>2fd379f819804e7284a88fc467a2b9ad</uuid>
                             <name>Deployment {#NAMESPACE} / {#NAME} - Misc</name>
                             <height>300</height>
                             <ymin_type_1>FIXED</ymin_type_1>
@@ -439,6 +480,7 @@
                             </graph_items>
                         </graph_prototype>
                         <graph_prototype>
+                            <uuid>2014397bf5614256a35c56d275a3a514</uuid>
                             <name>Deployment {#NAMESPACE} / {#NAME} - Replicas</name>
                             <height>300</height>
                             <ymin_type_1>FIXED</ymin_type_1>
@@ -475,6 +517,7 @@
                     <request_method>POST</request_method>
                 </discovery_rule>
                 <discovery_rule>
+                    <uuid>51b00a3c3a684751850e5c5fe02caf58</uuid>
                     <name>Custom - Service - Kubernetes - Nodes</name>
                     <type>TRAP</type>
                     <key>check_kubernetesd[discover,nodes]</key>
@@ -482,148 +525,170 @@
                     <lifetime>4h</lifetime>
                     <item_prototypes>
                         <item_prototype>
+                            <uuid>28c6a868b7184c8881fd5509d44a5aa6</uuid>
                             <name>{#NAME} - allocatable.cpus</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,nodes,{#NAME},allocatable.cpu]</key>
                             <delay>0</delay>
                             <value_type>FLOAT</value_type>
                             <units>cpus</units>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Nodes</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Node {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>d34e55fd65d04074b803a244af6c505a</uuid>
                             <name>{#NAME} - allocatable.ephemeral-storage</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,nodes,{#NAME},allocatable.ephemeral-storage]</key>
                             <delay>0</delay>
                             <units>B</units>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Nodes</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Node {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>949241d871764001a987e1eecd36d5ff</uuid>
                             <name>{#NAME} - allocatable.memory</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,nodes,{#NAME},allocatable.memory]</key>
                             <delay>0</delay>
                             <units>B</units>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Nodes</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Node {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>7bb7e7caa9374412833c635aa5645035</uuid>
                             <name>{#NAME} - allocatable.pods</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,nodes,{#NAME},allocatable.pods]</key>
                             <delay>0</delay>
                             <units>pods</units>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Nodes</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Node {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>f8a8c7ff12df493d82001e25942672cb</uuid>
                             <name>{#NAME} - available_status</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,nodes,{#NAME},available_status]</key>
                             <delay>0</delay>
                             <trends>0</trends>
                             <value_type>TEXT</value_type>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Nodes</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Node {#NAME}</value>
+                                </tag>
+                            </tags>
                             <trigger_prototypes>
                                 <trigger_prototype>
-                                    <expression>{str(OK)}&lt;&gt;1</expression>
+                                    <uuid>872c45d4698b40938afad71105fc65a5</uuid>
+                                    <expression>find(/Custom - Service - Kubernetes/check_kubernetesd[get,nodes,{#NAME},available_status],,&quot;like&quot;,&quot;OK&quot;)&lt;&gt;1</expression>
                                     <name>Node {#NAME} not ready: {ITEM.LASTVALUE1}</name>
                                     <priority>AVERAGE</priority>
                                 </trigger_prototype>
                             </trigger_prototypes>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>7564d88a08714632926008a7fefb1fc0</uuid>
                             <name>{#NAME} - capacity.cpus</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,nodes,{#NAME},capacity.cpu]</key>
                             <delay>0</delay>
                             <value_type>FLOAT</value_type>
                             <units>cpus</units>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Nodes</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Node {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>08a5d45148fd4910938b07579bf691b5</uuid>
                             <name>{#NAME} - capacity.ephemeral-storage</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,nodes,{#NAME},capacity.ephemeral-storage]</key>
                             <delay>0</delay>
                             <units>B</units>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Nodes</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Node {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>bffc3a500dd54526bca1ac806e6247ea</uuid>
                             <name>{#NAME} - capacity.memory</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,nodes,{#NAME},capacity.memory]</key>
                             <delay>0</delay>
                             <units>B</units>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Nodes</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Node {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>431b6d902c1a4dd1aea09342d6b049c5</uuid>
                             <name>{#NAME} - capacity.pods</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,nodes,{#NAME},capacity.pods]</key>
                             <delay>0</delay>
                             <units>pods</units>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Nodes</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Node {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>d90127ba575f4bc7a373126b11778737</uuid>
                             <name>{#NAME} - condition_status_failed</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,nodes,{#NAME},condition_status_failed]</key>
                             <delay>0</delay>
                             <trends>0</trends>
                             <value_type>TEXT</value_type>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - Nodes</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Node {#NAME}</value>
+                                </tag>
+                            </tags>
                             <trigger_prototypes>
                                 <trigger_prototype>
-                                    <expression>{str(OK)}&lt;&gt;1</expression>
+                                    <uuid>c60becd87e03459fb8bdad111e9af197</uuid>
+                                    <expression>find(/Custom - Service - Kubernetes/check_kubernetesd[get,nodes,{#NAME},condition_status_failed],,&quot;like&quot;,&quot;OK&quot;)&lt;&gt;1</expression>
                                     <name>Node {#NAME} condition_status_failed: {ITEM.LASTVALUE1}</name>
                                     <priority>AVERAGE</priority>
                                 </trigger_prototype>
@@ -632,6 +697,7 @@
                     </item_prototypes>
                     <graph_prototypes>
                         <graph_prototype>
+                            <uuid>7cd795f953404d71b2441800e09d0772</uuid>
                             <name>Node {#NAME} - CPUs</name>
                             <height>300</height>
                             <ymin_type_1>FIXED</ymin_type_1>
@@ -656,6 +722,7 @@
                             </graph_items>
                         </graph_prototype>
                         <graph_prototype>
+                            <uuid>5e462dedc8ee4a008926139f13f42c86</uuid>
                             <name>Node {#NAME} - Ephemeral-Storage</name>
                             <ymin_type_1>FIXED</ymin_type_1>
                             <graph_items>
@@ -679,6 +746,7 @@
                             </graph_items>
                         </graph_prototype>
                         <graph_prototype>
+                            <uuid>73b443d321ef40f38a175f28d6750cab</uuid>
                             <name>Node {#NAME} - Memory</name>
                             <height>300</height>
                             <graph_items>
@@ -702,6 +770,7 @@
                             </graph_items>
                         </graph_prototype>
                         <graph_prototype>
+                            <uuid>4f5e04be383849c0a85e2721ff7b5057</uuid>
                             <name>Node {#NAME} - Pods</name>
                             <height>300</height>
                             <ymin_type_1>FIXED</ymin_type_1>
@@ -729,6 +798,7 @@
                     <request_method>POST</request_method>
                 </discovery_rule>
                 <discovery_rule>
+                    <uuid>e4fe2e2fc8354761a478c572285463de</uuid>
                     <name>Custom - Service - Kubernetes - PVCs</name>
                     <type>TRAP</type>
                     <key>check_kubernetesd[discover,pvcs]</key>
@@ -736,117 +806,133 @@
                     <lifetime>4d</lifetime>
                     <item_prototypes>
                         <item_prototype>
+                            <uuid>7e0d02be7603416fa60b373a17164b4e</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} - capacityBytes</name>
                             <type>TRAP</type>
-                            <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},capacityBytes]</key>
+                            <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},capacityBytes]</key>
                             <delay>0</delay>
                             <history>7d</history>
                             <units>B</units>
-                            <application_prototypes>
-                                <application_prototype>
-                                    <name>PV {#NAMESPACE} / {#NAME}</name>
-                                </application_prototype>
-                            </application_prototypes>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PV {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>d8f59afeb55547509604ff88829f6a6c</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} - inodesUsedPercentage</name>
                             <type>TRAP</type>
-                            <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},inodesUsedPercentage]</key>
+                            <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesUsedPercentage]</key>
                             <delay>0</delay>
                             <history>7d</history>
                             <value_type>FLOAT</value_type>
                             <units>%</units>
-                            <application_prototypes>
-                                <application_prototype>
-                                    <name>PV {#NAMESPACE} / {#NAME}</name>
-                                </application_prototype>
-                            </application_prototypes>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PV {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                             <trigger_prototypes>
                                 <trigger_prototype>
-                                    <expression>{last()}=0 &gt;{$DISK_USAGE_PERCENT_ALARM}</expression>
+                                    <uuid>377125e6e3c54832b14d4e8488e84816</uuid>
+                                    <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesUsedPercentage])=0 &gt;{$DISK_USAGE_PERCENT_ALARM}</expression>
                                     <name>PV {#NAMESPACE} / {#NAME} - inodesUsedPercentage &gt; {$DISK_USAGE_PERCENT_ALARM}%</name>
                                     <priority>AVERAGE</priority>
                                 </trigger_prototype>
                                 <trigger_prototype>
-                                    <expression>{last()}=0 &gt;{$DISK_USAGE_PERCENT_WARN}</expression>
+                                    <uuid>f4483bd5b94b4fb3a00f0371148f5324</uuid>
+                                    <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesUsedPercentage])=0 &gt;{$DISK_USAGE_PERCENT_WARN}</expression>
                                     <name>PV {#NAMESPACE} / {#NAME} - inodesUsedPercentage &gt; {$DISK_USAGE_PERCENT_WARN}%</name>
                                     <priority>WARNING</priority>
                                     <dependencies>
                                         <dependency>
                                             <name>PV {#NAMESPACE} / {#NAME} - inodesUsedPercentage &gt; {$DISK_USAGE_PERCENT_ALARM}%</name>
-                                            <expression>{Custom - Service - Kubernetes:check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},inodesUsedPercentage].last()}=0 &gt;{$DISK_USAGE_PERCENT_ALARM}</expression>
+                                            <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesUsedPercentage])=0 &gt;{$DISK_USAGE_PERCENT_ALARM}</expression>
                                         </dependency>
                                     </dependencies>
                                 </trigger_prototype>
                             </trigger_prototypes>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>f226a4b3cb5c419889d96b9beefe71e3</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} - inodesUsed</name>
                             <type>TRAP</type>
-                            <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},inodesUsed]</key>
+                            <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesUsed]</key>
                             <delay>0</delay>
                             <history>7d</history>
                             <units>i</units>
-                            <application_prototypes>
-                                <application_prototype>
-                                    <name>PV {#NAMESPACE} / {#NAME}</name>
-                                </application_prototype>
-                            </application_prototypes>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PV {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>52773e7f2849486e9d58869902008344</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} - inodes</name>
                             <type>TRAP</type>
-                            <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},inodes]</key>
+                            <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodes]</key>
                             <delay>0</delay>
                             <history>7d</history>
                             <units>i</units>
-                            <application_prototypes>
-                                <application_prototype>
-                                    <name>PV {#NAMESPACE} / {#NAME}</name>
-                                </application_prototype>
-                            </application_prototypes>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PV {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>dafcebb8435348f7b020f399fef31e70</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} - Nodename</name>
                             <type>TRAP</type>
-                            <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},nodename]</key>
+                            <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},nodename]</key>
                             <delay>0</delay>
                             <history>14d</history>
                             <trends>0</trends>
                             <value_type>CHAR</value_type>
-                            <application_prototypes>
-                                <application_prototype>
-                                    <name>PV {#NAMESPACE} / {#NAME}</name>
-                                </application_prototype>
-                            </application_prototypes>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PV {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>a1da8448215d4b7495b5431bd24a432c</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} - usedBytesPercentage</name>
                             <type>TRAP</type>
-                            <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},usedBytesPercentage]</key>
+                            <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},usedBytesPercentage]</key>
                             <delay>0</delay>
                             <history>7d</history>
                             <value_type>FLOAT</value_type>
                             <units>%</units>
-                            <application_prototypes>
-                                <application_prototype>
-                                    <name>PV {#NAMESPACE} / {#NAME}</name>
-                                </application_prototype>
-                            </application_prototypes>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PV {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
                             <trigger_prototypes>
                                 <trigger_prototype>
-                                    <expression>{last()} &gt;{$DISK_USAGE_PERCENT_ALARM}</expression>
+                                    <uuid>21e2642f7c9d4e6c8bfe10726eb12e18</uuid>
+                                    <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},usedBytesPercentage]) &gt;{$DISK_USAGE_PERCENT_ALARM}</expression>
                                     <name>PV {#NAMESPACE} / {#NAME} - capacityBytesPercentage &gt; {$DISK_USAGE_PERCENT_ALARM}%</name>
                                     <priority>AVERAGE</priority>
                                 </trigger_prototype>
                                 <trigger_prototype>
-                                    <expression>{last()} &gt;{$DISK_USAGE_PERCENT_WARN}</expression>
+                                    <uuid>0aad3e0b72ae4222a25989a00611a505</uuid>
+                                    <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},usedBytesPercentage]) &gt;{$DISK_USAGE_PERCENT_WARN}</expression>
                                     <name>PV {#NAMESPACE} / {#NAME} - capacityBytesPercentage &gt; {$DISK_USAGE_PERCENT_WARN}%</name>
                                     <priority>WARNING</priority>
                                     <dependencies>
                                         <dependency>
                                             <name>PV {#NAMESPACE} / {#NAME} - capacityBytesPercentage &gt; {$DISK_USAGE_PERCENT_ALARM}%</name>
-                                            <expression>{Custom - Service - Kubernetes:check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},usedBytesPercentage].last()} &gt;{$DISK_USAGE_PERCENT_ALARM}</expression>
+                                            <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},usedBytesPercentage]) &gt;{$DISK_USAGE_PERCENT_ALARM}</expression>
                                         </dependency>
                                     </dependencies>
                                 </trigger_prototype>
@@ -855,6 +941,7 @@
                     </item_prototypes>
                     <graph_prototypes>
                         <graph_prototype>
+                            <uuid>41c92b37c6f544b7b534c35fa9765d88</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} iNodes</name>
                             <ymin_type_1>FIXED</ymin_type_1>
                             <graph_items>
@@ -864,7 +951,7 @@
                                     <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},inodes]</key>
+                                        <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodes]</key>
                                     </item>
                                 </graph_item>
                                 <graph_item>
@@ -873,7 +960,7 @@
                                     <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},inodesUsed]</key>
+                                        <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesUsed]</key>
                                     </item>
                                 </graph_item>
                                 <graph_item>
@@ -884,12 +971,13 @@
                                     <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},inodesUsedPercentage]</key>
+                                        <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesUsedPercentage]</key>
                                     </item>
                                 </graph_item>
                             </graph_items>
                         </graph_prototype>
                         <graph_prototype>
+                            <uuid>dbe5f580490d49198f47d45385bf22ac</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} Space</name>
                             <ymin_type_1>FIXED</ymin_type_1>
                             <graph_items>
@@ -899,7 +987,7 @@
                                     <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},capacityBytes]</key>
+                                        <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},capacityBytes]</key>
                                     </item>
                                 </graph_item>
                                 <graph_item>
@@ -908,7 +996,7 @@
                                     <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},usedBytesPercentage]</key>
+                                        <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},usedBytesPercentage]</key>
                                     </item>
                                 </graph_item>
                                 <graph_item>
@@ -919,7 +1007,7 @@
                                     <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,pvs,{#NAMESPACE},{#NAME},usedBytesPercentage]</key>
+                                        <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},usedBytesPercentage]</key>
                                     </item>
                                 </graph_item>
                             </graph_items>
@@ -927,36 +1015,53 @@
                     </graph_prototypes>
                 </discovery_rule>
                 <discovery_rule>
+                    <uuid>ad2d0422ad9d4203a3b2c48521f5a7fe</uuid>
                     <name>Custom - Service - Kubernetes - Services</name>
                     <type>TRAP</type>
                     <key>check_kubernetesd[discover,services]</key>
                     <delay>0</delay>
+                    <status>DISABLED</status>
                     <lifetime>4h</lifetime>
+                    <description>currently not implemented</description>
                     <request_method>POST</request_method>
                 </discovery_rule>
                 <discovery_rule>
+                    <uuid>e3a9f33aa67e4f30b60ba5cc179ce00b</uuid>
+                    <name>Custom - Service - Kubernetes - Statefulsets</name>
+                    <type>TRAP</type>
+                    <key>check_kubernetesd[discover,statefulsets]</key>
+                    <delay>0</delay>
+                    <lifetime>4h</lifetime>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>d0afb25d8cb44e8382baf63185cb2146</uuid>
                     <name>Custom - Service - Kubernetes - TLS</name>
                     <type>TRAP</type>
                     <key>check_kubernetesd[discover,tls]</key>
                     <delay>0</delay>
+                    <status>DISABLED</status>
                     <lifetime>4h</lifetime>
+                    <description>currently not implemented</description>
                     <item_prototypes>
                         <item_prototype>
+                            <uuid>347e7e22008e4e50b84ef02dee013136</uuid>
                             <name>TLS {#NAMESPACE} / {#NAME}  - tls valid_days</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,tls,{#NAMESPACE},{#NAME},valid_days]</key>
                             <delay>0</delay>
                             <history>3d</history>
                             <units>d</units>
-                            <applications>
-                                <application>
-                                    <name>Custom - Service - Kubernetes - TLS</name>
-                                </application>
-                            </applications>
                             <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Custom - Service - Kubernetes - TLS</value>
+                                </tag>
+                            </tags>
                             <trigger_prototypes>
                                 <trigger_prototype>
-                                    <expression>{last()}&lt;{$TLS_MIN_VALID_DAYS}</expression>
+                                    <uuid>df6748ecafba411bb5cd0ec4b322e67b</uuid>
+                                    <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,tls,{#NAMESPACE},{#NAME},valid_days])&lt;{$TLS_MIN_VALID_DAYS}</expression>
                                     <name>TLS {#NAMESPACE} / {#NAME} - tls valid_seconds &lt; {$TLS_MIN_VALID_DAYS}</name>
                                     <priority>WARNING</priority>
                                 </trigger_prototype>
@@ -1006,322 +1111,363 @@
             </macros>
             <dashboards>
                 <dashboard>
+                    <uuid>20b2ef0467984b18b9b977c2c8731bf8</uuid>
                     <name>Custom - Service - Kubernetes - Deployments</name>
-                    <widgets>
-                        <widget>
-                            <type>GRAPH_PROTOTYPE</type>
-                            <width>12</width>
-                            <height>7</height>
-                            <fields>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>columns</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>rows</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>source_type</name>
-                                    <value>2</value>
-                                </field>
-                                <field>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <name>graphid</name>
-                                    <value>
-                                        <name>Deployment {#NAMESPACE} / {#NAME} - Replicas</name>
-                                        <host>Custom - Service - Kubernetes</host>
-                                    </value>
-                                </field>
-                            </fields>
-                        </widget>
-                        <widget>
-                            <type>GRAPH_PROTOTYPE</type>
-                            <x>12</x>
-                            <width>12</width>
-                            <height>7</height>
-                            <fields>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>columns</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>rows</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>source_type</name>
-                                    <value>2</value>
-                                </field>
-                                <field>
+                                    <width>12</width>
+                                    <height>7</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>source_type</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Deployment {#NAMESPACE} / {#NAME} - Replicas</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <name>graphid</name>
-                                    <value>
-                                        <name>Deployment {#NAMESPACE} / {#NAME} - Misc</name>
-                                        <host>Custom - Service - Kubernetes</host>
-                                    </value>
-                                </field>
-                            </fields>
-                        </widget>
-                    </widgets>
+                                    <x>12</x>
+                                    <width>12</width>
+                                    <height>7</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>source_type</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Deployment {#NAMESPACE} / {#NAME} - Misc</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
                 </dashboard>
                 <dashboard>
+                    <uuid>bbf34ed5b8e24f40b5a68863d18d2a58</uuid>
                     <name>Custom - Service - Kubernetes - Global</name>
-                    <widgets>
-                        <widget>
-                            <type>GRAPH_CLASSIC</type>
-                            <width>24</width>
-                            <height>7</height>
-                            <fields>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>source_type</name>
-                                    <value>0</value>
-                                </field>
-                                <field>
-                                    <type>GRAPH</type>
-                                    <name>graphid</name>
-                                    <value>
-                                        <name>Services</name>
-                                        <host>Custom - Service - Kubernetes</host>
-                                    </value>
-                                </field>
-                            </fields>
-                        </widget>
-                    </widgets>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
+                                    <type>GRAPH_CLASSIC</type>
+                                    <width>24</width>
+                                    <height>7</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>source_type</name>
+                                            <value>0</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Services</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
                 </dashboard>
                 <dashboard>
+                    <uuid>aa193d4653664b22b3bcf75a076d3d2f</uuid>
                     <name>Custom - Service - Kubernetes - Namespaces - PVCs</name>
-                    <widgets>
-                        <widget>
-                            <type>GRAPH_PROTOTYPE</type>
-                            <width>24</width>
-                            <height>8</height>
-                            <fields>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>columns</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <name>graphid</name>
-                                    <value>
-                                        <name>PV {#NAMESPACE} / {#NAME} Space</name>
-                                        <host>Custom - Service - Kubernetes</host>
-                                    </value>
-                                </field>
-                            </fields>
-                        </widget>
-                        <widget>
-                            <type>GRAPH_PROTOTYPE</type>
-                            <y>8</y>
-                            <width>24</width>
-                            <height>8</height>
-                            <fields>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>columns</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
+                                    <width>24</width>
+                                    <height>8</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>PV {#NAMESPACE} / {#NAME} Space</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <name>graphid</name>
-                                    <value>
-                                        <name>PV {#NAMESPACE} / {#NAME} iNodes</name>
-                                        <host>Custom - Service - Kubernetes</host>
-                                    </value>
-                                </field>
-                            </fields>
-                        </widget>
-                    </widgets>
+                                    <y>8</y>
+                                    <width>24</width>
+                                    <height>8</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>PV {#NAMESPACE} / {#NAME} iNodes</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
                 </dashboard>
                 <dashboard>
+                    <uuid>de500ac77c004c9cb3c9c86e7642ea43</uuid>
                     <name>Custom - Service - Kubernetes - Nodes - CPUs</name>
-                    <widgets>
-                        <widget>
-                            <type>GRAPH_PROTOTYPE</type>
-                            <width>24</width>
-                            <height>7</height>
-                            <fields>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>columns</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>rows</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>source_type</name>
-                                    <value>2</value>
-                                </field>
-                                <field>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <name>graphid</name>
-                                    <value>
-                                        <name>Node {#NAME} - CPUs</name>
-                                        <host>Custom - Service - Kubernetes</host>
-                                    </value>
-                                </field>
-                            </fields>
-                        </widget>
-                    </widgets>
+                                    <width>24</width>
+                                    <height>7</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>source_type</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Node {#NAME} - CPUs</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
                 </dashboard>
                 <dashboard>
+                    <uuid>abccc983b6da482aa0579ce6477f3ad2</uuid>
                     <name>Custom - Service - Kubernetes - Nodes - Ephemeral-Storage</name>
-                    <widgets>
-                        <widget>
-                            <type>GRAPH_PROTOTYPE</type>
-                            <width>24</width>
-                            <height>7</height>
-                            <fields>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>columns</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>rows</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>source_type</name>
-                                    <value>2</value>
-                                </field>
-                                <field>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <name>graphid</name>
-                                    <value>
-                                        <name>Node {#NAME} - Ephemeral-Storage</name>
-                                        <host>Custom - Service - Kubernetes</host>
-                                    </value>
-                                </field>
-                            </fields>
-                        </widget>
-                    </widgets>
+                                    <width>24</width>
+                                    <height>7</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>source_type</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Node {#NAME} - Ephemeral-Storage</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
                 </dashboard>
                 <dashboard>
+                    <uuid>4ab77e0c016144078599f35b3cc4d0bd</uuid>
                     <name>Custom - Service - Kubernetes - Nodes - Memory</name>
-                    <widgets>
-                        <widget>
-                            <type>GRAPH_PROTOTYPE</type>
-                            <width>24</width>
-                            <height>7</height>
-                            <fields>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>columns</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>rows</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>source_type</name>
-                                    <value>2</value>
-                                </field>
-                                <field>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <name>graphid</name>
-                                    <value>
-                                        <name>Node {#NAME} - Memory</name>
-                                        <host>Custom - Service - Kubernetes</host>
-                                    </value>
-                                </field>
-                            </fields>
-                        </widget>
-                    </widgets>
+                                    <width>24</width>
+                                    <height>7</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>source_type</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Node {#NAME} - Memory</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
                 </dashboard>
                 <dashboard>
+                    <uuid>81dea628b8184220810e901683c8d406</uuid>
                     <name>Custom - Service - Kubernetes - Nodes - Node Pods</name>
-                    <widgets>
-                        <widget>
-                            <type>GRAPH_PROTOTYPE</type>
-                            <width>24</width>
-                            <height>7</height>
-                            <fields>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>columns</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>rows</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>source_type</name>
-                                    <value>2</value>
-                                </field>
-                                <field>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <name>graphid</name>
-                                    <value>
-                                        <name>Node {#NAME} - Pods</name>
-                                        <host>Custom - Service - Kubernetes</host>
-                                    </value>
-                                </field>
-                            </fields>
-                        </widget>
-                    </widgets>
+                                    <width>24</width>
+                                    <height>7</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>source_type</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Node {#NAME} - Pods</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
                 </dashboard>
                 <dashboard>
+                    <uuid>8cb0b087384743b7a305622bc26be61a</uuid>
                     <name>Custom - Service - Kubernetes - Nodes - Pods</name>
-                    <widgets>
-                        <widget>
-                            <type>GRAPH_PROTOTYPE</type>
-                            <width>24</width>
-                            <height>7</height>
-                            <fields>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>columns</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>rows</name>
-                                    <value>1</value>
-                                </field>
-                                <field>
-                                    <type>INTEGER</type>
-                                    <name>source_type</name>
-                                    <value>2</value>
-                                </field>
-                                <field>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <name>graphid</name>
-                                    <value>
-                                        <name>Pod {#NAMESPACE} / {#NAME} - Launch Statistics</name>
-                                        <host>Custom - Service - Kubernetes</host>
-                                    </value>
-                                </field>
-                            </fields>
-                        </widget>
-                    </widgets>
+                                    <width>24</width>
+                                    <height>7</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>source_type</name>
+                                            <value>2</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Pod {#NAMESPACE} / {#NAME} - Launch Statistics</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
                 </dashboard>
             </dashboards>
         </template>
     </templates>
     <graphs>
         <graph>
+            <uuid>cc0409c2c8f84096b7c5189da3f7ae71</uuid>
             <name>Services</name>
             <height>300</height>
             <graph_items>
