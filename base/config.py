@@ -38,7 +38,7 @@ class Configuration:
     sentry_dsn: str = ""
 
     zabbix_server: str = 'example.zabbix-server.com'
-    zabbix_resources_exclude: List[str] = field(default_factory=lambda: ["components", "daemonsets"])
+    zabbix_resources_exclude: List[str] = field(default_factory=lambda: ["components"])
     zabbix_host: str = 'k8s-example-host'
     zabbix_debug: bool = False
     zabbix_single_debug: bool = False

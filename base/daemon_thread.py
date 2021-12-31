@@ -530,7 +530,8 @@ class CheckKubernetesDaemon:
 
     def send_discovery_to_zabbix(self, resource: str, metric: ZabbixMetric = None, obj: K8sObject = None):
         if resource not in self.zabbix_resources:
-            self.logger.warning(f'resource {resource} ist not activated')
+            self.logger.warning(
+                f'resource {resource} ist not activated, active resources are : {",".join(self.zabbix_resources)}')
             return
 
         if obj:

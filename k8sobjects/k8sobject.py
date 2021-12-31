@@ -44,6 +44,10 @@ def transform_value(value: str) -> str:
     if m:
         if m.group(2) == "m":
             return str(float(m.group(1)) / 1000)
+
+    if value is None:
+        return "0"
+
     return value
 
 
