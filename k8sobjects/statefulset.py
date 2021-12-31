@@ -27,11 +27,12 @@ class Statefulset(K8sObject):
                     if cond['status'] != 'True':
                         failed_conds.append(cond['type'])
 
-        data['failed cons'] = failed_conds
-        if len(failed_conds) > 0:
-            data['status'] = 'ERROR: ' + (','.join(failed_conds))
+            if len(failed_conds) > 0:
+                data['available_status'] = 'ERROR: ' + (','.join(failed_conds))
+            else:
+                data['available_status'] = 'OK'
         else:
-            data['status'] = 'OK'
+            data['available_status'] = 'OK'
 
         return data
 
@@ -45,7 +46,12 @@ class Statefulset(K8sObject):
             data_to_send.append(ZabbixMetric(
                 self.zabbix_host,
                 'check_kubernetesd[get,statefulsets,%s,%s,%s]' % (self.name_space, self.name, status_type),
-                transform_value(self.data['status'][status_type]))
+                transform_value(self.resource_data[status_type]))
             )
+
+        data_to_send.append(ZabbixMetric(
+            self.zabbix_host,
+            'check_kubernetesd[get,statefulsets,%s,%s,available_status]' % (self.name_space, self.name),
+            self.resource_data['available_status']))
 
         return data_to_send

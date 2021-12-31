@@ -95,7 +95,7 @@ if __name__ == '__main__':
         CheckKubernetesDaemon(config,
                               # ['deployments', 'statefulsets', 'daemonsets', 'pods', 'containers',
                               # 'ingresses', 'containers', 'pods'],
-                              ['deployments', 'statefulsets'],
+                              ['deployments', 'statefulsets', "daemonsets"],
                               config.discovery_interval_slow, config.resend_data_interval_slow))
 
     if config.debug_k8s_events:
