@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zabbix-kubernetes
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: zabbix-kubernetes
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zabbix-kubernetes
+    spec:
+      containers:
+        - name: k8s-zabbix
+          image: scoopex666/k8s-zabbix:latest
+          args: [ "--show_effective_config" ]
+          # review config_default.py for additionaol configuration values (convert the names to uppercase)
+          env:
+             - name: "ZABBIX_SERVER"
+               value: "zabbix.api.foo.bar:10080"
+             # the abstract/virtual host which is configured in zabbix to hold and alert k8s zabbix 
+             - name: "ZABBIX_HOST"
+               value: "k8s-prod-001"
+             # Enable the optional management api status submission
+             - name: "WEB_API_ENABLE"
+               value: "False"
+             # The base uri of the anagement api status submission
+             - name: "WEB_API_HOST"
+               value: "https://example.api.com/api/v1/k8s"
+             # The security token for management api status submission
+             - name: "WEB_API_TOKEN"
+               value: "17812110692887024374221963068327794883098412835131004"
+             # The name of the k8s cluster in the management system
+             - name: "WEB_API_CLUSTER"
+               value: "k8s-test-cluster"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+      serviceAccount: monitoring
+      serviceAccountName: monitoring
+
