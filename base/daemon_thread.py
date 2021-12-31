@@ -525,7 +525,10 @@ class CheckKubernetesDaemon:
                 result.processed = 0
 
         if self.zabbix_debug:
-            self.logger.info('===> Sending to zabbix: >>>\n%s\n<<<' % pformat(metrics, indent=2))
+            if len(metrics) > 1:
+                self.logger.info('===> Sending to zabbix: >>>\n%s\n<<<' % pformat(metrics, indent=2))
+            else:
+                self.logger.info('===> Sending to zabbix: >>>%s<<<' % metrics)
         return result
 
     def send_discovery_to_zabbix(self, resource: str, metric: ZabbixMetric = None, obj: K8sObject = None):
