@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.4</version>
-    <date>2021-12-31T15:12:59Z</date>
+    <date>2021-12-31T15:25:09Z</date>
     <groups>
         <group>
             <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
@@ -298,6 +298,211 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
                                         <key>check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},restart_count]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                    <request_method>POST</request_method>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>0a071ecad91b4d5e9eb800e4bc73b7c5</uuid>
+                    <name>Custom - Service - Kubernetes - Daemonsets</name>
+                    <type>TRAP</type>
+                    <key>check_kubernetesd[discover,daemonsets]</key>
+                    <delay>0</delay>
+                    <lifetime>4h</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>d73096e015f54b19bd5bab98388e6440</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - available_status</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},available_status]</key>
+                            <delay>0</delay>
+                            <history>5d</history>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>7e945a209d7b4629b5f15467714ca3fa</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - collision_count</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},collision_count]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>3a017877ff784e0f8f1e63edd32d48a0</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - current_replicas</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},current_replicas]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>3604bc5409a448ff9b81379cb6d18fce</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - current_revision</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},current_revision]</key>
+                            <delay>0</delay>
+                            <history>5d</history>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>636b316c279c4043917ba10dc2167843</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - observed_generation</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},observed_generation]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>167ba1aa94724b6cb4812cdd7b9c9b7b</uuid>
+                                    <expression>(last(/Custom - Service - Kubernetes/check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},observed_generation],#1)&lt;&gt;last(/Custom - Service - Kubernetes/check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},observed_generation],#2))=1</expression>
+                                    <name>Daemonset {#NAMESPACE} / {#NAME} - observed_generation changed</name>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>5f0c01c52d184d859d9ffe7b6b17094b</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - ready_replicas</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},ready_replicas]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>10b4e470bf4b4cef96848ad06b22b202</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - replicas</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},replicas]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>21a4410148a640e9bbcbde8382419229</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - updated_replicas</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},updated_replicas]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <uuid>fbb48229550c4844aaf370e7785d03ad</uuid>
+                            <expression>find(/Custom - Service - Kubernetes/check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},available_status],,&quot;like&quot;,&quot;OK&quot;)&lt;&gt;1 and (last(/Custom - Service - Kubernetes/check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},observed_generation]) = last(/Custom - Service - Kubernetes/check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},observed_generation]))</expression>
+                            <name>Daemonset {#NAMESPACE} / {#NAME} - available_status failed: {ITEM.LASTVALUE1}</name>
+                            <priority>AVERAGE</priority>
+                            <description>Raise a alarm if the available status is not rrue and no deployment is currently in progress.
+(the generation has not changed)</description>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>7e7aef1f64bf44178238a5c992c93177</uuid>
+                            <name>Daemonset {#NAMESPACE} / {#NAME} - Misc</name>
+                            <height>300</height>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},collision_count]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>F63100</color>
+                                    <yaxisside>RIGHT</yaxisside>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},observed_generation]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                        <graph_prototype>
+                            <uuid>a4005ee0937b4a28951210387ca8f1ae</uuid>
+                            <name>Daemonset {#NAMESPACE} / {#NAME} - Replicas</name>
+                            <height>300</height>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},ready_replicas]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>CCCC00</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},replicas]</key>
                                     </item>
                                 </graph_item>
                             </graph_items>
