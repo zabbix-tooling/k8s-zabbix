@@ -5,6 +5,7 @@ import signal
 import sys
 import threading
 import time
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pprint import pformat
 from typing import Dict, List, Union
@@ -17,6 +18,7 @@ from pyzabbix import ZabbixMetric, ZabbixSender
 from base.config import Configuration, ClusterAccessConfigType
 from base.timed_threads import TimedThread
 from base.watcher_thread import WatcherThread
+from k8sobjects import K8sObject
 from k8sobjects.container import get_container_zabbix_metrics
 from k8sobjects.k8sresourcemanager import K8sResourceManager
 from k8sobjects.pvc import get_pvc_volumes_for_all_nodes
@@ -24,8 +26,10 @@ from k8sobjects.pvc import get_pvc_volumes_for_all_nodes
 exit_flag = threading.Event()
 
 
+@dataclass
 class DryResult:
-    pass
+    failed: int = 0
+    processed: int = 0
 
 
 def get_data_timeout_datetime() -> datetime:
@@ -228,7 +232,7 @@ class CheckKubernetesDaemon:
             self.manage_threads.append(resend_thread)
             resend_thread.start()
 
-    def get_api_for_resource(self, resource):
+    def get_api_for_resource(self, resource: str):
         if resource in ['nodes', 'components', 'secrets', 'pods', 'services', 'pvcs']:
             api = self.core_v1
         elif resource in ['deployments', 'daemonsets', 'statefulsets']:
@@ -245,7 +249,7 @@ class CheckKubernetesDaemon:
             self._web_api = WebApi(self.web_api_host, self.web_api_token, verify_ssl=self.web_api_verify_ssl)
         return self._web_api
 
-    def watch_data(self, resource, timeout=240):
+    def watch_data(self, resource: str, timeout: int = 240):
         api = self.get_api_for_resource(resource)
 
         if timeout == 0:
@@ -299,7 +303,7 @@ class CheckKubernetesDaemon:
                 time.sleep(60)
             self.logger.debug("Watch/fetch completed for resource >>>%s<<<, restarting" % resource)
 
-    def watch_event_handler(self, resource, event):
+    def watch_event_handler(self, resource: str, event: Dict):
 
         obj = event['object'].to_dict()
         event_type = event['type']
@@ -310,6 +314,9 @@ class CheckKubernetesDaemon:
             self.logger.debug(f"skip namespace {namespace}")
             return
 
+        if self.debug_k8s_events:
+            self.logger.info(f"{event_type} Event for {namespace} / {name} {pformat(obj, indent=2)}")
+
         self.logger.debug(f"{event_type} [{resource}]: {namespace}/{name}")
         with self.thread_lock:
             if not self.data[resource].resource_class:
@@ -319,14 +326,15 @@ class CheckKubernetesDaemon:
         if event_type.lower() == 'added':
             with self.thread_lock:
                 resourced_obj = self.data[resource].add_obj_from_data(obj)
-            if resourced_obj.is_dirty_zabbix or resourced_obj.is_dirty_web:
+
+            if resourced_obj and (resourced_obj.is_dirty_zabbix or resourced_obj.is_dirty_web):
                 self.send_object(resource, resourced_obj, event_type,
                                  send_zabbix_data=resourced_obj.is_dirty_zabbix,
                                  send_web=resourced_obj.is_dirty_web)
         elif event_type.lower() == 'modified':
             with self.thread_lock:
                 resourced_obj = self.data[resource].add_obj_from_data(obj)
-            if resourced_obj.is_dirty_zabbix or resourced_obj.is_dirty_web:
+            if resourced_obj and (resourced_obj.is_dirty_zabbix or resourced_obj.is_dirty_web):
                 self.send_object(resource, resourced_obj, event_type,
                                  send_zabbix_data=resourced_obj.is_dirty_zabbix,
                                  send_web=resourced_obj.is_dirty_web)
@@ -403,7 +411,7 @@ class CheckKubernetesDaemon:
             try:
                 metrics = list()
                 if resource not in self.data or len(self.data[resource].objects) == 0:
-                    self.logger.debug("no resource data available for %s , stop delivery" % resource)
+                    self.logger.warning("no resource data available for %s , stop delivery" % resource)
                     return
 
                 # Zabbix
@@ -464,7 +472,7 @@ class CheckKubernetesDaemon:
             if data:
                 metric = obj.get_discovery_for_zabbix(data)
                 self.logger.debug('send_zabbix_discovery: resource "%s": %s' % (resource, metric))
-                self.send_discovery_to_zabbix(resource, metric=[metric])
+                self.send_discovery_to_zabbix(resource, metric=metric)
             else:
                 self.logger.warning('send_zabbix_discovery: resource "%s" has no discovery data' % resource)
 
@@ -504,12 +512,9 @@ class CheckKubernetesDaemon:
         else:
             self.logger.debug("successfully sent heartbeat to zabbix ")
 
-    def send_to_zabbix(self, metrics):
+    def send_to_zabbix(self, metrics: List[ZabbixMetric]):
         if self.zabbix_dry_run:
             result = DryResult()
-            result.failed = 0
-            if self.debug_k8s_events:
-                self.logger.debug('===> Sending to zabbix: %s\n' % metrics)
         else:
             try:
                 result = self.zabbix_sender.send(metrics)
@@ -518,9 +523,12 @@ class CheckKubernetesDaemon:
                 result = DryResult()
                 result.failed = 1
                 result.processed = 0
+
+        if self.zabbix_debug:
+            self.logger.info('===> Sending to zabbix: >>>\n%s\n<<<' % pformat(metrics, indent=2))
         return result
 
-    def send_discovery_to_zabbix(self, resource, metric=None, obj=None):
+    def send_discovery_to_zabbix(self, resource: str, metric: ZabbixMetric = None, obj: K8sObject = None):
         if resource not in self.zabbix_resources:
             self.logger.warning(f'resource {resource} ist not activated')
             return
@@ -538,7 +546,7 @@ class CheckKubernetesDaemon:
             elif self.zabbix_debug:
                 self.logger.info("successfully sent zabbix discovery: %s  >>>>%s<<<" % (discovery_key, discovery_data))
         elif metric:
-            result = self.send_to_zabbix(metric)
+            result = self.send_to_zabbix([metric])
             if result.failed > 0:
                 self.logger.error("failed to sent mass zabbix discovery: >>>%s<<<" % metric)
             elif self.zabbix_debug:

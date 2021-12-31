@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e11d6900-3673-418a-af28-b507bfb4f29d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/base/daemon_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/daemon_thread.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8sobjects/statefulset.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/statefulset.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +57,7 @@
       <recent name="$PROJECT_DIR$/tests/unit" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_config_loading.test_load_config">
+  <component name="RunManager" selected="Python.check_kubernetesd">
     <configuration name="check_kubernetesd" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="k8s-zabbix" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -241,7 +242,7 @@
       <workItem from="1640281261403" duration="5401000" />
       <workItem from="1640525662772" duration="6136000" />
       <workItem from="1640624292193" duration="1091000" />
-      <workItem from="1640625425481" duration="25550000" />
+      <workItem from="1640625425481" duration="31815000" />
     </task>
     <servers />
   </component>
@@ -278,7 +279,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd.coverage" NAME="check_kubernetesd Coverage Results" MODIFIED="1640779637574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/k8s_zabbix$.coverage" NAME=" Coverage Results" MODIFIED="1640800079096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/unit" />
+    <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd.coverage" NAME="check_kubernetesd Coverage Results" MODIFIED="1640947409844" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/k8s_zabbix$.coverage" NAME=" Coverage Results" MODIFIED="1640947392402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/unit" />
   </component>
 </project>
