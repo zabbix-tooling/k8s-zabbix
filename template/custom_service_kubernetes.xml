@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.4</version>
-    <date>2021-12-30T10:12:34Z</date>
+    <date>2021-12-31T15:12:59Z</date>
     <groups>
         <group>
             <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
@@ -27,6 +27,8 @@
                     <delay>0</delay>
                     <history>14d</history>
                     <trends>0</trends>
+                    <description>This item just receives a periodic epoch timestamp  from k8s-zabbix. 
+This is used to ensure that k8s-zabbix is still active.</description>
                     <request_method>POST</request_method>
                     <tags>
                         <tag>
@@ -938,24 +940,31 @@
                                 </trigger_prototype>
                             </trigger_prototypes>
                         </item_prototype>
+                        <item_prototype>
+                            <uuid>c212c7b0bcd44595aa1b0f9771ca8ed4</uuid>
+                            <name>PV {#NAMESPACE} / {#NAME} - usedBytes</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},usedBytes]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <units>B</units>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PV {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
                     </item_prototypes>
                     <graph_prototypes>
                         <graph_prototype>
                             <uuid>41c92b37c6f544b7b534c35fa9765d88</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} iNodes</name>
+                            <height>300</height>
                             <ymin_type_1>FIXED</ymin_type_1>
                             <graph_items>
                                 <graph_item>
                                     <sortorder>1</sortorder>
-                                    <color>2E7D32</color>
-                                    <calc_fnc>MAX</calc_fnc>
-                                    <item>
-                                        <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodes]</key>
-                                    </item>
-                                </graph_item>
-                                <graph_item>
-                                    <sortorder>2</sortorder>
                                     <color>F63100</color>
                                     <calc_fnc>MAX</calc_fnc>
                                     <item>
@@ -964,8 +973,17 @@
                                     </item>
                                 </graph_item>
                                 <graph_item>
+                                    <sortorder>2</sortorder>
+                                    <color>3949AB</color>
+                                    <calc_fnc>MAX</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodes]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
                                     <sortorder>3</sortorder>
-                                    <drawtype>BOLD_LINE</drawtype>
+                                    <drawtype>DASHED_LINE</drawtype>
                                     <color>2774A4</color>
                                     <yaxisside>RIGHT</yaxisside>
                                     <calc_fnc>MAX</calc_fnc>
@@ -979,11 +997,23 @@
                         <graph_prototype>
                             <uuid>dbe5f580490d49198f47d45385bf22ac</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} Space</name>
+                            <height>300</height>
                             <ymin_type_1>FIXED</ymin_type_1>
                             <graph_items>
                                 <graph_item>
                                     <sortorder>1</sortorder>
-                                    <color>2E7D32</color>
+                                    <color>F63100</color>
+                                    <yaxisside>RIGHT</yaxisside>
+                                    <calc_fnc>MAX</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},usedBytes]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>2</sortorder>
+                                    <color>3949AB</color>
+                                    <yaxisside>RIGHT</yaxisside>
                                     <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
@@ -991,19 +1021,9 @@
                                     </item>
                                 </graph_item>
                                 <graph_item>
-                                    <sortorder>2</sortorder>
-                                    <color>F63100</color>
-                                    <calc_fnc>MAX</calc_fnc>
-                                    <item>
-                                        <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},usedBytesPercentage]</key>
-                                    </item>
-                                </graph_item>
-                                <graph_item>
                                     <sortorder>3</sortorder>
-                                    <drawtype>BOLD_LINE</drawtype>
+                                    <drawtype>DASHED_LINE</drawtype>
                                     <color>2774A4</color>
-                                    <yaxisside>RIGHT</yaxisside>
                                     <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
@@ -1034,23 +1054,8 @@
                     <lifetime>4h</lifetime>
                     <item_prototypes>
                         <item_prototype>
-                            <uuid>2148ca284b604067a11a3f1009a8c5f8</uuid>
-                            <name>{#NAMESPACE} / {#NAME} - available_replicas</name>
-                            <type>TRAP</type>
-                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},available_replicas]</key>
-                            <delay>0</delay>
-                            <history>3d</history>
-                            <request_method>POST</request_method>
-                            <tags>
-                                <tag>
-                                    <tag>Application</tag>
-                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
-                                </tag>
-                            </tags>
-                        </item_prototype>
-                        <item_prototype>
                             <uuid>7d7e66081f71460a85a511923d1df898</uuid>
-                            <name>{#NAMESPACE} / {#NAME} - available_status</name>
+                            <name>STS {#NAMESPACE} / {#NAME} - available_status</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},available_status]</key>
                             <delay>0</delay>
@@ -1067,7 +1072,7 @@
                         </item_prototype>
                         <item_prototype>
                             <uuid>2a609b50505f4440bb565ecc9b2c2343</uuid>
-                            <name>{#NAMESPACE} / {#NAME} - collision_count</name>
+                            <name>STS {#NAMESPACE} / {#NAME} - collision_count</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},collision_count]</key>
                             <delay>0</delay>
@@ -1081,8 +1086,39 @@
                             </tags>
                         </item_prototype>
                         <item_prototype>
+                            <uuid>2148ca284b604067a11a3f1009a8c5f8</uuid>
+                            <name>STS {#NAMESPACE} / {#NAME} - current_replicas</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},current_replicas]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>ebaf97e7c3c94ab4992ceb8dcedc456d</uuid>
+                            <name>STS {#NAMESPACE} / {#NAME} - current_revision</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},current_revision]</key>
+                            <delay>0</delay>
+                            <history>5d</history>
+                            <trends>0</trends>
+                            <value_type>TEXT</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
                             <uuid>aebc0337b9fd435caaf908e6e2e0c25b</uuid>
-                            <name>{#NAMESPACE} / {#NAME} - observed_generation</name>
+                            <name>STS {#NAMESPACE} / {#NAME} - observed_generation</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},observed_generation]</key>
                             <delay>0</delay>
@@ -1105,7 +1141,7 @@
                         </item_prototype>
                         <item_prototype>
                             <uuid>a105ed5068b8468fa128d25cd0d30756</uuid>
-                            <name>{#NAMESPACE} / {#NAME} - ready_replicas</name>
+                            <name>STS {#NAMESPACE} / {#NAME} - ready_replicas</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},ready_replicas]</key>
                             <delay>0</delay>
@@ -1120,7 +1156,7 @@
                         </item_prototype>
                         <item_prototype>
                             <uuid>97ae66a6acf14ca2b8cd851293843a95</uuid>
-                            <name>{#NAMESPACE} / {#NAME} - replicas</name>
+                            <name>STS {#NAMESPACE} / {#NAME} - replicas</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},replicas]</key>
                             <delay>0</delay>
@@ -1134,23 +1170,8 @@
                             </tags>
                         </item_prototype>
                         <item_prototype>
-                            <uuid>be5256a72f7d40c08efd802434bbeaf2</uuid>
-                            <name>{#NAMESPACE} / {#NAME} - unavailable_replicas</name>
-                            <type>TRAP</type>
-                            <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},unavailable_replicas]</key>
-                            <delay>0</delay>
-                            <history>3d</history>
-                            <request_method>POST</request_method>
-                            <tags>
-                                <tag>
-                                    <tag>Application</tag>
-                                    <value>Statefulset {#NAMESPACE} / {#NAME}</value>
-                                </tag>
-                            </tags>
-                        </item_prototype>
-                        <item_prototype>
                             <uuid>b6a94961c2094480b5b71266c93acbca</uuid>
-                            <name>{#NAMESPACE} / {#NAME} - updated_replicas</name>
+                            <name>STS {#NAMESPACE} / {#NAME} - updated_replicas</name>
                             <type>TRAP</type>
                             <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},updated_replicas]</key>
                             <delay>0</delay>
@@ -1222,15 +1243,6 @@
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
                                         <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},replicas]</key>
-                                    </item>
-                                </graph_item>
-                                <graph_item>
-                                    <sortorder>2</sortorder>
-                                    <color>EE0000</color>
-                                    <calc_fnc>ALL</calc_fnc>
-                                    <item>
-                                        <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,statefulsets,{#NAMESPACE},{#NAME},unavailable_replicas]</key>
                                     </item>
                                 </graph_item>
                             </graph_items>
