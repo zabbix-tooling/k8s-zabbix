@@ -7,6 +7,19 @@ from .k8sobject import K8sObject, transform_value
 logger = logging.getLogger(__file__)
 
 
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#daemonset-v1-apps
+# same as statefulset
+# 'status': { 'collision_count': None, X
+#             'conditions': None, X
+#             'current_number_scheduled': 8,
+#             'desired_number_scheduled': 8,
+#             'number_available': 8,
+#             'number_misscheduled': 0,
+#             'number_ready': 8,
+#             'number_unavailable': None,
+#             'observed_generation': 8,
+#             'updated_number_scheduled': 8}}
+
 class Daemonset(K8sObject):
     object_type = 'daemonset'
 
@@ -15,7 +28,7 @@ class Daemonset(K8sObject):
         data = super().resource_data
 
         for status_type in self.data['status']:
-            if status_type == 'conditions':
+            if status_type in ['conditions']:
                 continue
             data.update({status_type: transform_value(self.data['status'][status_type])})
 

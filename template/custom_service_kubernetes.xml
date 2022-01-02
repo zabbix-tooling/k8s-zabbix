@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.4</version>
-    <date>2022-01-02T12:31:13Z</date>
+    <date>2022-01-02T17:44:57Z</date>
     <groups>
         <group>
             <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
@@ -347,9 +347,9 @@ This is used to ensure that k8s-zabbix is still active.</description>
                         </item_prototype>
                         <item_prototype>
                             <uuid>3a017877ff784e0f8f1e63edd32d48a0</uuid>
-                            <name>DS {#NAMESPACE} / {#NAME} - current_replicas</name>
+                            <name>DS {#NAMESPACE} / {#NAME} - current_number_scheduled</name>
                             <type>TRAP</type>
-                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},current_replicas]</key>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},current_number_scheduled]</key>
                             <delay>0</delay>
                             <history>3d</history>
                             <request_method>POST</request_method>
@@ -361,14 +361,70 @@ This is used to ensure that k8s-zabbix is still active.</description>
                             </tags>
                         </item_prototype>
                         <item_prototype>
-                            <uuid>3604bc5409a448ff9b81379cb6d18fce</uuid>
-                            <name>DS {#NAMESPACE} / {#NAME} - current_revision</name>
+                            <uuid>3d79f7446be64b7d94a1ede1904a8c31</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - desired_number_scheduled'</name>
                             <type>TRAP</type>
-                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},current_revision]</key>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},desired_number_scheduled']</key>
                             <delay>0</delay>
-                            <history>5d</history>
-                            <trends>0</trends>
-                            <value_type>TEXT</value_type>
+                            <history>3d</history>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>21a4410148a640e9bbcbde8382419229</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - number_available</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_available]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>d01bde8262fb47d0a0bee92c37717b9d</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - number_misscheduled</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_misscheduled]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>bb5cde177a924337ba9b00508daa481c</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - number_ready</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_ready]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>5f0c01c52d184d859d9ffe7b6b17094b</uuid>
+                            <name>DS {#NAMESPACE} / {#NAME} - number_unavailable</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_unavailable]</key>
+                            <delay>0</delay>
+                            <history>3d</history>
+                            <request_method>POST</request_method>
                             <tags>
                                 <tag>
                                     <tag>Application</tag>
@@ -400,40 +456,10 @@ This is used to ensure that k8s-zabbix is still active.</description>
                             </trigger_prototypes>
                         </item_prototype>
                         <item_prototype>
-                            <uuid>5f0c01c52d184d859d9ffe7b6b17094b</uuid>
-                            <name>DS {#NAMESPACE} / {#NAME} - ready_replicas</name>
-                            <type>TRAP</type>
-                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},ready_replicas]</key>
-                            <delay>0</delay>
-                            <history>3d</history>
-                            <request_method>POST</request_method>
-                            <tags>
-                                <tag>
-                                    <tag>Application</tag>
-                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
-                                </tag>
-                            </tags>
-                        </item_prototype>
-                        <item_prototype>
                             <uuid>10b4e470bf4b4cef96848ad06b22b202</uuid>
-                            <name>DS {#NAMESPACE} / {#NAME} - replicas</name>
+                            <name>DS {#NAMESPACE} / {#NAME} - updated_number_scheduled</name>
                             <type>TRAP</type>
-                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},replicas]</key>
-                            <delay>0</delay>
-                            <history>3d</history>
-                            <request_method>POST</request_method>
-                            <tags>
-                                <tag>
-                                    <tag>Application</tag>
-                                    <value>Daemonset {#NAMESPACE} / {#NAME}</value>
-                                </tag>
-                            </tags>
-                        </item_prototype>
-                        <item_prototype>
-                            <uuid>21a4410148a640e9bbcbde8382419229</uuid>
-                            <name>DS {#NAMESPACE} / {#NAME} - updated_replicas</name>
-                            <type>TRAP</type>
-                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},updated_replicas]</key>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},updated_number_scheduled]</key>
                             <delay>0</delay>
                             <history>3d</history>
                             <request_method>POST</request_method>
@@ -463,6 +489,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                             <ymin_type_1>FIXED</ymin_type_1>
                             <graph_items>
                                 <graph_item>
+                                    <sortorder>1</sortorder>
                                     <color>1A7C11</color>
                                     <calc_fnc>ALL</calc_fnc>
                                     <item>
@@ -471,7 +498,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                     </item>
                                 </graph_item>
                                 <graph_item>
-                                    <sortorder>1</sortorder>
+                                    <sortorder>2</sortorder>
                                     <color>F63100</color>
                                     <yaxisside>RIGHT</yaxisside>
                                     <calc_fnc>ALL</calc_fnc>
@@ -489,20 +516,84 @@ This is used to ensure that k8s-zabbix is still active.</description>
                             <ymin_type_1>FIXED</ymin_type_1>
                             <graph_items>
                                 <graph_item>
+                                    <sortorder>1</sortorder>
                                     <color>1A7C11</color>
-                                    <calc_fnc>ALL</calc_fnc>
+                                    <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},ready_replicas]</key>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_unavailable]</key>
                                     </item>
                                 </graph_item>
                                 <graph_item>
-                                    <sortorder>1</sortorder>
+                                    <sortorder>2</sortorder>
                                     <color>CCCC00</color>
-                                    <calc_fnc>ALL</calc_fnc>
+                                    <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},replicas]</key>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},updated_number_scheduled]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>3</sortorder>
+                                    <color>2774A4</color>
+                                    <calc_fnc>MAX</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},current_number_scheduled]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>4</sortorder>
+                                    <color>A54F10</color>
+                                    <calc_fnc>MAX</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},desired_number_scheduled']</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>5</sortorder>
+                                    <color>FC6EA3</color>
+                                    <calc_fnc>MAX</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_available]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>6</sortorder>
+                                    <color>6C59DC</color>
+                                    <calc_fnc>MAX</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_misscheduled]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>7</sortorder>
+                                    <color>AC8C14</color>
+                                    <calc_fnc>MAX</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_ready]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>8</sortorder>
+                                    <color>611F27</color>
+                                    <calc_fnc>MAX</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_unavailable]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>9</sortorder>
+                                    <color>F230E0</color>
+                                    <calc_fnc>MAX</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},updated_number_scheduled]</key>
                                     </item>
                                 </graph_item>
                             </graph_items>
@@ -1599,7 +1690,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                 <widget>
                                     <type>GRAPH_PROTOTYPE</type>
                                     <width>11</width>
-                                    <height>16</height>
+                                    <height>21</height>
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
@@ -1625,7 +1716,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                     <type>GRAPH_PROTOTYPE</type>
                                     <x>12</x>
                                     <width>12</width>
-                                    <height>16</height>
+                                    <height>21</height>
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
@@ -1660,7 +1751,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                 <widget>
                                     <type>GRAPH_PROTOTYPE</type>
                                     <width>12</width>
-                                    <height>17</height>
+                                    <height>21</height>
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
@@ -1684,9 +1775,9 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                 </widget>
                                 <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <x>12</x>
-                                    <width>12</width>
-                                    <height>17</height>
+                                    <x>13</x>
+                                    <width>11</width>
+                                    <height>21</height>
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
@@ -1951,7 +2042,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                 <widget>
                                     <type>GRAPH_PROTOTYPE</type>
                                     <width>11</width>
-                                    <height>19</height>
+                                    <height>22</height>
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
@@ -1975,9 +2066,9 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                 </widget>
                                 <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <x>11</x>
-                                    <width>12</width>
-                                    <height>19</height>
+                                    <x>12</x>
+                                    <width>11</width>
+                                    <height>22</height>
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
@@ -2011,8 +2102,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                             <widgets>
                                 <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <width>10</width>
-                                    <height>16</height>
+                                    <width>11</width>
+                                    <height>19</height>
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
@@ -2036,9 +2127,9 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                 </widget>
                                 <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <x>10</x>
-                                    <width>14</width>
-                                    <height>16</height>
+                                    <x>12</x>
+                                    <width>12</width>
+                                    <height>19</height>
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
