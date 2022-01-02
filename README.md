@@ -1,3 +1,6 @@
+![K8SZabbix Logo](documentation/logo.svg)
+
+
 k8s-zabbix
 =================
 
