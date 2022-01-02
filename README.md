@@ -125,10 +125,11 @@ Production Deployment
   * Assign the template to that host
 * Create and apply deployment
   (adapt the configuration values for your environment)
-  ```
+   ```
+   vi kubernetes/deployment.yaml
+   ```
 * Adapt values corresponding to your cluster setup, use ENV Variables defined in config_default.py
-  vi kubernetes/deployment.yaml
-
+  ```
   kubectl apply -f kubernetes/deployment.yaml
   ```
 * Check proper function
@@ -145,9 +146,9 @@ Unix Signals
 
 Unix signals are usefuil for debugging:
 
- * SIGQUIT: Dumps the stacktraces of all threads and terminates the daemon
- * SIGUSR1: Display a overview of data hold in CheckKubernetesDaemon.data and CheckKubernetesDaemon.discovery_sent
- * SIGUSR2: Display detailed data hold in CheckKubernetesDaemon.data and CheckKubernetesDaemon.discovery_sent
+ * *SIGQUIT*: Dumps the stacktraces of all threads and terminates the daemon
+ * *SIGUSR1*: Display a overview of data hold in CheckKubernetesDaemon.data and CheckKubernetesDaemon.discovery_sent
+ * *SIGUSR2*: Display detailed data hold in CheckKubernetesDaemon.data and CheckKubernetesDaemon.discovery_sent
 
 
 Commandline arguments
