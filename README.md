@@ -161,7 +161,7 @@ usage: check_kubernetesd [-h] [--show_effective_config] [--show_ini] [--disable_
 Zabbix monitoring daemon for kubernetes
 
 positional arguments:
-  ini_file              use a additional inifile for configuration (environment variables take precedence) or execute a binary with a fully qualified file path
+  ini_file              optional, use a additional inifile for configuration (environment variables take precedence) or execute a binary with a fully qualified file path
 
 optional arguments:
   -h, --help            show this help message and exit

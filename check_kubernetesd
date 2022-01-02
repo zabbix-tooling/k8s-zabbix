@@ -39,8 +39,8 @@ if __name__ == '__main__':
     parser.add_argument('--show_ini', action='store_true',
                         help="show variables as ini files parameters instead of environment variables")
     parser.add_argument('--disable_colors', action='store_true', help="disable colors in logoutput")
-    parser.add_argument('ini_file', type=str,
-                        help="use a additional inifile for configuration " +
+    parser.add_argument('ini_file', nargs="?", type=str,
+                        help="optional, use a additional inifile for configuration " +
                              "(environment variables take precedence) or execute a " +
                              "binary with a fully qualified file path")
     args = parser.parse_args()
@@ -49,15 +49,16 @@ if __name__ == '__main__':
 
     config = Configuration()
 
-    if args.ini_file.startswith("/bin/"):
-        os.system(args.ini_file)
-        sys.exit(1)
-    else:
-        try:
-            config.load_config_file(args.ini_file)
-        except Exception as e:
-            logger.fatal(e)
+    if args.ini_file:
+        if args.ini_file.startswith("/bin/"):
+            os.system(args.ini_file)
             sys.exit(1)
+        else:
+            try:
+                config.load_config_file(args.ini_file)
+            except Exception as e:
+                logger.fatal(e)
+                sys.exit(1)
 
     config.load_from_environment_variables()
     if args.show_effective_config:

@@ -64,7 +64,7 @@ test_container(){
    IDENT="${IMAGE_NAME}_test"
    docker kill $IDENT &> /dev/null
    docker rm $IDENT &> /dev/null
-   exec_cmd "docker run --rm $(get_env) -d --name $IDENT ${IMAGE_BASE}"
+   exec_cmd "docker run --rm $(get_env) -d --name $IDENT ${IMAGE_BASE} --disable_colors"
    sleep 10
    echo "====== DOCKER LOGS"
    docker logs --until=50s $IDENT
