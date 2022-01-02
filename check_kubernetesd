@@ -25,31 +25,39 @@ formatter_string = '%(asctime)s - %(threadName)s : {%(name)s:%(lineno)d} : %(lev
 formatter = logging.Formatter(formatter_string)
 stream = logging.StreamHandler(sys.stdout)
 stream.setFormatter(formatter)
-coloredlogs.install(fmt=formatter_string)
 
 logger = logging.getLogger(__file__)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='Monitoring daemon for kubernetes'
+        description='Zabbix monitoring daemon for kubernetes'
     )
 
-    parser.add_argument('--show_effective_config', action='store_true')
-    parser.add_argument('--show_ini', action='store_true')
-    args, remaining_args = parser.parse_known_args()
+    parser.add_argument('--show_effective_config', action='store_true',
+                        help="display the final config as environment variables" +
+                             "based env variables and ini file parameters")
+    parser.add_argument('--show_ini', action='store_true',
+                        help="show variables as ini files parameters instead of environment variables")
+    parser.add_argument('--disable_colors', action='store_true', help="disable colors in logoutput")
+    parser.add_argument('ini_file', type=str,
+                        help="use a additional inifile for configuration " +
+                             "(environment variables take precedence) or execute a " +
+                             "binary with a fully qualified file path")
+    args = parser.parse_args()
+
+    coloredlogs.install(fmt=formatter_string, isatty=(not args.disable_colors))
 
     config = Configuration()
 
-    if len(remaining_args) > 0:
-        if remaining_args[0].startswith("/bin/"):
-            os.system(remaining_args[0])
+    if args.ini_file.startswith("/bin/"):
+        os.system(args.ini_file)
+        sys.exit(1)
+    else:
+        try:
+            config.load_config_file(args.ini_file)
+        except Exception as e:
+            logger.fatal(e)
             sys.exit(1)
-        else:
-            try:
-                config.load_config_file(remaining_args[0])
-            except Exception as e:
-                logger.fatal(e)
-                sys.exit(1)
 
     config.load_from_environment_variables()
     if args.show_effective_config:
@@ -101,6 +109,7 @@ if __name__ == '__main__':
     if config.debug_k8s_events:
         for daemon in daemons:
             daemon.debug_k8s_events = True
+
 
     # SIGNAL processing
     def _signal_handler(signum, *args):

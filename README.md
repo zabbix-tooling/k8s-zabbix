@@ -141,13 +141,35 @@ Production Deployment
     * Enable Option "Show items without data" →  Button "Apply"
 
 Unix Signals
-=======
+============
 
 Unix signals are usefuil for debugging:
 
  * SIGQUIT: Dumps the stacktraces of all threads and terminates the daemon
  * SIGUSR1: Display a overview of data hold in CheckKubernetesDaemon.data and CheckKubernetesDaemon.discovery_sent
  * SIGUSR2: Display detailed data hold in CheckKubernetesDaemon.data and CheckKubernetesDaemon.discovery_sent
+
+
+Commandline arguments
+=====================
+
+```
+$ ./check_kubernetesd -h
+usage: check_kubernetesd [-h] [--show_effective_config] [--show_ini] [--disable_colors] ini_file
+
+Zabbix monitoring daemon for kubernetes
+
+positional arguments:
+  ini_file              use a additional inifile for configuration (environment variables take precedence) or execute a binary with a fully qualified file path
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --show_effective_config
+                        display the final config as environment variablesbased env variables and ini file parameters
+  --show_ini            show variables as ini files parameters instead of environment variables
+  --disable_colors      disable colors in logoutput
+
+```
 
 Authors
 =======

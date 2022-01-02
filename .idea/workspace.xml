@@ -4,6 +4,7 @@
     <list default="true" id="e11d6900-3673-418a-af28-b507bfb4f29d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/check_kubernetesd" beforeDir="false" afterPath="$PROJECT_DIR$/check_kubernetesd" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -276,7 +277,7 @@
       <workItem from="1640281261403" duration="5401000" />
       <workItem from="1640525662772" duration="6136000" />
       <workItem from="1640624292193" duration="1091000" />
-      <workItem from="1640625425481" duration="39183000" />
+      <workItem from="1640625425481" duration="41937000" />
     </task>
     <servers />
   </component>
