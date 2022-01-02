@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.4</version>
-    <date>2021-12-31T15:25:09Z</date>
+    <date>2022-01-02T12:31:13Z</date>
     <groups>
         <group>
             <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
@@ -1013,6 +1013,33 @@ This is used to ensure that k8s-zabbix is still active.</description>
                     <lifetime>4d</lifetime>
                     <item_prototypes>
                         <item_prototype>
+                            <uuid>cfd475ccf50d4df28d576fa6589925f3</uuid>
+                            <name>PV {#NAMESPACE} / {#NAME} - capacityBytesRemainingTime7d</name>
+                            <type>CALCULATED</type>
+                            <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},capacityBytesRemainingTime7d]</key>
+                            <delay>1h</delay>
+                            <history>7d</history>
+                            <trends>90d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>s</units>
+                            <params>timeleft(//check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},usedBytesPercentage],7d,100)</params>
+                            <description>The remaining time until volume reached 100% space usage based on the growth of the last 7 days.</description>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PV {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>4827190aa0d34b61b6a0670bb1f4f600</uuid>
+                                    <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},capacityBytesRemainingTime7d]) &lt; {$DISK_USAGE_REMAINING_DAYS_WARN}</expression>
+                                    <name>PV {#NAMESPACE} / {#NAME} - disk space exeeded &lt; {$DISK_USAGE_REMAINING_DAYS_WARN}</name>
+                                    <priority>WARNING</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
                             <uuid>7e0d02be7603416fa60b373a17164b4e</uuid>
                             <name>PV {#NAMESPACE} / {#NAME} - capacityBytes</name>
                             <type>TRAP</type>
@@ -1026,6 +1053,32 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                     <value>PV {#NAMESPACE} / {#NAME}</value>
                                 </tag>
                             </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>74c74666db5447b4a381d7914d7bf43a</uuid>
+                            <name>PV {#NAMESPACE} / {#NAME} - inodesRemainingTime7d</name>
+                            <type>CALCULATED</type>
+                            <key>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesRemainingTime7d]</key>
+                            <history>7d</history>
+                            <trends>90d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <params>timeleft(//check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesUsedPercentage],7d,100)</params>
+                            <description>The remaining time until volume reached 100% inode usage based on the growth of the last 7 days.</description>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PV {#NAMESPACE} / {#NAME}</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>0fcdfe0d3ea948eba59220876f335537</uuid>
+                                    <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesRemainingTime7d]) &lt; {$DISK_USAGE_REMAINING_DAYS_WARN}</expression>
+                                    <name>PV {#NAMESPACE} / {#NAME} - inodes exeeded &lt; {$DISK_USAGE_REMAINING_DAYS_WARN}</name>
+                                    <priority>WARNING</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
                         </item_prototype>
                         <item_prototype>
                             <uuid>d8f59afeb55547509604ff88829f6a6c</uuid>
@@ -1519,6 +1572,11 @@ This is used to ensure that k8s-zabbix is still active.</description>
                     <description>Percentage of disk usage to accept before warn</description>
                 </macro>
                 <macro>
+                    <macro>{$DISK_USAGE_REMAINING_DAYS_WARN}</macro>
+                    <value>5</value>
+                    <description>Number of days to warn if disk usage tends to be full in the specified number of days.</description>
+                </macro>
+                <macro>
                     <macro>{$POD_RESTART_AVERAGE_LIMIT_30M}</macro>
                     <value>2</value>
                 </macro>
@@ -1533,15 +1591,15 @@ This is used to ensure that k8s-zabbix is still active.</description>
             </macros>
             <dashboards>
                 <dashboard>
-                    <uuid>20b2ef0467984b18b9b977c2c8731bf8</uuid>
-                    <name>Custom - Service - Kubernetes - Deployments</name>
+                    <uuid>cfecfe74ba6b49d4b760a5e343c967ae</uuid>
+                    <name>Custom - Service - Kubernetes - Daemonsets</name>
                     <pages>
                         <page>
                             <widgets>
                                 <widget>
                                     <type>GRAPH_PROTOTYPE</type>
-                                    <width>12</width>
-                                    <height>7</height>
+                                    <width>11</width>
+                                    <height>16</height>
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
@@ -1551,12 +1609,68 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                         <field>
                                             <type>INTEGER</type>
                                             <name>rows</name>
+                                            <value>5</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Daemonset {#NAMESPACE} / {#NAME} - Misc</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>GRAPH_PROTOTYPE</type>
+                                    <x>12</x>
+                                    <width>12</width>
+                                    <height>16</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
                                             <value>1</value>
                                         </field>
                                         <field>
                                             <type>INTEGER</type>
-                                            <name>source_type</name>
-                                            <value>2</value>
+                                            <name>rows</name>
+                                            <value>5</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Daemonset {#NAMESPACE} / {#NAME} - Replicas</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
+                </dashboard>
+                <dashboard>
+                    <uuid>20b2ef0467984b18b9b977c2c8731bf8</uuid>
+                    <name>Custom - Service - Kubernetes - Deployments</name>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
+                                    <type>GRAPH_PROTOTYPE</type>
+                                    <width>12</width>
+                                    <height>17</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>5</value>
                                         </field>
                                         <field>
                                             <type>GRAPH_PROTOTYPE</type>
@@ -1572,7 +1686,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                     <type>GRAPH_PROTOTYPE</type>
                                     <x>12</x>
                                     <width>12</width>
-                                    <height>7</height>
+                                    <height>17</height>
                                     <fields>
                                         <field>
                                             <type>INTEGER</type>
@@ -1582,12 +1696,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                         <field>
                                             <type>INTEGER</type>
                                             <name>rows</name>
-                                            <value>1</value>
-                                        </field>
-                                        <field>
-                                            <type>INTEGER</type>
-                                            <name>source_type</name>
-                                            <value>2</value>
+                                            <value>5</value>
                                         </field>
                                         <field>
                                             <type>GRAPH_PROTOTYPE</type>
@@ -1624,57 +1733,6 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <name>graphid</name>
                                             <value>
                                                 <name>Services</name>
-                                                <host>Custom - Service - Kubernetes</host>
-                                            </value>
-                                        </field>
-                                    </fields>
-                                </widget>
-                            </widgets>
-                        </page>
-                    </pages>
-                </dashboard>
-                <dashboard>
-                    <uuid>aa193d4653664b22b3bcf75a076d3d2f</uuid>
-                    <name>Custom - Service - Kubernetes - Namespaces - PVCs</name>
-                    <pages>
-                        <page>
-                            <widgets>
-                                <widget>
-                                    <type>GRAPH_PROTOTYPE</type>
-                                    <width>24</width>
-                                    <height>8</height>
-                                    <fields>
-                                        <field>
-                                            <type>INTEGER</type>
-                                            <name>columns</name>
-                                            <value>1</value>
-                                        </field>
-                                        <field>
-                                            <type>GRAPH_PROTOTYPE</type>
-                                            <name>graphid</name>
-                                            <value>
-                                                <name>PV {#NAMESPACE} / {#NAME} Space</name>
-                                                <host>Custom - Service - Kubernetes</host>
-                                            </value>
-                                        </field>
-                                    </fields>
-                                </widget>
-                                <widget>
-                                    <type>GRAPH_PROTOTYPE</type>
-                                    <y>8</y>
-                                    <width>24</width>
-                                    <height>8</height>
-                                    <fields>
-                                        <field>
-                                            <type>INTEGER</type>
-                                            <name>columns</name>
-                                            <value>1</value>
-                                        </field>
-                                        <field>
-                                            <type>GRAPH_PROTOTYPE</type>
-                                            <name>graphid</name>
-                                            <value>
-                                                <name>PV {#NAMESPACE} / {#NAME} iNodes</name>
                                                 <host>Custom - Service - Kubernetes</host>
                                             </value>
                                         </field>
@@ -1875,6 +1933,128 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <name>graphid</name>
                                             <value>
                                                 <name>Pod {#NAMESPACE} / {#NAME} - Launch Statistics</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
+                </dashboard>
+                <dashboard>
+                    <uuid>aa193d4653664b22b3bcf75a076d3d2f</uuid>
+                    <name>Custom - Service - Kubernetes - PVCs</name>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
+                                    <type>GRAPH_PROTOTYPE</type>
+                                    <width>11</width>
+                                    <height>19</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>5</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>PV {#NAMESPACE} / {#NAME} Space</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>GRAPH_PROTOTYPE</type>
+                                    <x>11</x>
+                                    <width>12</width>
+                                    <height>19</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>5</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>PV {#NAMESPACE} / {#NAME} iNodes</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                            </widgets>
+                        </page>
+                    </pages>
+                </dashboard>
+                <dashboard>
+                    <uuid>91827a0a0a49410289629436611dbd25</uuid>
+                    <name>Custom - Service - Kubernetes - Statefulsets</name>
+                    <pages>
+                        <page>
+                            <widgets>
+                                <widget>
+                                    <type>GRAPH_PROTOTYPE</type>
+                                    <width>10</width>
+                                    <height>16</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>5</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Statefulset {#NAMESPACE} / {#NAME} - Misc</name>
+                                                <host>Custom - Service - Kubernetes</host>
+                                            </value>
+                                        </field>
+                                    </fields>
+                                </widget>
+                                <widget>
+                                    <type>GRAPH_PROTOTYPE</type>
+                                    <x>10</x>
+                                    <width>14</width>
+                                    <height>16</height>
+                                    <fields>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>columns</name>
+                                            <value>1</value>
+                                        </field>
+                                        <field>
+                                            <type>INTEGER</type>
+                                            <name>rows</name>
+                                            <value>5</value>
+                                        </field>
+                                        <field>
+                                            <type>GRAPH_PROTOTYPE</type>
+                                            <name>graphid</name>
+                                            <value>
+                                                <name>Statefulset {#NAMESPACE} / {#NAME} - Replicas</name>
                                                 <host>Custom - Service - Kubernetes</host>
                                             </value>
                                         </field>

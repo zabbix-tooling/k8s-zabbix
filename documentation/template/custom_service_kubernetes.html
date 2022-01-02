@@ -54,6 +54,9 @@
 <td>{$DISK_USAGE_PERCENT_WARN}</td><td>95</td>
 </tr>
 <tr>
+<td>{$DISK_USAGE_REMAINING_DAYS_WARN}</td><td>5</td>
+</tr>
+<tr>
 <td>{$POD_RESTART_AVERAGE_LIMIT_30M}</td><td>2</td>
 </tr>
 <tr>
@@ -460,7 +463,13 @@ This is used to ensure that k8s-zabbix is still active.</td><td>0</td><td>14d</t
 <th>Type</th><th>Name</th><th>Key</th><th>Description</th><th>Interval (sec)</th><th>History Days</th><th>Trend Days</th>
 </tr>
 <tr>
+<td>CALCULATED</td><td>PV {#NAMESPACE} / {#NAME} - capacityBytesRemainingTime7d</td><td><tt>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},capacityBytesRemainingTime7d]</tt></td><td>The remaining time until volume reached 100% space usage based on the growth of the last 7 days.</td><td>1h</td><td>7d</td><td>90d</td>
+</tr>
+<tr>
 <td>TRAP</td><td>PV {#NAMESPACE} / {#NAME} - capacityBytes</td><td><tt>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},capacityBytes]</tt></td><td></td><td>0</td><td>7d</td><td></td>
+</tr>
+<tr>
+<td>CALCULATED</td><td>PV {#NAMESPACE} / {#NAME} - inodesRemainingTime7d</td><td><tt>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesRemainingTime7d]</tt></td><td>The remaining time until volume reached 100% inode usage based on the growth of the last 7 days.</td><td></td><td>7d</td><td>90d</td>
 </tr>
 <tr>
 <td>TRAP</td><td>PV {#NAMESPACE} / {#NAME} - inodesUsedPercentage</td><td><tt>check_kubernetesd[get,pvcs,{#NAMESPACE},{#NAME},inodesUsedPercentage]</tt></td><td></td><td>0</td><td>7d</td><td></td>
