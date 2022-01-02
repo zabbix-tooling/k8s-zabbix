@@ -57,5 +57,8 @@ publish:
 
 release: test doc
 	[ `git status --porcelain=v1 2>/dev/null | wc -l` -le 0 ]
+	git commit -a template/custom_service_kubernetes.xml
+	git push
+	git push --tags
 	${MAKE} --no-print-directory publish
 .PHONY: release
