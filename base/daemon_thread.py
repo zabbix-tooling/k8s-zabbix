@@ -251,13 +251,13 @@ class CheckKubernetesDaemon:
 
     def watch_data(self, resource: str):
         api = self.get_api_for_resource(resource)
-        stream_named_arguments = {"timeout_seconds": self.config.k8s_api_stream_timeout_seconds,
-                                  "_request_timeout": self.config.k8s_api_stream_timeout_seconds}
-
+        stream_named_arguments = {"timeout_seconds": self.config.k8s_api_stream_timeout_seconds}
         request_named_arguments = {"_request_timeout": self.config.k8s_api_request_timeout_seconds}
         self.logger.info(
-            "Watching for resource >>>%s<<< with a stream duration of %s" % (
-                resource, self.config.k8s_api_stream_timeout_seconds)
+            "Watching for resource >>>%s<<< with a stream duration of %ss or request_timeout of %ss" % (
+                resource,
+                self.config.k8s_api_stream_timeout_seconds,
+                self.config.k8s_api_request_timeout_seconds)
         )
         while True:
             w = watch.Watch()

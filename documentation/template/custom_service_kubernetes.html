@@ -231,7 +231,7 @@ This is used to ensure that k8s-zabbix is still active.</td><td>0</td><td>14d</t
 </tt></td>
 </tr>
 <tr>
-<td>Daemonset {#NAMESPACE} / {#NAME} - Replicas</td><td><tt>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_unavailable]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},updated_number_scheduled]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},current_number_scheduled]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},desired_number_scheduled']<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_available]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_misscheduled]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_ready]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_unavailable]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},updated_number_scheduled]<br>
+<td>Daemonset {#NAMESPACE} / {#NAME} - Replicas</td><td><tt>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_unavailable]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},updated_number_scheduled]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},current_number_scheduled]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},desired_number_scheduled]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_available]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_misscheduled]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_ready]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_unavailable]<br>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},updated_number_scheduled]<br>
 </tt></td>
 </tr>
 </table>
@@ -250,7 +250,7 @@ This is used to ensure that k8s-zabbix is still active.</td><td>0</td><td>14d</t
 <td>TRAP</td><td>DS {#NAMESPACE} / {#NAME} - current_number_scheduled</td><td><tt>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},current_number_scheduled]</tt></td><td></td><td>0</td><td>3d</td><td></td>
 </tr>
 <tr>
-<td>TRAP</td><td>DS {#NAMESPACE} / {#NAME} - desired_number_scheduled'</td><td><tt>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},desired_number_scheduled']</tt></td><td></td><td>0</td><td>3d</td><td></td>
+<td>TRAP</td><td>DS {#NAMESPACE} / {#NAME} - desired_number_scheduled'</td><td><tt>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},desired_number_scheduled]</tt></td><td></td><td>0</td><td>3d</td><td></td>
 </tr>
 <tr>
 <td>TRAP</td><td>DS {#NAMESPACE} / {#NAME} - number_available</td><td><tt>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},number_available]</tt></td><td></td><td>0</td><td>3d</td><td></td>
