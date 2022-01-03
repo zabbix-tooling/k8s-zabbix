@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e11d6900-3673-418a-af28-b507bfb4f29d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/base/daemon_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/daemon_thread.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/documentation/template/custom_service_kubernetes.html" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/template/custom_service_kubernetes.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_flip-dev.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config_flip-dev.ini" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -278,7 +277,8 @@
       <workItem from="1640281261403" duration="5401000" />
       <workItem from="1640525662772" duration="6136000" />
       <workItem from="1640624292193" duration="1091000" />
-      <workItem from="1640625425481" duration="50012000" />
+      <workItem from="1640625425481" duration="50649000" />
+      <workItem from="1641224577328" duration="780000" />
     </task>
     <servers />
   </component>

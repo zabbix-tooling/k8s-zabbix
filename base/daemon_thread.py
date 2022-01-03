@@ -317,7 +317,7 @@ class CheckKubernetesDaemon:
             return
 
         if self.debug_k8s_events:
-            self.logger.debug(f"{event_type} [{resource}]: {namespace}/{name} : >>>{pformat(obj, indent=2)}<<<")
+            self.logger.info(f"{event_type} [{resource}]: {namespace}/{name} : >>>{pformat(obj, indent=2)}<<<")
         else:
             self.logger.debug(f"{event_type} [{resource}]: {namespace}/{name}")
 
