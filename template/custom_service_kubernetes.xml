@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.4</version>
-    <date>2022-01-02T17:44:57Z</date>
+    <date>2022-01-03T10:25:43Z</date>
     <groups>
         <group>
             <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
@@ -364,7 +364,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                             <uuid>3d79f7446be64b7d94a1ede1904a8c31</uuid>
                             <name>DS {#NAMESPACE} / {#NAME} - desired_number_scheduled'</name>
                             <type>TRAP</type>
-                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},desired_number_scheduled']</key>
+                            <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},desired_number_scheduled]</key>
                             <delay>0</delay>
                             <history>3d</history>
                             <tags>
@@ -548,7 +548,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                     <calc_fnc>MAX</calc_fnc>
                                     <item>
                                         <host>Custom - Service - Kubernetes</host>
-                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},desired_number_scheduled']</key>
+                                        <key>check_kubernetesd[get,daemonsets,{#NAMESPACE},{#NAME},desired_number_scheduled]</key>
                                     </item>
                                 </graph_item>
                                 <graph_item>

@@ -249,37 +249,39 @@ class CheckKubernetesDaemon:
             self._web_api = WebApi(self.web_api_host, self.web_api_token, verify_ssl=self.web_api_verify_ssl)
         return self._web_api
 
-    def watch_data(self, resource: str, timeout: int = 240):
+    def watch_data(self, resource: str):
         api = self.get_api_for_resource(resource)
+        stream_named_arguments = {"timeout_seconds": self.config.k8s_api_stream_timeout_seconds,
+                                  "_request_timeout": self.config.k8s_api_stream_timeout_seconds}
 
-        if timeout == 0:
-            timeout_str = "no timeout"
-        else:
-            timeout_str = "%i seconds" % timeout
-
-        self.logger.info("Watching for resource >>>%s<<< with a timeout of %s" % (resource, timeout_str))
+        request_named_arguments = {"_request_timeout": self.config.k8s_api_request_timeout_seconds}
+        self.logger.info(
+            "Watching for resource >>>%s<<< with a stream duration of %s" % (
+                resource, self.config.k8s_api_stream_timeout_seconds)
+        )
         while True:
             w = watch.Watch()
             if resource == 'nodes':
-                for obj in w.stream(api.list_node, timeout_seconds=timeout):
+                for obj in w.stream(api.list_node, **stream_named_arguments):
                     self.watch_event_handler(resource, obj)
             elif resource == 'deployments':
-                for obj in w.stream(api.list_deployment_for_all_namespaces, timeout_seconds=timeout):
+                for obj in w.stream(api.list_deployment_for_all_namespaces, **stream_named_arguments):
                     self.watch_event_handler(resource, obj)
             elif resource == 'daemonsets':
-                for obj in w.stream(api.list_daemon_set_for_all_namespaces, timeout_seconds=timeout):
+                for obj in w.stream(api.list_daemon_set_for_all_namespaces, **stream_named_arguments):
                     self.watch_event_handler(resource, obj)
             elif resource == 'statefulsets':
-                for obj in w.stream(api.list_stateful_set_for_all_namespaces, timeout_seconds=timeout):
+                for obj in w.stream(api.list_stateful_set_for_all_namespaces, **stream_named_arguments):
                     self.watch_event_handler(resource, obj)
             elif resource == 'components':
                 # The api does not support watching on component status
                 with self.thread_lock:
-                    for obj in api.list_component_status(watch=False).to_dict().get('items'):
+                    for obj in api.list_component_status(watch=False, **request_named_arguments).to_dict().get('items'):
                         self.data[resource].add_obj_from_data(obj)
                 time.sleep(self.data_resend_interval)
             elif resource == 'pvcs':
-                pvc_volumes = get_pvc_volumes_for_all_nodes(api=api, timeout=timeout,
+                pvc_volumes = get_pvc_volumes_for_all_nodes(api=api,
+                                                            timeout=self.config.k8s_api_request_timeout_seconds,
                                                             namespace_exclude_re=self.config.namespace_exclude_re,
                                                             resource_manager=self.data[resource])
                 with self.thread_lock:
@@ -287,16 +289,16 @@ class CheckKubernetesDaemon:
                         self.data[resource].add_obj(obj)
                 time.sleep(self.data_resend_interval)
             elif resource == 'ingresses':
-                for obj in w.stream(api.list_ingress_for_all_namespaces, timeout_seconds=timeout):
+                for obj in w.stream(api.list_ingress_for_all_namespaces, **stream_named_arguments):
                     self.watch_event_handler(resource, obj)
             elif resource == 'tls':
-                for obj in w.stream(api.list_secret_for_all_namespaces, timeout_seconds=timeout):
+                for obj in w.stream(api.list_secret_for_all_namespaces, **stream_named_arguments):
                     self.watch_event_handler(resource, obj)
             elif resource == 'pods':
-                for obj in w.stream(api.list_pod_for_all_namespaces, timeout_seconds=timeout):
+                for obj in w.stream(api.list_pod_for_all_namespaces, **stream_named_arguments):
                     self.watch_event_handler(resource, obj)
             elif resource == 'services':
-                for obj in w.stream(api.list_service_for_all_namespaces, timeout_seconds=timeout):
+                for obj in w.stream(api.list_service_for_all_namespaces, **stream_named_arguments):
                     self.watch_event_handler(resource, obj)
             else:
                 self.logger.error("No watch handling for resource %s" % resource)
@@ -315,9 +317,10 @@ class CheckKubernetesDaemon:
             return
 
         if self.debug_k8s_events:
-            self.logger.info(f"{event_type} Event for {namespace} / {name} {pformat(obj, indent=2)}")
+            self.logger.debug(f"{event_type} [{resource}]: {namespace}/{name} : >>>{pformat(obj, indent=2)}<<<")
+        else:
+            self.logger.debug(f"{event_type} [{resource}]: {namespace}/{name}")
 
-        self.logger.debug(f"{event_type} [{resource}]: {namespace}/{name}")
         with self.thread_lock:
             if not self.data[resource].resource_class:
                 self.logger.error('Could not add watch_event_handler! No resource_class for "%s"' % resource)

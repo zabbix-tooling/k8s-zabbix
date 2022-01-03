@@ -35,7 +35,6 @@ class Deployment(K8sObject):
         return data
 
     def get_zabbix_metrics(self):
-        data = self.resource_data
         data_to_send = []
 
         for status_type in self.data['status']:

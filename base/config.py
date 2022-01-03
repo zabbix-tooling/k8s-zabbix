@@ -28,6 +28,8 @@ class Configuration:
     k8s_config_type: ClusterAccessConfigType = ClusterAccessConfigType.INCLUSTER
     k8s_api_host: str = 'https://example.kube-apiserver.com'
     k8s_api_token: str = ''
+    k8s_api_stream_timeout_seconds: int = 240
+    k8s_api_request_timeout_seconds: int = 60
     verify_ssl: bool = True
     debug: bool = False
     debug_k8s_events: bool = False
