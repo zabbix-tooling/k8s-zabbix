@@ -1,5 +1,6 @@
 kubernetes==21.7.0
 cryptography==36.0.1
+types-cryptography==3.3.10
 py-zabbix==1.1.7
 sentry-sdk==1.5.1
 adal==1.2.7

@@ -170,37 +170,36 @@ class CheckKubernetesDaemon:
                     self.data.setdefault('containers', K8sResourceManager('containers'))
 
             # watcher threads
-            match resource:
-                case 'containers':
-                    pass
-                case 'components':
-                    thread = TimedThread(resource, self.data_resend_interval, exit_flag,
-                                         daemon_object=self, daemon_method='watch_data')
-                    self.manage_threads.append(thread)
-                    thread.start()
-                case 'pvcs':
-                    thread = TimedThread(resource, self.data_resend_interval, exit_flag,
-                                         daemon_object=self, daemon_method='watch_data')
-                    self.manage_threads.append(thread)
-                    thread.start()
-                # additional looping data threads
-                case 'services':
-                    thread = TimedThread(resource, self.data_resend_interval, exit_flag,
-                                         daemon_object=self, daemon_method='report_global_data_zabbix',
-                                         delay_first_run_seconds=self.discovery_interval + 5)
-                    self.manage_threads.append(thread)
-                    thread.start()
-                case 'containers':
-                    thread = TimedThread(resource, self.data_resend_interval, exit_flag,
-                                         daemon_object=self, daemon_method='report_global_data_zabbix',
-                                         delay_first_run_seconds=self.discovery_interval + 5)
-                    self.manage_threads.append(thread)
-                    thread.start()
-                case _:
-                    thread = WatcherThread(resource, exit_flag,
-                                           daemon_object=self, daemon_method='watch_data')
-                    self.manage_threads.append(thread)
-                    thread.start()
+            if resource == 'containers':
+                pass
+            elif resource == 'components':
+                thread = TimedThread(resource, self.data_resend_interval, exit_flag,
+                                     daemon_object=self, daemon_method='watch_data')
+                self.manage_threads.append(thread)
+                thread.start()
+            elif resource == 'pvcs':
+                thread = TimedThread(resource, self.data_resend_interval, exit_flag,
+                                     daemon_object=self, daemon_method='watch_data')
+                self.manage_threads.append(thread)
+                thread.start()
+            # additional looping data threads
+            elif resource == 'services':
+                thread = TimedThread(resource, self.data_resend_interval, exit_flag,
+                                     daemon_object=self, daemon_method='report_global_data_zabbix',
+                                     delay_first_run_seconds=self.discovery_interval + 5)
+                self.manage_threads.append(thread)
+                thread.start()
+            elif resource == 'containers':
+                thread = TimedThread(resource, self.data_resend_interval, exit_flag,
+                                     daemon_object=self, daemon_method='report_global_data_zabbix',
+                                     delay_first_run_seconds=self.discovery_interval + 5)
+                self.manage_threads.append(thread)
+                thread.start()
+            else:
+                thread = WatcherThread(resource, exit_flag,
+                                       daemon_object=self, daemon_method='watch_data')
+                self.manage_threads.append(thread)
+                thread.start()
 
     def start_api_info_threads(self):
         if 'nodes' not in self.resources:
@@ -260,50 +259,48 @@ class CheckKubernetesDaemon:
         )
         while True:
             w = watch.Watch()
-            match resource:
-                case 'nodes':
-                    for obj in w.stream(api.list_node, **stream_named_arguments):
-                        self.watch_event_handler(resource, obj)
-                case 'deployments':
-                    for obj in w.stream(api.list_deployment_for_all_namespaces, **stream_named_arguments):
-                        self.watch_event_handler(resource, obj)
-                case 'daemonsets':
-                    for obj in w.stream(api.list_daemon_set_for_all_namespaces, **stream_named_arguments):
-                        self.watch_event_handler(resource, obj)
-                case 'statefulsets':
-                    for obj in w.stream(api.list_stateful_set_for_all_namespaces, **stream_named_arguments):
-                        self.watch_event_handler(resource, obj)
-                case 'components':
-                    # The api does not support watching on component status
-                    with self.thread_lock:
-                        for obj in api.list_component_status(watch=False, **request_named_arguments).to_dict().get(
-                                'items'):
-                            self.data[resource].add_obj_from_data(obj)
-                    time.sleep(self.data_resend_interval)
-                case 'pvcs':
-                    pvc_volumes = get_pvc_volumes_for_all_nodes(api=api,
-                                                                timeout=self.config.k8s_api_request_timeout_seconds,
-                                                                namespace_exclude_re=self.config.namespace_exclude_re,
-                                                                resource_manager=self.data[resource])
-                    with self.thread_lock:
-                        for obj in pvc_volumes:
-                            self.data[resource].add_obj(obj)
-                    time.sleep(self.data_resend_interval)
-                case 'ingresses':
-                    for obj in w.stream(api.list_ingress_for_all_namespaces, **stream_named_arguments):
-                        self.watch_event_handler(resource, obj)
-                case 'tls':
-                    for obj in w.stream(api.list_secret_for_all_namespaces, **stream_named_arguments):
-                        self.watch_event_handler(resource, obj)
-                case 'pods':
-                    for obj in w.stream(api.list_pod_for_all_namespaces, **stream_named_arguments):
-                        self.watch_event_handler(resource, obj)
-                case 'services':
-                    for obj in w.stream(api.list_service_for_all_namespaces, **stream_named_arguments):
-                        self.watch_event_handler(resource, obj)
-                case _:
-                    self.logger.error("No watch handling for resource %s" % resource)
-                    time.sleep(60)
+            if resource == 'nodes':
+                for obj in w.stream(api.list_node, **stream_named_arguments):
+                    self.watch_event_handler(resource, obj)
+            elif resource == 'deployments':
+                for obj in w.stream(api.list_deployment_for_all_namespaces, **stream_named_arguments):
+                    self.watch_event_handler(resource, obj)
+            elif resource == 'daemonsets':
+                for obj in w.stream(api.list_daemon_set_for_all_namespaces, **stream_named_arguments):
+                    self.watch_event_handler(resource, obj)
+            elif resource == 'statefulsets':
+                for obj in w.stream(api.list_stateful_set_for_all_namespaces, **stream_named_arguments):
+                    self.watch_event_handler(resource, obj)
+            elif resource == 'components':
+                # The api does not support watching on component status
+                with self.thread_lock:
+                    for obj in api.list_component_status(watch=False, **request_named_arguments).to_dict().get('items'):
+                        self.data[resource].add_obj_from_data(obj)
+                time.sleep(self.data_resend_interval)
+            elif resource == 'pvcs':
+                pvc_volumes = get_pvc_volumes_for_all_nodes(api=api,
+                                                            timeout=self.config.k8s_api_request_timeout_seconds,
+                                                            namespace_exclude_re=self.config.namespace_exclude_re,
+                                                            resource_manager=self.data[resource])
+                with self.thread_lock:
+                    for obj in pvc_volumes:
+                        self.data[resource].add_obj(obj)
+                time.sleep(self.data_resend_interval)
+            elif resource == 'ingresses':
+                for obj in w.stream(api.list_ingress_for_all_namespaces, **stream_named_arguments):
+                    self.watch_event_handler(resource, obj)
+            elif resource == 'tls':
+                for obj in w.stream(api.list_secret_for_all_namespaces, **stream_named_arguments):
+                    self.watch_event_handler(resource, obj)
+            elif resource == 'pods':
+                for obj in w.stream(api.list_pod_for_all_namespaces, **stream_named_arguments):
+                    self.watch_event_handler(resource, obj)
+            elif resource == 'services':
+                for obj in w.stream(api.list_service_for_all_namespaces, **stream_named_arguments):
+                    self.watch_event_handler(resource, obj)
+            else:
+                self.logger.error("No watch handling for resource %s" % resource)
+                time.sleep(60)
             self.logger.debug("Watch/fetch completed for resource >>>%s<<<, restarting" % resource)
 
     def watch_event_handler(self, resource: str, event: dict):
