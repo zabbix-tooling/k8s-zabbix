@@ -51,8 +51,12 @@ doc:
 	cd template && ./create_template_documentation
 .PHONY: doc
 
-publish: 
-	./build.sh default publish_image ${dockerhub_repo}
+docker:
+	./build.sh default ${dockerhub_repo}
+.PHONY: docker
+
+publish: docker
+	./build.sh publish_image ${dockerhub_repo}
 .PHONY: publish
 
 release: test doc
