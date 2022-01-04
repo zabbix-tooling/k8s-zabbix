@@ -8,7 +8,6 @@ import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pprint import pformat
-from typing import Dict, List, Union
 
 from kubernetes import client, watch
 from kubernetes import config as kube_config
@@ -56,15 +55,15 @@ class KubernetesApi:
 
 
 class CheckKubernetesDaemon:
-    data: Dict[str, K8sResourceManager] = {}
-    discovery_sent: Dict[str, datetime] = {}
+    data: dict[str, K8sResourceManager] = {}
+    discovery_sent: dict[str, datetime] = {}
     thread_lock = threading.Lock()
 
     def __init__(self, config: Configuration,
-                 resources: List[str],
+                 resources: list[str],
                  discovery_interval: int, data_resend_interval: int,
                  ):
-        self.manage_threads: List[Union[TimedThread, WatcherThread]] = []
+        self.manage_threads: list[TimedThread | WatcherThread] = []
         self.config = config
         self.logger = logging.getLogger(__file__)
         self.discovery_interval = int(discovery_interval)
@@ -122,7 +121,7 @@ class CheckKubernetesDaemon:
             self.logger.info(f"WEB Api Host {self.web_api_host} with resources {','.join(self.web_api_resources)}")
 
     @staticmethod
-    def exclude_resources(available_types: List[str], excluded_types: List[str]) -> List[str]:
+    def exclude_resources(available_types: list[str], excluded_types: list[str]) -> list[str]:
         result = []
         for k8s_type_available in available_types:
             if k8s_type_available not in excluded_types:
@@ -305,7 +304,7 @@ class CheckKubernetesDaemon:
                 time.sleep(60)
             self.logger.debug("Watch/fetch completed for resource >>>%s<<<, restarting" % resource)
 
-    def watch_event_handler(self, resource: str, event: Dict):
+    def watch_event_handler(self, resource: str, event: dict):
 
         obj = event['object'].to_dict()
         event_type = event['type']
@@ -515,7 +514,7 @@ class CheckKubernetesDaemon:
         else:
             self.logger.debug("successfully sent heartbeat to zabbix ")
 
-    def send_to_zabbix(self, metrics: List[ZabbixMetric]):
+    def send_to_zabbix(self, metrics: list[ZabbixMetric]):
         if self.zabbix_dry_run:
             result = DryResult()
         else:

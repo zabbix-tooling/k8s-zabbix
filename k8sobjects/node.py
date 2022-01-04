@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 import cachetools.func
 from pyzabbix import ZabbixMetric
@@ -11,7 +10,7 @@ logger = logging.getLogger(__file__)
 
 # TODO: remove after refactoring
 @cachetools.func.ttl_cache(maxsize=1, ttl=60 * 10)
-def get_node_names(api) -> List[str]:
+def get_node_names(api) -> list[str]:
     ret = api.list_node(watch=False)
     nodenames = []
     for item in ret.items:

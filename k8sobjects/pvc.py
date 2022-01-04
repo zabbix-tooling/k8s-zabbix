@@ -1,7 +1,6 @@
 import json
 import logging
 import re
-from typing import List, Dict
 
 from pyzabbix import ZabbixMetric
 
@@ -12,14 +11,14 @@ from .k8sresourcemanager import K8sResourceManager
 logger = logging.getLogger(__file__)
 
 
-def _get_pvc_data_for_node(api, node: str, pvc_volumes: List[K8sObject], timeout_seconds: int,
+def _get_pvc_data_for_node(api, node: str, pvc_volumes: list[K8sObject], timeout_seconds: int,
                            namespace_exclude_re: str,
-                           resource_manager: K8sResourceManager) -> List[K8sObject]:
-    query_params: List[str] = []
-    form_params: List[str] = []
+                           resource_manager: K8sResourceManager) -> list[K8sObject]:
+    query_params: list[str] = []
+    form_params: list[str] = []
     header_params = {}
     body_params = None
-    local_var_files: Dict[str, str] = {}
+    local_var_files: dict[str, str] = {}
     header_params['Accept'] = api.api_client.select_header_accept(
         ['application/json', 'application/yaml', 'application/vnd.kubernetes.protobuf', 'application/json;stream=watch',
          'application/vnd.kubernetes.protobuf;stream=watch'])  # noqa: E501
@@ -56,9 +55,9 @@ def _get_pvc_data_for_node(api, node: str, pvc_volumes: List[K8sObject], timeout
     return pvc_volumes
 
 
-def _process_volume(item: Dict, namespace_exclude_re: str, node: str,
-                    pvc_volumes: List[K8sObject],
-                    resource_manager: K8sResourceManager) -> List[K8sObject]:
+def _process_volume(item: dict, namespace_exclude_re: str, node: str,
+                    pvc_volumes: list[K8sObject],
+                    resource_manager: K8sResourceManager) -> list[K8sObject]:
     for volume in item['volume']:
         if 'pvcRef' not in volume:
             continue
@@ -96,8 +95,8 @@ def _process_volume(item: Dict, namespace_exclude_re: str, node: str,
 
 
 def get_pvc_volumes_for_all_nodes(api, timeout: int, namespace_exclude_re: str,
-                                  resource_manager: K8sResourceManager) -> List[K8sObject]:
-    pvc_volumes: List[K8sObject] = list()
+                                  resource_manager: K8sResourceManager) -> list[K8sObject]:
+    pvc_volumes: list[K8sObject] = list()
     for node in get_node_names(api):
         pvc_volumes = _get_pvc_data_for_node(api=api, node=node,
                                              pvc_volumes=pvc_volumes,

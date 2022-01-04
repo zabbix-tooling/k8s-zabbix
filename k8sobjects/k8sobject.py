@@ -3,7 +3,6 @@ import hashlib
 import json
 import logging
 import re
-from typing import Dict
 
 from pyzabbix import ZabbixMetric
 
@@ -65,7 +64,7 @@ def slugit(name_space: str, name: str, maxlen: int) -> str:
     return slug[:prefix_pos] + "~" + slug[suffix_pos:]
 
 
-def calculate_checksum_for_dict(data: Dict) -> str:
+def calculate_checksum_for_dict(data: dict) -> str:
     json_str = json.dumps(
         data,
         sort_keys=True,
@@ -79,7 +78,7 @@ def calculate_checksum_for_dict(data: Dict) -> str:
 class K8sObject:
     object_type: str = "UNDEFINED"
 
-    def __init__(self, obj_data: Dict, resource: str, manager=None):
+    def __init__(self, obj_data: dict, resource: str, manager=None):
         self.is_dirty_zabbix = True
         self.is_dirty_web = True
         self.last_sent_zabbix_discovery = INITIAL_DATE

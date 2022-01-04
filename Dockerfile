@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.11
 LABEL maintainer="ms-github@256bit.org"
 LABEL Description="zabbix-kubernetes - efficent kubernetes monitoring for zabbix"
 

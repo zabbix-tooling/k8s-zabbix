@@ -5,10 +5,9 @@ from configparser import ConfigParser
 from dataclasses import dataclass, field
 from enum import Enum
 from itertools import chain
-from typing import List, Union
 
 
-def str2bool(v: Union[str, bool]):
+def str2bool(v: str | bool) -> bool:
     if isinstance(v, bool):
         return v
     return v.lower() in ("yes", "true", "t", "1")
@@ -34,20 +33,20 @@ class Configuration:
     debug: bool = False
     debug_k8s_events: bool = False
     namespace_exclude_re: str = ""
-    resources_exclude: List[str] = field(default_factory=lambda: [])
+    resources_exclude: list[str] = field(default_factory=lambda: [])
 
     sentry_enabled: bool = False
     sentry_dsn: str = ""
 
     zabbix_server: str = 'example.zabbix-server.com'
-    zabbix_resources_exclude: List[str] = field(default_factory=lambda: ["components"])
+    zabbix_resources_exclude: list[str] = field(default_factory=lambda: ["components"])
     zabbix_host: str = 'k8s-example-host'
     zabbix_debug: bool = False
     zabbix_single_debug: bool = False
     zabbix_dry_run: bool = False
 
     web_api_enable: bool = False
-    web_api_resources_exclude: List[str] = field(
+    web_api_resources_exclude: list[str] = field(
         default_factory=lambda: ["daemonsets", "components", "services"])
     web_api_verify_ssl: bool = True
     web_api_host: str = "https://example.api.com/api/v1/k8s"

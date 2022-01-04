@@ -1,7 +1,7 @@
 SHELL = bash
 
 activate = source venv/bin/activate
-python = python3.9
+python = python3.11
 dockerhub_repo = scoopex666
 
 all: deps
