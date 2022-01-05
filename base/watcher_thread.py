@@ -3,13 +3,20 @@ import threading
 
 from urllib3.exceptions import ProtocolError
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from base.daemon_thread import CheckKubernetesDaemon
+
 
 class WatcherThread(threading.Thread):
     stop_thread = False
     restart_thread = False
     daemon = True
 
-    def __init__(self, resource, exit_flag, daemon_object, daemon_method):
+    def __init__(self, resource: str, exit_flag: threading.Event,
+                 daemon_object: 'CheckKubernetesDaemon',
+                 daemon_method: str):
         self.exit_flag = exit_flag
         self.resource = resource
         self.daemon_object = daemon_object

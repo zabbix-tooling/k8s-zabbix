@@ -4,6 +4,10 @@ import json
 import logging
 import re
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from k8sobjects import K8sResourceManager
 from pyzabbix import ZabbixMetric
 
 logger = logging.getLogger(__file__)
@@ -78,7 +82,7 @@ def calculate_checksum_for_dict(data: dict[object, object]) -> str:
 class K8sObject:
     object_type: str = "UNDEFINED"
 
-    def __init__(self, obj_data: dict[object, object], resource: str, manager=None):
+    def __init__(self, obj_data: dict[object, object], resource: str, manager: 'K8sResourceManager' = None):
         self.is_dirty_zabbix = True
         self.is_dirty_web = True
         self.last_sent_zabbix_discovery = INITIAL_DATE

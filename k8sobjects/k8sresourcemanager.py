@@ -1,7 +1,9 @@
 import importlib
+import logging
 
-from k8sobjects import K8sObject
-from k8sobjects.k8sobject import K8S_RESOURCES, logger
+from k8sobjects.k8sobject import K8S_RESOURCES, K8sObject
+
+logger = logging.getLogger(__file__)
 
 
 class K8sResourceManager:
