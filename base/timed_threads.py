@@ -2,6 +2,11 @@ import logging
 import threading
 import time
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from base.daemon_thread import CheckKubernetesDaemon
+
 
 class TimedThread(threading.Thread):
     stop_thread = False
@@ -9,9 +14,12 @@ class TimedThread(threading.Thread):
     daemon = True
 
     # TODO: change default of delay_first_run_seconds to 120 seconds
-    def __init__(self, resource, interval, exit_flag, daemon_object, daemon_method,
-                 delay_first_run=False,
-                 delay_first_run_seconds=60):
+    def __init__(self, resource: str, interval: int,
+                 exit_flag: threading.Event,
+                 daemon_object: 'CheckKubernetesDaemon',
+                 daemon_method: str,
+                 delay_first_run: bool = False,
+                 delay_first_run_seconds: int = 60):
         self.cycle_interval_seconds = interval
         self.exit_flag = exit_flag
         self.resource = resource

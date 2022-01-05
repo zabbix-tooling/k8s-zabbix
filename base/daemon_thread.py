@@ -11,8 +11,8 @@ from pprint import pformat
 
 from kubernetes import client, watch
 from kubernetes import config as kube_config
-from kubernetes.client import ApiClient
-from pyzabbix import ZabbixMetric, ZabbixSender
+from kubernetes.client import ApiClient, CoreV1Api, AppsV1Api, ExtensionsV1beta1Api
+from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixResponse
 
 from base.config import Configuration, ClusterAccessConfigType
 from base.timed_threads import TimedThread
@@ -20,6 +20,8 @@ from base.watcher_thread import WatcherThread
 from k8sobjects import K8sObject, K8sResourceManager
 from k8sobjects.container import get_container_zabbix_metrics
 from k8sobjects.pvc import get_pvc_volumes_for_all_nodes
+
+from .web_api import WebApi
 
 exit_flag = threading.Event()
 
@@ -229,7 +231,7 @@ class CheckKubernetesDaemon:
             self.manage_threads.append(resend_thread)
             resend_thread.start()
 
-    def get_api_for_resource(self, resource: str) -> None:
+    def get_api_for_resource(self, resource: str) -> CoreV1Api | AppsV1Api | ExtensionsV1beta1Api:
         if resource in ['nodes', 'components', 'secrets', 'pods', 'services', 'pvcs']:
             api = self.core_v1
         elif resource in ['deployments', 'daemonsets', 'statefulsets']:
@@ -240,9 +242,8 @@ class CheckKubernetesDaemon:
             raise AttributeError('No valid resource found: %s' % resource)
         return api
 
-    def get_web_api(self) -> None:
+    def get_web_api(self) -> WebApi:
         if not hasattr(self, '_web_api'):
-            from .web_api import WebApi
             self._web_api = WebApi(self.web_api_host, self.web_api_token, verify_ssl=self.web_api_verify_ssl)
         return self._web_api
 
@@ -345,7 +346,7 @@ class CheckKubernetesDaemon:
         else:
             self.logger.info('event type "%s" not implemented' % event_type)
 
-    def report_global_data_zabbix(self, resource) -> None:
+    def report_global_data_zabbix(self, resource: str) -> None:
         """ aggregate and report information for some speciality in resources """
         if resource not in self.discovery_sent:
             self.logger.debug('skipping report_global_data_zabbix for %s, discovery not send yet!' % resource)
@@ -405,7 +406,7 @@ class CheckKubernetesDaemon:
 
                 self.send_data_to_zabbix(resource, None, data_to_send)
 
-    def resend_data(self, resource) -> None:
+    def resend_data(self, resource: str) -> None:
 
         with self.thread_lock:
             try:
@@ -478,7 +479,9 @@ class CheckKubernetesDaemon:
 
             self.discovery_sent[resource] = datetime.now()
 
-    def send_object(self, resource, resourced_obj, event_type, send_zabbix_data=False, send_web=False) -> None:
+    def send_object(self, resource: str, resourced_obj: K8sObject,
+                    event_type: str, send_zabbix_data: bool = False,
+                    send_web: bool = False) -> None:
         # send single object for updates
         with self.thread_lock:
             if send_zabbix_data:
@@ -503,7 +506,7 @@ class CheckKubernetesDaemon:
                         resource, resourced_obj.name_space, resourced_obj.name, self.rate_limit_seconds))
                     resourced_obj.is_dirty_web = True
 
-    def send_heartbeat_info(self, *args) -> None:
+    def send_heartbeat_info(self) -> None:
         result = self.send_to_zabbix([
             ZabbixMetric(self.zabbix_host, 'check_kubernetesd[discover,api]', str(int(time.time())))
         ])
@@ -512,7 +515,7 @@ class CheckKubernetesDaemon:
         else:
             self.logger.debug("successfully sent heartbeat to zabbix ")
 
-    def send_to_zabbix(self, metrics: list[ZabbixMetric]):
+    def send_to_zabbix(self, metrics: list[ZabbixMetric]) -> ZabbixResponse | DryResult:
         if self.zabbix_dry_run:
             result = DryResult()
         else:
@@ -558,7 +561,7 @@ class CheckKubernetesDaemon:
         else:
             self.logger.warning('No obj or metrics found for send_discovery_to_zabbix [%s]' % resource)
 
-    def send_data_to_zabbix(self, resource: str, obj=None, metrics=None) -> None:
+    def send_data_to_zabbix(self, resource: str, obj: K8sObject = None, metrics: list[ZabbixMetric] = None) -> None:
         if metrics is None:
             metrics = list()
         if resource not in self.zabbix_resources:
@@ -591,7 +594,7 @@ class CheckKubernetesDaemon:
                 self.logger.debug("successfully sent %s zabbix items [%s: %s]" % (
                     len(metrics), resource, obj.name if obj else 'metrics'))
 
-    def send_to_web_api(self, resource, obj, action) -> None:
+    def send_to_web_api(self, resource: str, obj: K8sObject, action: str) -> None:
         if resource not in self.web_api_resources:
             return
 
