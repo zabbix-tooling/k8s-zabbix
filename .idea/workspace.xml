@@ -3,12 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e11d6900-3673-418a-af28-b507bfb4f29d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/base/daemon_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/daemon_thread.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/k8sobjects/k8sobject.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/k8sobject.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8sobjects/pvc.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/pvc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mypy.ini" beforeDir="false" afterPath="$PROJECT_DIR$/mypy.ini" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -285,7 +281,7 @@
       <workItem from="1641224577328" duration="1587000" />
       <workItem from="1641330939438" duration="342000" />
       <workItem from="1641331336223" duration="6398000" />
-      <workItem from="1641378960846" duration="12188000" />
+      <workItem from="1641378960846" duration="13003000" />
     </task>
     <servers />
   </component>

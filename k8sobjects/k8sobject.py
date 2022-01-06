@@ -162,7 +162,7 @@ class K8sObject:
             "{#SLUG}": slugit(self.name_space or "None", self.name, 40),
         }]
 
-    def get_discovery_for_zabbix(self, discovery_data: dict[str, str]) -> ZabbixMetric:
+    def get_discovery_for_zabbix(self, discovery_data: list[dict[str, str]] | None) -> ZabbixMetric:
         if discovery_data is None:
             discovery_data = self.get_zabbix_discovery_data()
 

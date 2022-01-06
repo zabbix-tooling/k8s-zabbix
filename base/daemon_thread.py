@@ -375,7 +375,7 @@ class CheckKubernetesDaemon:
         elif resource == 'containers':
             # aggregate pod data to containers for each namespace
             with self.thread_lock:
-                containers = dict()
+                containers: dict[str, dict[str, K8sObject]] = dict()
                 for obj_uid, resourced_obj in self.data['pods'].objects.items():
                     ns = resourced_obj.name_space
                     if ns not in containers:
@@ -543,7 +543,7 @@ class CheckKubernetesDaemon:
             return
 
         if obj:
-            discovery_data = obj.get_discovery_for_zabbix()
+            discovery_data = obj.get_discovery_for_zabbix(metric)
             if not discovery_data:
                 self.logger.warning('No discovery_data for obj %s, not sending to zabbix!' % obj.uid)
                 return
