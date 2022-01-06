@@ -5,7 +5,7 @@ import re
 from pyzabbix import ZabbixMetric
 
 from . import get_node_names
-from .k8sobject import K8sObject
+from .k8sobject import K8sObject, ObjectDataType
 from .k8sresourcemanager import K8sResourceManager
 
 logger = logging.getLogger(__file__)
@@ -72,7 +72,7 @@ def _process_volume(item: dict, namespace_exclude_re: str, node: str,
             if check_volume.name_space == namespace and name == check_volume.name:
                 logger.warning(f"pvc already exists {namespace} / {name}")
 
-        data = {
+        data: ObjectDataType = {
             'metadata': {
                 'name': name,
                 'namespace': namespace

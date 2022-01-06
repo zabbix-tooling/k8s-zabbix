@@ -44,6 +44,8 @@ test: deps
 .PHONY: test
 
 run: deps
+	# refresh token kubeconfig azure access token until kubernetes lib can handle this
+	kubectl get nodes >/dev/null 2>&1
 	${activate} && ${python} check_kubernetesd config_flip-dev.ini
 .PHONY: run
 

@@ -60,17 +60,24 @@ class Configuration:
     resend_data_interval_slow: int = 60 * 30
 
     def _convert_to_type(self, field_name: str,
-                         value: list[str] | bool | int | ClusterAccessConfigType) -> \
-            list[str] | bool | int | ClusterAccessConfigType:
-        if isinstance(getattr(self, field_name), bool):
-            value = str2bool(value)
+                         value: str | list[str] | bool | int | ClusterAccessConfigType) -> \
+            str | list[str] | bool | int | ClusterAccessConfigType:
+
+        if not isinstance(value, str):
+            return value
+
+        if isinstance(getattr(self, field_name), str):
+            return str(value)
+        elif isinstance(getattr(self, field_name), bool):
+            return str2bool(value)
         elif isinstance(getattr(self, field_name), int):
-            value = int(value)
+            return int(value)
         elif isinstance(getattr(self, field_name), list):
-            value = re.split(r"[\s,]+", value.strip())
+            return re.split(r"[\s,]+", value.strip())
         elif isinstance(getattr(self, field_name), ClusterAccessConfigType):
-            value = ClusterAccessConfigType(value)
-        return value
+            return ClusterAccessConfigType(value)
+        else:
+            raise ValueError(f"type not implemented {getattr(self, field_name)} {value}")
 
     def load_config_file(self, file_name: str) -> None:
         if not os.path.isfile(file_name):

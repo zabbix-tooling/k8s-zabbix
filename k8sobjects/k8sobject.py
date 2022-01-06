@@ -4,7 +4,7 @@ import json
 import logging
 import re
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 if TYPE_CHECKING:
     from k8sobjects import K8sResourceManager
@@ -68,7 +68,17 @@ def slugit(name_space: str, name: str, maxlen: int) -> str:
     return slug[:prefix_pos] + "~" + slug[suffix_pos:]
 
 
-def calculate_checksum_for_dict(data: dict[object, object]) -> str:
+class MetadataObjectType(TypedDict):
+    name: str
+    namespace: str
+
+
+class ObjectDataType(TypedDict):
+    metadata: MetadataObjectType
+    item: dict
+
+
+def calculate_checksum_for_dict(data: ObjectDataType) -> str:
     json_str = json.dumps(
         data,
         sort_keys=True,
@@ -82,7 +92,7 @@ def calculate_checksum_for_dict(data: dict[object, object]) -> str:
 class K8sObject:
     object_type: str = "UNDEFINED"
 
-    def __init__(self, obj_data: dict[object, object], resource: str, manager: 'K8sResourceManager' = None):
+    def __init__(self, obj_data: ObjectDataType, resource: str, manager: 'K8sResourceManager'):
         self.is_dirty_zabbix = True
         self.is_dirty_web = True
         self.last_sent_zabbix_discovery = INITIAL_DATE
@@ -119,10 +129,10 @@ class K8sObject:
 
     @property
     def name(self) -> str:
-        name = self.data.get('metadata', {}).get('name')
-        if not name:
-            raise Exception('Could not find name in metadata for resource %s' % self.resource)
-        return name
+        if 'metadata' in self.data and 'name' in self.data['metadata']:
+            return self.data['metadata']['name']
+        else:
+            raise Exception(f'Could not find name in metadata for resource {self.resource}')
 
     @property
     def name_space(self) -> str | None:

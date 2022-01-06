@@ -164,6 +164,7 @@ class CheckKubernetesDaemon:
         self.start_resend_threads()
 
     def start_data_threads(self) -> None:
+        thread: WatcherThread | TimedThread
         for resource in self.resources:
             with self.thread_lock:
                 self.data.setdefault(resource, K8sResourceManager(resource, zabbix_host=self.zabbix_host))
@@ -342,7 +343,8 @@ class CheckKubernetesDaemon:
         elif event_type.lower() == 'deleted':
             with self.thread_lock:
                 resourced_obj = self.data[resource].del_obj(obj)
-                self.delete_object(resource, resourced_obj)
+                if resourced_obj:
+                    self.delete_object(resource, resourced_obj)
         else:
             self.logger.info('event type "%s" not implemented' % event_type)
 
