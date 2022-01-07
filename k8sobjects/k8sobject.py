@@ -7,7 +7,8 @@ import re
 from typing import TYPE_CHECKING, TypedDict
 
 if TYPE_CHECKING:
-    from k8sobjects import K8sResourceManager
+    from k8sobjects.k8sresourcemanager import K8sResourceManager
+
 from pyzabbix import ZabbixMetric
 
 logger = logging.getLogger(__file__)
@@ -75,7 +76,7 @@ class MetadataObjectType(TypedDict):
 
 class ObjectDataType(TypedDict):
     metadata: MetadataObjectType
-    item: dict
+    item: dict[str, dict]
 
 
 def calculate_checksum_for_dict(data: ObjectDataType) -> str:
@@ -104,11 +105,11 @@ class K8sObject:
         self.manager = manager
         self.zabbix_host = self.manager.zabbix_host
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.uid
 
     @property
-    def resource_data(self):
+    def resource_data(self) -> dict[str, str]:
         """ customized values for k8s objects """
         return dict(
             name=self.data['metadata']['name'],

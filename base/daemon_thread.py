@@ -1,4 +1,3 @@
-import json
 import logging
 import re
 import signal
@@ -17,10 +16,9 @@ from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixResponse
 from base.config import Configuration, ClusterAccessConfigType
 from base.timed_threads import TimedThread
 from base.watcher_thread import WatcherThread
-from k8sobjects import K8sObject, K8sResourceManager
-from k8sobjects.container import get_container_zabbix_metrics
+from k8sobjects.k8sobject import K8sObject
+from k8sobjects.k8sresourcemanager import K8sResourceManager
 from k8sobjects.pvc import get_pvc_volumes_for_all_nodes
-
 from .web_api import WebApi
 
 exit_flag = threading.Event()
@@ -372,41 +370,46 @@ class CheckKubernetesDaemon:
                 ZabbixMetric(self.zabbix_host, 'check_kubernetes[get,services,num_ingress_services]',
                              str(num_ingress_services)))
             self.send_data_to_zabbix(resource, None, data_to_send)
-        elif resource == 'containers':
-            # aggregate pod data to containers for each namespace
-            with self.thread_lock:
-                containers: dict[str, dict[str, K8sObject]] = dict()
-                for obj_uid, resourced_obj in self.data['pods'].objects.items():
-                    ns = resourced_obj.name_space
-                    if ns not in containers:
-                        containers[ns] = dict()
 
-                    pod_data = resourced_obj.resource_data
-                    pod_base_name = resourced_obj.base_name
-                    try:
-                        container_status = json.loads(pod_data['container_status'])
-                    except Exception as e:
-                        self.logger.error(e)
-                        continue
-
-                    # aggregate container information
-                    for container_name, container_data in container_status.items():
-                        containers[ns].setdefault(pod_base_name, dict())
-                        containers[ns][pod_base_name].setdefault(container_name, container_data)
-
-                        for k, v in containers[ns][pod_base_name][container_name].items():
-                            if isinstance(v, int):
-                                containers[ns][pod_base_name][container_name][k] += container_data[k]
-                            elif k == 'status' and container_data[k].startswith('ERROR'):
-                                containers[ns][pod_base_name][container_name][k] = container_data[k]
-
-                for ns, d1 in containers.items():
-                    for pod_base_name, d2 in d1.items():
-                        for container_name, container_data in d2.items():
-                            data_to_send += get_container_zabbix_metrics(self.zabbix_host, ns, pod_base_name,
-                                                                         container_name, container_data)
-
-                self.send_data_to_zabbix(resource, None, data_to_send)
+        # TODO: disabled, rewrite later
+        # elif resource == 'containers':
+        #     # aggregate pod data to containers for each namespace
+        #     with self.thread_lock:
+        #         containers: dict[str, dict[str, dict[str, object]]] = dict()
+        #         for obj_uid, resourced_obj in self.data['pods'].objects.items():
+        #             if resourced_obj.name_space is None:
+        #                 continue
+        #             if not isinstance(resourced_obj, Pod):
+        #                 continue
+        #             ns = resourced_obj.name_space
+        #             containers.setdefault(resourced_obj.name_space, dict())
+        #
+        #             pod_data = resourced_obj.resource_data
+        #             pod_base_name = resourced_obj.base_name
+        #             try:
+        #                 container_status: dict[str, dict[str, object]] = json.loads(pod_data['container_status'])
+        #             except Exception as e:
+        #                 self.logger.error(e)
+        #                 continue
+        #
+        #             # aggregate container information
+        #             for container_name, container_data in container_status.items():
+        #                 containers[ns].setdefault(pod_base_name, dict())
+        #                 containers[ns][pod_base_name].setdefault(container_name, container_data)
+        #
+        #                 for k, v in containers[ns][pod_base_name][container_name].items():
+        #                     if isinstance(v, int):
+        #                         containers[ns][pod_base_name][container_name][k] += container_data[k]
+        #                     elif k == 'status' and container_data[k].startswith('ERROR'):
+        #                         containers[ns][pod_base_name][container_name][k] = container_data[k]
+        #
+        #         for ns, d1 in containers.items():
+        #             for pod_base_name, d2 in d1.items():
+        #                 for container_name, container_data in d2.items():
+        #                     data_to_send += get_container_zabbix_metrics(self.zabbix_host, ns, pod_base_name,
+        #                                                                  container_name, container_data)
+        #
+        #         self.send_data_to_zabbix(resource, None, data_to_send)
 
     def resend_data(self, resource: str) -> None:
 
@@ -563,7 +566,8 @@ class CheckKubernetesDaemon:
         else:
             self.logger.warning('No obj or metrics found for send_discovery_to_zabbix [%s]' % resource)
 
-    def send_data_to_zabbix(self, resource: str, obj: K8sObject = None, metrics: list[ZabbixMetric] = None) -> None:
+    def send_data_to_zabbix(self, resource: str, obj: K8sObject = None,
+                            metrics: list[ZabbixMetric] | None = None) -> None:
         if metrics is None:
             metrics = list()
         if resource not in self.zabbix_resources:

@@ -5,7 +5,7 @@ import re
 from pyzabbix import ZabbixMetric
 
 from . import get_node_names
-from .k8sobject import K8sObject, ObjectDataType
+from .k8sobject import K8sObject, ObjectDataType, MetadataObjectType
 from .k8sresourcemanager import K8sResourceManager
 
 logger = logging.getLogger(__file__)
@@ -72,22 +72,19 @@ def _process_volume(item: dict, namespace_exclude_re: str, node: str,
             if check_volume.name_space == namespace and name == check_volume.name:
                 logger.warning(f"pvc already exists {namespace} / {name}")
 
-        data: ObjectDataType = {
-            'metadata': {
-                'name': name,
-                'namespace': namespace
-            },
-            'item': volume
-        }
-        data['item']['nodename'] = node
-        data['item']['usedBytesPercentage'] = float(float(
-            data['item']['usedBytes'] / data['item']['capacityBytes'])) * 100
+        metadata: MetadataObjectType = MetadataObjectType(name=name, namespace=namespace)
 
-        data['item']['inodesUsedPercentage'] = float(float(
-            data['item']['inodesUsed'] / data['item']['inodes'])) * 100
+        volume['nodename'] = node
+        volume['usedBytesPercentage'] = float(float(
+            volume['usedBytes'] / volume['capacityBytes'])) * 100
+
+        volume['inodesUsedPercentage'] = float(float(
+            volume['inodesUsed'] / volume['inodes'])) * 100
 
         for key in ['name', 'pvcRef', 'time', 'availableBytes', 'inodesFree']:
-            data['item'].pop(key, None)
+            volume.pop(key, None)
+
+        data: ObjectDataType = ObjectDataType(metadata=metadata, item=volume)
         pvc = Pvc(obj_data=data, resource="pvcs", manager=resource_manager)
         pvc_volumes.append(pvc)
 

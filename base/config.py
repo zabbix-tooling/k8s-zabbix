@@ -39,7 +39,7 @@ class Configuration:
     sentry_dsn: str = ""
 
     zabbix_server: str = 'example.zabbix-server.com'
-    zabbix_resources_exclude: list[str] = field(default_factory=lambda: ["components"])
+    zabbix_resources_exclude: list[str] = field(default_factory=lambda: [])
     zabbix_host: str = 'k8s-example-host'
     zabbix_debug: bool = False
     zabbix_single_debug: bool = False
@@ -90,7 +90,7 @@ class Configuration:
             lines = chain(["[top]"], lines_io.readlines())
             config_ini.read_file(lines)
 
-        for field_name in self.__dataclass_fields__:  # type: ignore
+        for field_name in self.__dataclass_fields__:
             if field_name not in config_ini["top"]:
                 continue
 

@@ -24,15 +24,14 @@ class WatcherThread(threading.Thread):
         threading.Thread.__init__(self, target=self.run)
         self.logger = logging.getLogger(__file__)
 
-    def stop(self):
+    def stop(self) -> None:
         self.logger.info('OK: Thread "' + self.resource + '" is stopping"')
         self.stop_thread = True
 
-    def run(self):
+    def run(self) -> None:
         self.logger.info('[start thread|watch] %s -> %s' % (self.resource, self.daemon_method))
         try:
             getattr(self.daemon_object, self.daemon_method)(self.resource)
         except (ProtocolError, ConnectionError) as e:
             self.logger.error(e)
-            self.daemon.dirty_threads = True
             self.restart_thread = True

@@ -30,11 +30,11 @@ class TimedThread(threading.Thread):
         threading.Thread.__init__(self, target=self.run)
         self.logger = logging.getLogger(__file__)
 
-    def stop(self):
+    def stop(self) -> None:
         self.logger.info('OK: Thread "' + self.resource + '" is stopping"')
         self.stop_thread = True
 
-    def run(self):
+    def run(self) -> None:
         # manage first run
         if self.delay_first_run:
             self.logger.info(
@@ -62,7 +62,7 @@ class TimedThread(threading.Thread):
 
         self.logger.info('terminating looprun thread %s.%s' % (self.resource, self.daemon_method))
 
-    def run_requests(self, first_run=False):
+    def run_requests(self, first_run: bool = False) -> None:
         if first_run:
             self.logger.debug('first looprun on timed thread %s.%s [interval %is]' %
                               (self.resource, self.daemon_method, self.cycle_interval_seconds))
