@@ -2,6 +2,7 @@ import json
 import logging
 import re
 
+from kubernetes.client import CoreV1Api
 from pyzabbix import ZabbixMetric
 
 from . import get_node_names
@@ -11,7 +12,7 @@ from .k8sresourcemanager import K8sResourceManager
 logger = logging.getLogger(__file__)
 
 
-def _get_pvc_data_for_node(api, node: str, pvc_volumes: list[K8sObject], timeout_seconds: int,
+def _get_pvc_data_for_node(api: CoreV1Api, node: str, pvc_volumes: list[K8sObject], timeout_seconds: int,
                            namespace_exclude_re: str,
                            resource_manager: K8sResourceManager) -> list[K8sObject]:
     query_params: list[str] = []
@@ -91,7 +92,7 @@ def _process_volume(item: dict, namespace_exclude_re: str, node: str,
     return pvc_volumes
 
 
-def get_pvc_volumes_for_all_nodes(api, timeout: int, namespace_exclude_re: str,
+def get_pvc_volumes_for_all_nodes(api: CoreV1Api, timeout: int, namespace_exclude_re: str,
                                   resource_manager: K8sResourceManager) -> list[K8sObject]:
     pvc_volumes: list[K8sObject] = list()
     for node in get_node_names(api):
