@@ -511,14 +511,14 @@ class CheckKubernetesDaemon:
                         resource, resourced_obj.name_space, resourced_obj.name, self.rate_limit_seconds))
                     resourced_obj.is_dirty_web = True
 
-    def send_heartbeat_info(self) -> None:
+    def send_heartbeat_info(self, resource: str) -> None:
         result = self.send_to_zabbix([
             ZabbixMetric(self.zabbix_host, 'check_kubernetesd[discover,api]', str(int(time.time())))
         ])
         if result.failed > 0:
-            self.logger.error("failed to send heartbeat to zabbix")
+            self.logger.error(f"{resource} failed to send heartbeat to zabbix")
         else:
-            self.logger.debug("successfully sent heartbeat to zabbix ")
+            self.logger.debug(f"{resource} successfully sent heartbeat to zabbix ")
 
     def send_to_zabbix(self, metrics: list[ZabbixMetric]) -> ZabbixResponse | DryResult:
         if self.zabbix_dry_run:
@@ -552,7 +552,7 @@ class CheckKubernetesDaemon:
                 return
 
             discovery_key = 'check_kubernetesd[discover,' + resource + ']'
-            result = self.send_to_zabbix([ZabbixMetric(self.zabbix_host, discovery_key, discovery_data)])
+            result = self.send_to_zabbix([ZabbixMetric(host=self.zabbix_host, key=discovery_key, value=discovery_data)])
             if result.failed > 0:
                 self.logger.error("failed to sent zabbix discovery: %s : >>>%s<<<" % (discovery_key, discovery_data))
             elif self.zabbix_debug:
