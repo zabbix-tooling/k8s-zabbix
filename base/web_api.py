@@ -7,7 +7,7 @@ logger = logging.getLogger(__file__)
 
 
 class WebApi:
-    def __init__(self, api_host, api_token, verify_ssl=True):
+    def __init__(self, api_host: str, api_token: str, verify_ssl: bool = True):
         self.api_host = api_host
         self.api_token = api_token
         self.verify_ssl = verify_ssl
@@ -36,7 +36,7 @@ class WebApi:
             return url
         return url + api_resource + '/' + path_append
 
-    def send_data(self, resource, data, action):
+    def send_data(self, resource: str, data: dict[str, str], action: str) -> None:
         path_append = ""
         if action.lower() == 'added':
             func = requests.post

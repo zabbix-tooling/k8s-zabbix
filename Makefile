@@ -1,7 +1,7 @@
 SHELL = bash
 
 activate = source venv/bin/activate
-python = python3.9
+python = python3.11
 dockerhub_repo = scoopex666
 
 all: deps
@@ -44,6 +44,8 @@ test: deps
 .PHONY: test
 
 run: deps
+	# refresh token kubeconfig azure access token until kubernetes lib can handle this
+	kubectl get nodes >/dev/null 2>&1
 	${activate} && ${python} check_kubernetesd config_flip-dev.ini
 .PHONY: run
 
@@ -51,8 +53,12 @@ doc:
 	cd template && ./create_template_documentation
 .PHONY: doc
 
-publish: 
-	./build.sh default publish_image ${dockerhub_repo}
+docker:
+	./build.sh default ${dockerhub_repo}
+.PHONY: docker
+
+publish: docker
+	./build.sh publish_image ${dockerhub_repo}
 .PHONY: publish
 
 release: test doc

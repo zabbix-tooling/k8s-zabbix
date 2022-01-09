@@ -2,6 +2,11 @@ import logging
 import threading
 import time
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from base.daemon_thread import CheckKubernetesDaemon
+
 
 class TimedThread(threading.Thread):
     stop_thread = False
@@ -9,9 +14,12 @@ class TimedThread(threading.Thread):
     daemon = True
 
     # TODO: change default of delay_first_run_seconds to 120 seconds
-    def __init__(self, resource, interval, exit_flag, daemon_object, daemon_method,
-                 delay_first_run=False,
-                 delay_first_run_seconds=60):
+    def __init__(self, resource: str, interval: int,
+                 exit_flag: threading.Event,
+                 daemon_object: 'CheckKubernetesDaemon',
+                 daemon_method: str,
+                 delay_first_run: bool = False,
+                 delay_first_run_seconds: int = 60):
         self.cycle_interval_seconds = interval
         self.exit_flag = exit_flag
         self.resource = resource
@@ -22,11 +30,11 @@ class TimedThread(threading.Thread):
         threading.Thread.__init__(self, target=self.run)
         self.logger = logging.getLogger(__file__)
 
-    def stop(self):
+    def stop(self) -> None:
         self.logger.info('OK: Thread "' + self.resource + '" is stopping"')
         self.stop_thread = True
 
-    def run(self):
+    def run(self) -> None:
         # manage first run
         if self.delay_first_run:
             self.logger.info(
@@ -54,7 +62,7 @@ class TimedThread(threading.Thread):
 
         self.logger.info('terminating looprun thread %s.%s' % (self.resource, self.daemon_method))
 
-    def run_requests(self, first_run=False):
+    def run_requests(self, first_run: bool = False) -> None:
         if first_run:
             self.logger.debug('first looprun on timed thread %s.%s [interval %is]' %
                               (self.resource, self.daemon_method, self.cycle_interval_seconds))

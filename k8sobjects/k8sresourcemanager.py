@@ -1,8 +1,9 @@
 import importlib
-from typing import Dict, Union
+import logging
 
-from k8sobjects import K8sObject
-from k8sobjects.k8sobject import K8S_RESOURCES, logger
+from k8sobjects.k8sobject import K8S_RESOURCES, K8sObject
+
+logger = logging.getLogger(__file__)
 
 
 class K8sResourceManager:
@@ -10,15 +11,15 @@ class K8sResourceManager:
         self.resource = resource
         self.zabbix_host = zabbix_host
 
-        self.objects: Dict[str, K8sObject] = dict()
-        self.containers: Dict = dict()  # containers only used for pods
+        self.objects: dict[str, K8sObject] = dict()
+        self.containers: dict = dict()  # containers only used for pods
 
         mod = importlib.import_module('k8sobjects')
         class_label = K8S_RESOURCES[resource]
         self.resource_class = getattr(mod, class_label.capitalize(), None)
         logger.info(f"Creating new resource manager for resource {resource} with class {self.resource_class}")
 
-    def add_obj_from_data(self, data: Dict) -> Union[K8sObject, None]:
+    def add_obj_from_data(self, data: dict) -> K8sObject | None:
         if not self.resource_class:
             logger.error('No Resource Class found for "%s"' % self.resource)
             return None
@@ -30,7 +31,7 @@ class K8sResourceManager:
             logger.fatal(f"Unable to add object by data : {e} - >>><{data}<<")
             return None
 
-    def add_obj(self, new_obj: K8sObject) -> Union[K8sObject, None]:
+    def add_obj(self, new_obj: K8sObject) -> K8sObject | None:
 
         if new_obj.uid not in self.objects:
             # new object
@@ -47,7 +48,7 @@ class K8sResourceManager:
         # return created or updated object
         return self.objects[new_obj.uid]
 
-    def del_obj(self, obj: K8sObject) -> Union[K8sObject, None]:
+    def del_obj(self, obj: K8sObject) -> K8sObject | None:
         if not self.resource_class:
             logger.error('No Resource Class found for "%s"' % self.resource)
             return None

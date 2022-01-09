@@ -3,7 +3,11 @@ import hashlib
 import json
 import logging
 import re
-from typing import Dict
+
+from typing import TYPE_CHECKING, TypedDict
+
+if TYPE_CHECKING:
+    from k8sobjects.k8sresourcemanager import K8sResourceManager
 
 from pyzabbix import ZabbixMetric
 
@@ -26,7 +30,7 @@ K8S_RESOURCES = dict(
 INITIAL_DATE = datetime.datetime(2000, 1, 1, 0, 0)
 
 
-def json_encoder(obj) -> str:
+def json_encoder(obj: object) -> str:
     if isinstance(obj, (datetime.date, datetime.datetime)):
         return obj.isoformat()
     raise TypeError(f"custom json_encoder: unable to encode {type(obj)}")
@@ -65,7 +69,17 @@ def slugit(name_space: str, name: str, maxlen: int) -> str:
     return slug[:prefix_pos] + "~" + slug[suffix_pos:]
 
 
-def calculate_checksum_for_dict(data: Dict) -> str:
+class MetadataObjectType(TypedDict):
+    name: str
+    namespace: str
+
+
+class ObjectDataType(TypedDict):
+    metadata: MetadataObjectType
+    item: dict[str, dict]
+
+
+def calculate_checksum_for_dict(data: ObjectDataType) -> str:
     json_str = json.dumps(
         data,
         sort_keys=True,
@@ -79,7 +93,7 @@ def calculate_checksum_for_dict(data: Dict) -> str:
 class K8sObject:
     object_type: str = "UNDEFINED"
 
-    def __init__(self, obj_data: Dict, resource: str, manager=None):
+    def __init__(self, obj_data: ObjectDataType, resource: str, manager: 'K8sResourceManager'):
         self.is_dirty_zabbix = True
         self.is_dirty_web = True
         self.last_sent_zabbix_discovery = INITIAL_DATE
@@ -91,11 +105,11 @@ class K8sObject:
         self.manager = manager
         self.zabbix_host = self.manager.zabbix_host
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.uid
 
     @property
-    def resource_data(self):
+    def resource_data(self) -> dict[str, str]:
         """ customized values for k8s objects """
         return dict(
             name=self.data['metadata']['name'],
@@ -103,7 +117,7 @@ class K8sObject:
         )
 
     @property
-    def uid(self):
+    def uid(self) -> str:
         if not hasattr(self, 'object_type'):
             raise AttributeError('No object_type set! Dont use K8sObject itself!')
         elif not self.name:
@@ -115,14 +129,14 @@ class K8sObject:
         return self.object_type + '_' + self.name
 
     @property
-    def name(self):
-        name = self.data.get('metadata', {}).get('name')
-        if not name:
-            raise Exception('Could not find name in metadata for resource %s' % self.resource)
-        return name
+    def name(self) -> str:
+        if 'metadata' in self.data and 'name' in self.data['metadata']:
+            return self.data['metadata']['name']
+        else:
+            raise Exception(f'Could not find name in metadata for resource {self.resource}')
 
     @property
-    def name_space(self):
+    def name_space(self) -> str | None:
         from .node import Node
         from .component import Component
         if isinstance(self, Node) or isinstance(self, Component):
@@ -133,23 +147,23 @@ class K8sObject:
             raise Exception('Could not find name_space for obj [%s] %s' % (self.resource, self.name))
         return name_space
 
-    def is_unsubmitted_web(self):
+    def is_unsubmitted_web(self) -> bool:
         return self.last_sent_web == INITIAL_DATE
 
-    def is_unsubmitted_zabbix(self):
+    def is_unsubmitted_zabbix(self) -> bool:
         return self.last_sent_zabbix == INITIAL_DATE
 
-    def is_unsubmitted_zabbix_discovery(self):
+    def is_unsubmitted_zabbix_discovery(self) -> bool:
         return self.last_sent_zabbix_discovery == datetime.datetime(2000, 1, 1, 0, 0)
 
-    def get_zabbix_discovery_data(self):
+    def get_zabbix_discovery_data(self) -> list[dict[str, str]]:
         return [{
             "{#NAME}": self.name,
-            "{#NAMESPACE}": self.name_space,
-            "{#SLUG}": slugit(self.name_space, self.name, 40),
+            "{#NAMESPACE}": self.name_space or "None",
+            "{#SLUG}": slugit(self.name_space or "None", self.name, 40),
         }]
 
-    def get_discovery_for_zabbix(self, discovery_data=None):
+    def get_discovery_for_zabbix(self, discovery_data: list[dict[str, str]] | None) -> ZabbixMetric:
         if discovery_data is None:
             discovery_data = self.get_zabbix_discovery_data()
 
@@ -161,6 +175,6 @@ class K8sObject:
             })
         )
 
-    def get_zabbix_metrics(self):
+    def get_zabbix_metrics(self) -> list[ZabbixMetric]:
         logger.fatal(f"get_zabbix_metrics: not implemented for {self.object_type}")
         return []
