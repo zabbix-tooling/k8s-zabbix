@@ -1,7 +1,55 @@
+import json
 import logging
+import re
+from pprint import pprint
+
+from pyzabbix import ZabbixMetric
+
+from k8sobjects import K8sObject
 
 logger = logging.getLogger(__file__)
 
+
+class Pod(K8sObject):
+    object_type = 'pod'
+    kind = None
+
+    @property
+    def name(self) -> str:
+        if 'metadata' not in self.data and 'name' in self.data['metadata']:
+            raise Exception(f'Could not find name in metadata for resource {self.resource}')
+
+        if "owner_references" in self.data['metadata']:
+            for owner_refs in self.data['metadata']['owner_references']:
+                self.kind = owner_refs['kind']
+
+        generate_name = self.data['metadata']['generate_name']
+        match self.kind:
+            case "Job":
+                name = re.sub(r'-\d+-$', '', generate_name)
+            case "ReplicaSet":
+                name = re.sub(r'-[a-f0-9]{4,}-$', '', generate_name)
+            case _:
+                name = re.sub(r'-$', '', generate_name)
+
+        return name
+
+    def get_zabbix_discovery_data(self) -> list[dict[str, str]]:
+        data = super().get_zabbix_discovery_data()
+        data[0]['{#KIND}'] = self.kind
+        return data
+
+    @property
+    def resource_data(self) -> dict[str, str]:
+        data = super().resource_data
+        from pprint import pprint
+        pprint(data)
+        return data
+
+    def get_zabbix_metrics(self):
+        data = self.resource_data
+        data_to_send = list()
+        return data_to_send
 
 # class Pod(K8sObject):
 #     object_type = 'pod'
@@ -93,18 +141,17 @@ logger = logging.getLogger(__file__)
 #             })
 #         )
 #
-#     # -> not used, aggregate over containers
-#     # def get_zabbix_metrics(self):
-#     #     data = self.resource_data
-#     #     data_to_send = list()
-#     #
-#     #     if 'status' not in data:
-#     #         logger.error(data)
-#     #
-#     #     for k, v in pod_data.items():
-#     #         data_to_send.append(ZabbixMetric(
-#     #             self.zabbix_host, 'check_kubernetesd[get,pods,%s,%s,%s]' % (self.name_space, self.name, k),
-#     #             v,
-#     #         ))
-#     #
-#     #     return data_to_send
+#     def get_zabbix_metrics(self):
+#         data = self.resource_data
+#         data_to_send = list()
+#
+#         # if 'status' not in data:
+#         #     logger.error(data)
+#         #
+#         # for k, v in pod_data.items():
+#         #     data_to_send.append(ZabbixMetric(
+#         #         self.zabbix_host, 'check_kubernetesd[get,pods,%s,%s,%s]' % (self.name_space, self.name, k),
+#         #         v,
+#         #     ))
+#
+#         return data_to_send
