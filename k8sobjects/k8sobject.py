@@ -72,6 +72,7 @@ def slugit(name_space: str, name: str, maxlen: int) -> str:
 class MetadataObjectType(TypedDict):
     name: str
     namespace: str
+    generate_name: str
 
 
 class ObjectDataType(TypedDict):
@@ -91,9 +92,11 @@ def calculate_checksum_for_dict(data: ObjectDataType) -> str:
 
 
 class K8sObject:
+    """Holds the resource data"""
     object_type: str = "UNDEFINED"
 
     def __init__(self, obj_data: ObjectDataType, resource: str, manager: 'K8sResourceManager'):
+        """Get the resource data from the k8s api"""
         self.is_dirty_zabbix = True
         self.is_dirty_web = True
         self.last_sent_zabbix_discovery = INITIAL_DATE
@@ -112,8 +115,8 @@ class K8sObject:
     def resource_data(self) -> dict[str, str]:
         """ customized values for k8s objects """
         return dict(
-            name=self.data['metadata']['name'],
-            name_space=self.data['metadata']['namespace'],
+            name=self.name,
+            name_space=self.name_space
         )
 
     @property
@@ -130,6 +133,7 @@ class K8sObject:
 
     @property
     def name(self) -> str:
+        """The name of the object"""
         if 'metadata' in self.data and 'name' in self.data['metadata']:
             return self.data['metadata']['name']
         else:
