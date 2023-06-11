@@ -72,7 +72,8 @@ def slugit(name_space: str, name: str, maxlen: int) -> str:
 class MetadataObjectType(TypedDict):
     name: str
     namespace: str
-    generate_name: str
+    generate_name: str | None
+    owner_references: list[dict[str, str]]
 
 
 class ObjectDataType(TypedDict):
@@ -114,6 +115,8 @@ class K8sObject:
     @property
     def resource_data(self) -> dict[str, str]:
         """ customized values for k8s objects """
+        if self.name_space is None:
+            raise RuntimeError("name_space is None for %s" % self.name)
         return dict(
             name=self.name,
             name_space=self.name_space

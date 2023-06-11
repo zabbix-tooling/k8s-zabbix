@@ -73,7 +73,10 @@ def _process_volume(item: dict, namespace_exclude_re: str, node: str,
             if check_volume.name_space == namespace and name == check_volume.name:
                 logger.warning(f"pvc already exists {namespace} / {name}")
 
-        metadata: MetadataObjectType = MetadataObjectType(name=name, namespace=namespace)
+        metadata: MetadataObjectType = MetadataObjectType(name=name,
+                                                          namespace=namespace,
+                                                          generate_name=None,
+                                                          owner_references=list())
 
         volume['nodename'] = node
         volume['usedBytesPercentage'] = float(float(

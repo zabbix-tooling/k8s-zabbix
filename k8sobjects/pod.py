@@ -1,9 +1,5 @@
-import json
 import logging
 import re
-from pprint import pprint
-
-from pyzabbix import ZabbixMetric
 
 from k8sobjects import K8sObject
 
@@ -24,30 +20,31 @@ class Pod(K8sObject):
                 self.kind = owner_refs['kind']
 
         generate_name = self.data['metadata']['generate_name']
-        match self.kind:
-            case "Job":
-                name = re.sub(r'-\d+-$', '', generate_name)
-            case "ReplicaSet":
-                name = re.sub(r'-[a-f0-9]{4,}-$', '', generate_name)
-            case _:
-                name = re.sub(r'-$', '', generate_name)
+        if generate_name is not None:
+            match self.kind:
+                case "Job":
+                    name = re.sub(r'-\d+-$', '', generate_name)
+                case "ReplicaSet":
+                    name = re.sub(r'-[a-f0-9]{4,}-$', '', generate_name)
+                case _:
+                    name = re.sub(r'-$', '', generate_name)
 
         return name
 
     def get_zabbix_discovery_data(self) -> list[dict[str, str]]:
         data = super().get_zabbix_discovery_data()
-        data[0]['{#KIND}'] = self.kind
+        if self.kind is not None:
+            data[0]['{#KIND}'] = self.kind
         return data
 
     @property
     def resource_data(self) -> dict[str, str]:
         data = super().resource_data
-        from pprint import pprint
-        pprint(data)
         return data
 
     def get_zabbix_metrics(self):
-        data = self.resource_data
+        # TODO: Temporary
+        # data = self.resource_data
         data_to_send = list()
         return data_to_send
 
