@@ -6,11 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e11d6900-3673-418a-af28-b507bfb4f29d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base/daemon_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/base/daemon_thread.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8sobjects/k8sobject.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/k8sobject.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8sobjects/k8sresourcemanager.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/k8sresourcemanager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8sobjects/pod.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/pod.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8sobjects/pvc.py" beforeDir="false" afterPath="$PROJECT_DIR$/k8sobjects/pvc.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -40,23 +35,26 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
   <component name="ProjectId" id="1rtaruK8tw2robJQOT3J8mLzNTS" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/k8sobjects" />
@@ -296,7 +294,9 @@
       <workItem from="1644753488070" duration="608000" />
       <workItem from="1644824229568" duration="45000" />
       <workItem from="1645297139932" duration="12914000" />
-      <workItem from="1686479563295" duration="1794000" />
+      <workItem from="1686479563295" duration="2646000" />
+      <workItem from="1686672631708" duration="5000" />
+      <workItem from="1690878595779" duration="313000" />
     </task>
     <servers />
   </component>
@@ -333,9 +333,9 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd.coverage" NAME="check_kubernetesd Coverage Results" MODIFIED="1640950410301" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd___config_flip_dev_ini.coverage" NAME="check_kubernetesd - config_flip-dev.ini Coverage Results" MODIFIED="1645364490809" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd___config_flip_test_ini.coverage" NAME="check_kubernetesd - config_flip-test.ini Coverage Results" MODIFIED="1645365454199" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/k8s_zabbix$.coverage" NAME=" Coverage Results" MODIFIED="1640947392402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/unit" />
+    <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd.coverage" NAME="check_kubernetesd Coverage Results" MODIFIED="1640950410301" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/k8s_zabbix$check_kubernetesd___config_flip_test_ini.coverage" NAME="check_kubernetesd - config_flip-test.ini Coverage Results" MODIFIED="1645365454199" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
