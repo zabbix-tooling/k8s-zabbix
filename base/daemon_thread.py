@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pprint import pformat
 
+import kubernetes
 from kubernetes import client, watch
 from kubernetes import config as kube_config
 from kubernetes.client import ApiClient, CoreV1Api, AppsV1Api, ApiextensionsV1Api
@@ -49,8 +50,8 @@ class KubernetesApi:
             self.core_v1 = client.CoreV1Api(api_client)
         if not getattr(self, 'apps_v1', None):
             self.apps_v1 = client.AppsV1Api(api_client)
-        if not getattr(self, 'exentsions_v1', None):
-            self.extensions_v1 = client.ExtensionsV1beta1Api(api_client)
+        if not getattr(self, 'extensions_v1', None):
+            self.extensions_v1 = client.ApiextensionsV1Api(api_client)
 
 
 class CheckKubernetesDaemon:
