@@ -35,9 +35,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="1rtaruK8tw2robJQOT3J8mLzNTS" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -66,6 +66,7 @@
   <component name="RunManager" selected="Python.check_kubernetesd - config_flip-test.ini">
     <configuration name="check_kubernetesd - config_flip-dev.ini" type="PythonConfigurationType" factoryName="Python">
       <module name="k8s-zabbix" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -100,6 +101,7 @@
     </configuration>
     <configuration name="check_kubernetesd - config_flip-test.ini" type="PythonConfigurationType" factoryName="Python">
       <module name="k8s-zabbix" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -134,6 +136,7 @@
     </configuration>
     <configuration name="Python tests for config_loading.test_load_config" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="k8s-zabbix" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
@@ -159,6 +162,7 @@
     </configuration>
     <configuration name="Python tests for config_loading.test_load_config_ini" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="k8s-zabbix" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
@@ -184,6 +188,7 @@
     </configuration>
     <configuration name="Python tests for k8sobject.test_transform_value" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="k8s-zabbix" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
@@ -199,6 +204,7 @@
     </configuration>
     <configuration name="Python tests for test_config_loading.test_load_config" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="k8s-zabbix" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
@@ -214,6 +220,7 @@
     </configuration>
     <configuration name="Python tests in /home/marc/src/github/k8s-zabbix/tests/unit/config_loading.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="k8s-zabbix" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
