@@ -53,7 +53,7 @@ Behavior of the system:
 Testing and development
 =======================
 
-
+* Install the needed components, see [Dockerfile](./Dockerfile)
 * Clone Repo and install dependencies
   ```
   git clone git@github.com:zabbix-tooling/k8s-zabbix.git
