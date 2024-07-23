@@ -10,3 +10,4 @@ venv/*
 *.log
 /config*.py
 /config*.ini
+.idea
