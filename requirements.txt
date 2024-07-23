@@ -1,5 +1,5 @@
 kubernetes==27.2.0
-cryptography==42.0.3
+cryptography==42.0.4
 types-cryptography==3.3.23.2
 py-zabbix==1.1.7
 sentry-sdk==1.29.0
