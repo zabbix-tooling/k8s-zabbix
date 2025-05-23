@@ -6,10 +6,10 @@ from kubernetes.client import CoreV1Api
 from pyzabbix import ZabbixMetric
 
 from . import get_node_names
-from .k8sobject import K8sObject, ObjectDataType, MetadataObjectType
+from .k8sobject import K8sObject, MetadataObjectType, ObjectDataType
 from .k8sresourcemanager import K8sResourceManager
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger("k8s-zabbix")
 
 
 def _get_pvc_data_for_node(api: CoreV1Api, node: str, pvc_volumes: list[K8sObject], timeout_seconds: int,
@@ -23,26 +23,25 @@ def _get_pvc_data_for_node(api: CoreV1Api, node: str, pvc_volumes: list[K8sObjec
     header_params['Accept'] = api.api_client.select_header_accept(
         ['application/json', 'application/yaml', 'application/vnd.kubernetes.protobuf', 'application/json;stream=watch',
          'application/vnd.kubernetes.protobuf;stream=watch'])  # noqa: E501
-
-    auth_settings = ['BearerToken']  # noqa: E501
-    path_params = {'node': node}
+    auth_settings = ["BearerToken"]  # noqa: E501
+    path_params = {"node": node}
     logger.debug(f"Getting pvc infos for node {node}")
     ret = api.api_client.call_api(
-        '/api/v1/nodes/{node}/proxy/stats/summary',
-        'GET',
+        "/api/v1/nodes/{node}/proxy/stats/summary",
+        "GET",
         path_params,
         query_params,
         header_params,
         body=body_params,
         post_params=form_params,
         files=local_var_files,
-        response_type='str',  # noqa: E501
+        response_type="str",  # noqa: E501
         auth_settings=auth_settings,
         async_req=False,
         _return_http_data_only=True,
         _preload_content=False,
         _request_timeout=timeout_seconds,
-        collection_formats={}
+        collection_formats={},
     )
 
     loaded_json = json.loads(ret.data)
@@ -79,11 +78,13 @@ def _process_volume(item: dict, namespace_exclude_re: str, node: str,
                                                           owner_references=list())
 
         volume['nodename'] = node
-        volume['usedBytesPercentage'] = float(float(
-            volume['usedBytes'] / volume['capacityBytes'])) * 100
+        if volume['capacityBytes'] != 0:
+            volume['usedBytesPercentage'] = float(float(
+                volume['usedBytes'] / volume['capacityBytes'])) * 100
 
-        volume['inodesUsedPercentage'] = float(float(
-            volume['inodesUsed'] / volume['inodes'])) * 100
+        if volume['inodes'] != 0:
+            volume['inodesUsedPercentage'] = float(float(
+                volume['inodesUsed'] / volume['inodes'])) * 100
 
         for key in ['name', 'pvcRef', 'time', 'availableBytes', 'inodesFree']:
             volume.pop(key, None)
@@ -109,7 +110,13 @@ def get_pvc_volumes_for_all_nodes(api: CoreV1Api, timeout: int, namespace_exclud
 
 
 class Pvc(K8sObject):
-    object_type = 'pvc'
+    object_type = "pvc"
+
+    def get_list(self):
+        return get_pvc_volumes_for_all_nodes(api=self.manager.api,
+                                             timeout=self.manager.config.k8s_api_request_timeout_seconds,
+                                             namespace_exclude_re=self.manager.config.namespace_exclude_re,
+                                             resource_manager=self.manager)
 
     @property
     def resource_data(self):
@@ -118,7 +125,7 @@ class Pvc(K8sObject):
 
     def get_zabbix_metrics(self):
         data_to_send = list()
-        for key, value in self.data['item'].items():
+        for key, value in self.data["item"].items():
             data_to_send.append(
                 ZabbixMetric(
                     self.zabbix_host,

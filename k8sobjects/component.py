@@ -4,11 +4,14 @@ from pyzabbix import ZabbixMetric
 
 from .k8sobject import K8sObject
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger("k8s-zabbix")
 
 
 class Component(K8sObject):
     object_type = 'component'
+
+    def get_list(self):
+        return self.manager.api.list_component_status()
 
     @property
     def resource_data(self):
@@ -38,7 +41,6 @@ class Component(K8sObject):
 
     def get_zabbix_metrics(self):
         data_to_send = list()
-
         data_to_send.append(ZabbixMetric(
             self.zabbix_host,
             'check_kubernetesd[get,components,%s,available_status]' % self.name,

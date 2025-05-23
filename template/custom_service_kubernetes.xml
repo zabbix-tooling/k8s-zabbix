@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.4</version>
-    <date>2022-01-03T10:25:43Z</date>
-    <groups>
-        <group>
-            <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
-            <name>Templates</name>
-        </group>
-    </groups>
+    <date>2023-07-06T08:32:16Z</date>
     <templates>
         <template>
             <uuid>8f04444064e9401ebf6b5c72a883909c</uuid>
@@ -145,7 +139,6 @@ This is used to ensure that k8s-zabbix is still active.</description>
                     <type>TRAP</type>
                     <key>check_kubernetesd[discover,containers]</key>
                     <delay>0</delay>
-                    <status>DISABLED</status>
                     <lifetime>4h</lifetime>
                     <description>currently not implemented</description>
                     <item_prototypes>
@@ -171,6 +164,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                 <trigger_prototype>
                                     <uuid>a05dfd08e0ce4151b16ec5f9cc459636</uuid>
                                     <expression>min(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},not_ready],35m)&lt;&gt;0</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>nodata(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},not_ready],300m)=0</recovery_expression>
                                     <name>Pod {#NAMESPACE} / {#NAME} - not ready pods for 30minutes</name>
                                     <priority>WARNING</priority>
                                 </trigger_prototype>
@@ -225,6 +220,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                 <trigger_prototype>
                                     <uuid>aa16ae9f633d4cd283ef5d886eba81de</uuid>
                                     <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},restart_count])&gt;0</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>sum(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},restart_count],60m) = 0</recovery_expression>
                                     <name>Pod {#NAMESPACE} / {#NAME} - restart_count &gt; 0</name>
                                     <priority>WARNING</priority>
                                 </trigger_prototype>
@@ -259,6 +256,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                 <trigger_prototype>
                                     <uuid>e6ffc66ca8bc4e0ea3493deaf793231f</uuid>
                                     <expression>find(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},status],,&quot;like&quot;,&quot;ERROR&quot;)=1</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>nodata(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},status],300m)=1 or find(/Custom - Service - Kubernetes/check_kubernetesd[get,containers,{#NAMESPACE},{#NAME},{#CONTAINER},status],,&quot;like&quot;,&quot;OK&quot;)=1</recovery_expression>
                                     <name>Pod {#NAMESPACE} / {#NAME} - status - {ITEM.VALUE}</name>
                                     <opdata>{ITEM.VALUE}</opdata>
                                     <priority>WARNING</priority>
@@ -269,7 +268,7 @@ This is used to ensure that k8s-zabbix is still active.</description>
                     <graph_prototypes>
                         <graph_prototype>
                             <uuid>c0044b5686a248a2b2bf27f23f553efa</uuid>
-                            <name>Pod {#NAMESPACE} / {#NAME} - Launch Statistics</name>
+                            <name>Container {#NAMESPACE} / {#NAME} - Launch Statistics</name>
                             <height>300</height>
                             <ymin_type_1>FIXED</ymin_type_1>
                             <graph_items>
@@ -1096,6 +1095,148 @@ This is used to ensure that k8s-zabbix is still active.</description>
                     <request_method>POST</request_method>
                 </discovery_rule>
                 <discovery_rule>
+                    <uuid>ef46e701366741b5a406b4988d253bd1</uuid>
+                    <name>Custom - Service - Kubernetes - Pods</name>
+                    <type>TRAP</type>
+                    <key>check_kubernetesd[discover,pods]</key>
+                    <delay>0</delay>
+                    <status>DISABLED</status>
+                    <lifetime>4h</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>f2d3111505cb45e9b3e7e721f998b27f</uuid>
+                            <name>{#NAMESPACE} / {#NAME}  - not_ready</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},not_ready]</key>
+                            <delay>0</delay>
+                            <history>14d</history>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>1629cb696bc84fb9b129d368c46bff70</uuid>
+                                    <expression>min(/Custom - Service - Kubernetes/check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},not_ready],35m)&lt;&gt;0</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>nodata(/Custom - Service - Kubernetes/check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},not_ready],300m)=0</recovery_expression>
+                                    <name>Pod {#NAMESPACE} / {#NAME} - not ready pods for 30minutes</name>
+                                    <priority>WARNING</priority>
+                                    <tags>
+                                        <tag>
+                                            <tag>type</tag>
+                                            <value>system</value>
+                                        </tag>
+                                    </tags>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>802a17ad3a8d4e78b4bd39384940093c</uuid>
+                            <name>{#NAMESPACE} / {#NAME}  - ready</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},ready]</key>
+                            <delay>0</delay>
+                            <history>14d</history>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>472f93f17bb7488884a3b0d8bb615121</uuid>
+                            <name>{#NAMESPACE} / {#NAME}  - restart_count</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},restart_count]</key>
+                            <delay>0</delay>
+                            <history>14d</history>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>229c966666214d2d806fe76316908eaa</uuid>
+                                    <expression>last(/Custom - Service - Kubernetes/check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},restart_count])&gt;0</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>nodata(/Custom - Service - Kubernetes/check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},restart_count],300m)=0</recovery_expression>
+                                    <name>Pod {#NAMESPACE} / {#NAME} - restart_count &gt; 0</name>
+                                    <priority>WARNING</priority>
+                                    <tags>
+                                        <tag>
+                                            <tag>type</tag>
+                                            <value>system</value>
+                                        </tag>
+                                    </tags>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>53ffc296c31d44d9846b2b16f241d109</uuid>
+                                    <expression>sum(/Custom - Service - Kubernetes/check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},restart_count],30m)&gt;{$POD_RESTART_AVERAGE_LIMIT_30M}</expression>
+                                    <name>Pod {#NAMESPACE} / {#NAME} - restart_count &gt; {$POD_RESTART_AVERAGE_LIMIT_30M}  in 30m</name>
+                                    <priority>AVERAGE</priority>
+                                    <tags>
+                                        <tag>
+                                            <tag>type</tag>
+                                            <value>system</value>
+                                        </tag>
+                                    </tags>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>a0e86525aeea4ad0ab6a199a74bad456</uuid>
+                            <name>{#NAMESPACE} / {#NAME}  - status</name>
+                            <type>TRAP</type>
+                            <key>check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},status]</key>
+                            <delay>0</delay>
+                            <history>14d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>b82835b7fe414af198d952588856dec8</uuid>
+                                    <expression>find(/Custom - Service - Kubernetes/check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},status],,&quot;like&quot;,&quot;ERROR&quot;)=1</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>nodata(/Custom - Service - Kubernetes/check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},status],300m)=0</recovery_expression>
+                                    <name>Pod {#NAMESPACE} / {#NAME} ({#CONTAINER}) - status - {ITEM.VALUE}</name>
+                                    <opdata>{ITEM.VALUE}</opdata>
+                                    <priority>WARNING</priority>
+                                    <tags>
+                                        <tag>
+                                            <tag>type</tag>
+                                            <value>system</value>
+                                        </tag>
+                                    </tags>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>1040595632fb40b1bf26cc13bb4e17bf</uuid>
+                            <name>Pod {#NAMESPACE} / {#NAME} - Launch Statistics</name>
+                            <height>300</height>
+                            <graph_items>
+                                <graph_item>
+                                    <color>1A7C11</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},ready]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>FF0000</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},not_ready]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>2</sortorder>
+                                    <drawtype>GRADIENT_LINE</drawtype>
+                                    <color>274482</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Custom - Service - Kubernetes</host>
+                                        <key>check_kubernetesd[get,pods,{#NAMESPACE},{#NAME},restart_count]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+                <discovery_rule>
                     <uuid>e4fe2e2fc8354761a478c572285463de</uuid>
                     <name>Custom - Service - Kubernetes - PVCs</name>
                     <type>TRAP</type>
@@ -1706,8 +1847,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Daemonset {#NAMESPACE} / {#NAME} - Misc</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Daemonset {#NAMESPACE} / {#NAME} - Misc</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -1732,8 +1873,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Daemonset {#NAMESPACE} / {#NAME} - Replicas</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Daemonset {#NAMESPACE} / {#NAME} - Replicas</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -1767,8 +1908,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Deployment {#NAMESPACE} / {#NAME} - Replicas</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Deployment {#NAMESPACE} / {#NAME} - Replicas</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -1793,8 +1934,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Deployment {#NAMESPACE} / {#NAME} - Misc</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Deployment {#NAMESPACE} / {#NAME} - Misc</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -1823,8 +1964,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Services</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Services</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -1863,8 +2004,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Node {#NAME} - CPUs</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Node {#NAME} - CPUs</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -1903,8 +2044,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Node {#NAME} - Ephemeral-Storage</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Node {#NAME} - Ephemeral-Storage</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -1943,8 +2084,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Node {#NAME} - Memory</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Node {#NAME} - Memory</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -1983,8 +2124,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Node {#NAME} - Pods</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Node {#NAME} - Pods</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -2023,8 +2164,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Pod {#NAMESPACE} / {#NAME} - Launch Statistics</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Container {#NAMESPACE} / {#NAME} - Launch Statistics</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -2058,8 +2199,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>PV {#NAMESPACE} / {#NAME} Space</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>PV {#NAMESPACE} / {#NAME} Space</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -2084,8 +2225,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>PV {#NAMESPACE} / {#NAME} iNodes</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>PV {#NAMESPACE} / {#NAME} iNodes</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -2119,8 +2260,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Statefulset {#NAMESPACE} / {#NAME} - Misc</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Statefulset {#NAMESPACE} / {#NAME} - Misc</name>
                                             </value>
                                         </field>
                                     </fields>
@@ -2145,8 +2286,8 @@ This is used to ensure that k8s-zabbix is still active.</description>
                                             <type>GRAPH_PROTOTYPE</type>
                                             <name>graphid</name>
                                             <value>
-                                                <name>Statefulset {#NAMESPACE} / {#NAME} - Replicas</name>
                                                 <host>Custom - Service - Kubernetes</host>
+                                                <name>Statefulset {#NAMESPACE} / {#NAME} - Replicas</name>
                                             </value>
                                         </field>
                                     </fields>

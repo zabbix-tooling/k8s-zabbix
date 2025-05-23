@@ -1,9 +1,9 @@
 import datetime
 import hashlib
+import importlib
 import json
 import logging
 import re
-
 from typing import TYPE_CHECKING, TypedDict
 
 if TYPE_CHECKING:
@@ -11,20 +11,20 @@ if TYPE_CHECKING:
 
 from pyzabbix import ZabbixMetric
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger("k8s-zabbix")
 
 K8S_RESOURCES = dict(
-    nodes='node',
-    components='component',
-    services='service',
-    deployments='deployment',
-    statefulsets='statefulset',
-    daemonsets='daemonset',
-    pods='pod',
-    containers='container',
-    secrets='secret',
-    ingresses='ingress',
-    pvcs='pvc'
+    nodes="node",
+    components="component",
+    services="service",
+    deployments="deployment",
+    statefulsets="statefulset",
+    daemonsets="daemonset",
+    pods="pod",
+    containers="container",
+    secrets="secret",
+    ingresses="ingress",
+    pvcs="pvc",
 )
 
 INITIAL_DATE = datetime.datetime(2000, 1, 1, 0, 0)
@@ -57,7 +57,7 @@ def transform_value(value: str) -> str:
 
 def slugit(name_space: str, name: str, maxlen: int) -> str:
     if name_space:
-        slug = name_space + '/' + name
+        slug = name_space + "/" + name
     else:
         slug = name
 
@@ -100,6 +100,7 @@ class K8sObject:
         """Get the resource data from the k8s api"""
         self.is_dirty_zabbix = True
         self.is_dirty_web = True
+        self.added = INITIAL_DATE
         self.last_sent_zabbix_discovery = INITIAL_DATE
         self.last_sent_zabbix = INITIAL_DATE
         self.last_sent_web = INITIAL_DATE
@@ -116,7 +117,8 @@ class K8sObject:
     def resource_data(self) -> dict[str, str]:
         """ customized values for k8s objects """
         if self.name_space is None:
-            raise RuntimeError("name_space is None for %s" % self.name)
+            if self.resource.lower() not in ["nodes", "components"]:
+                raise RuntimeError(f"name_space is None for [{self.resource}] {self.name}")
         return dict(
             name=self.name,
             name_space=self.name_space
@@ -127,12 +129,14 @@ class K8sObject:
         if not hasattr(self, 'object_type'):
             raise AttributeError('No object_type set! Dont use K8sObject itself!')
         elif not self.name:
-            raise AttributeError('No name set for K8sObject.uid! [%s] name_space: %s, name: %s'
-                                 % (self.object_type, self.name_space, self.name))
+            raise AttributeError(
+                "No name set for K8sObject.uid! [%s] name_space: %s, name: %s"
+                % (self.object_type, self.name_space, self.name)
+            )
 
         if self.name_space:
-            return self.object_type + '_' + self.name_space + '_' + self.name
-        return self.object_type + '_' + self.name
+            return self.object_type + "_" + self.name_space + "_" + self.name
+        return self.object_type + "_" + self.name
 
     @property
     def name(self) -> str:
@@ -144,15 +148,40 @@ class K8sObject:
 
     @property
     def name_space(self) -> str | None:
-        from .node import Node
         from .component import Component
+        from .node import Node
         if isinstance(self, Node) or isinstance(self, Component):
             return None
 
-        name_space = self.data.get('metadata', {}).get('namespace')
+        name_space = self.data.get("metadata", {}).get("namespace")
         if not name_space:
-            raise Exception('Could not find name_space for obj [%s] %s' % (self.resource, self.name))
+            raise Exception("Could not find name_space for obj [%s] %s" % (self.resource, self.name))
         return name_space
+
+    def slug(self, name):
+        return slugit(self.name_space or "None", name, 40)
+
+    def get_uid_list_and_data(self, data=None):
+        uid_ret = []
+        data_ret = {}
+
+        # if no data was fetched and passed before: fetch it
+        if self.resource == 'pvcs':
+            obj_list = self.get_list()
+        else:
+            obj_list = self.get_list().items
+
+        for obj in obj_list:
+            if self.resource == 'pvcs':
+                d = obj
+                uid_ret.append(d.uid)
+                data_ret[d.uid] = d
+            else:
+                d = obj.to_dict()
+                n = self.manager.resource_class(d, self.resource, manager=self.manager)
+                uid_ret.append(n.uid)
+                data_ret[n.uid] = n
+        return uid_ret, data_ret
 
     def is_unsubmitted_web(self) -> bool:
         return self.last_sent_web == INITIAL_DATE
@@ -167,7 +196,7 @@ class K8sObject:
         return [{
             "{#NAME}": self.name,
             "{#NAMESPACE}": self.name_space or "None",
-            "{#SLUG}": slugit(self.name_space or "None", self.name, 40),
+            "{#SLUG}": self.slug(self.name),
         }]
 
     def get_discovery_for_zabbix(self, discovery_data: list[dict[str, str]] | None) -> ZabbixMetric:
@@ -176,10 +205,12 @@ class K8sObject:
 
         return ZabbixMetric(
             self.zabbix_host,
-            'check_kubernetesd[discover,%s]' % self.resource,
-            json.dumps({
-                'data': discovery_data,
-            })
+            "check_kubernetesd[discover,%s]" % self.resource,
+            json.dumps(
+                {
+                    "data": discovery_data,
+                }
+            ),
         )
 
     def get_zabbix_metrics(self) -> list[ZabbixMetric]:

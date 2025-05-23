@@ -4,6 +4,7 @@ pipeline {
     agent any
     parameters {
         booleanParam(defaultValue: false, description: 'Create release', name: 'RELEASE')
+        string(name: 'REPO', defaultValue: '-', description: 'Repo for docker')
     }
 
     triggers {
@@ -24,7 +25,7 @@ pipeline {
             steps {
                ansiColor('xterm') {
                   sh 'git fetch --tags'
-                  sh './build.sh cleanup'
+                  sh "./build.sh cleanup ${params.TARGET}"
                }
             }
         }
@@ -32,7 +33,7 @@ pipeline {
             steps {
                 ansiColor('xterm') {
                   sh 'git fetch --tags'
-                  sh "./build.sh default vicoconsulting"
+                  sh "./build.sh default ${params.TARGET}"
                 }
             }
         }
@@ -42,7 +43,7 @@ pipeline {
             }
             steps {
                ansiColor('xterm') {
-                  sh './build.sh publish_image vicoconsulting'
+                  sh "./build.sh publish_image ${params.TARGET}"
                }
             }
         }

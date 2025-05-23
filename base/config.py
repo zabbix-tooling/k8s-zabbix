@@ -19,7 +19,7 @@ class ClusterAccessConfigType(Enum):
     TOKEN = "token"
 
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger("k8s-zabbix")
 
 
 @dataclass(order=True)
@@ -37,6 +37,8 @@ class Configuration:
 
     sentry_enabled: bool = False
     sentry_dsn: str = ""
+
+    container_crawling: str = "container"
 
     zabbix_server: str = 'example.zabbix-server.com'
     zabbix_resources_exclude: list[str] = field(default_factory=lambda: [])
@@ -58,6 +60,11 @@ class Configuration:
 
     discovery_interval_slow: int = 60 * 60 * 2
     resend_data_interval_slow: int = 60 * 30
+
+    discovery_interval_delay: int = 120
+    data_resend_interval_delay: int = 180
+
+    data_refresh_interval: int = 60 * 60 * 4
 
     def _convert_to_type(self, field_name: str,
                          value: str | list[str] | bool | int | ClusterAccessConfigType) -> \

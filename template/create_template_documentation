@@ -1,22 +1,21 @@
 #!/bin/bash
 
-set -x 
+set -x
 BDIR="$(dirname $(readlink -f $0))"
 cd $BDIR || exit 1
 
-if ( !(type xalan >/dev/null 2>&1) );then
-   echo "INFO: skipping documentation generation because xalan is not installed"
-   echo "      (apt-get install xalan)"
-   exit 0
+if (!(type xalan >/dev/null 2>&1)); then
+    echo "INFO: skipping documentation generation because xalan is not installed"
+    echo "      (apt-get install xalan)"
+    exit 0
 fi
 
 rm -rf documentation
 mkdir documentation
 
-for i in custom*.xml; do 
-   echo "=> $i"
-   DOCUFILE="../documentation/template/${i%%.xml}.html"
-   DOCUFILE="$(echo $DOCUFILE|tr ' ' '_')"
-   xalan -in "$i" -out $DOCUFILE -xsl transform.xsl; 
+for i in custom*.xml; do
+    echo "=> $i"
+    DOCUFILE="../documentation/template/${i%%.xml}.html"
+    DOCUFILE="$(echo $DOCUFILE | tr ' ' '_')"
+    xalan -in "$i" -out $DOCUFILE -xsl transform.xsl
 done
-

@@ -11,6 +11,7 @@ def test_load_config():
     cfg.load_from_environment_variables()
     assert (cfg.debug is True)
     assert (cfg.discovery_interval_fast == 12)
+    assert (cfg.discovery_interval_delay == 60)
     assert ("jacco" in cfg.zabbix_resources_exclude)
     assert ("wacco" in cfg.zabbix_resources_exclude)
     print("")

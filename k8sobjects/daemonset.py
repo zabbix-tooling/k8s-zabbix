@@ -4,7 +4,7 @@ from pyzabbix import ZabbixMetric
 
 from .k8sobject import K8sObject, transform_value
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger("k8s-zabbix")
 
 
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#daemonset-v1-apps
@@ -21,7 +21,10 @@ logger = logging.getLogger(__file__)
 #             'updated_number_scheduled': 8}}
 
 class Daemonset(K8sObject):
-    object_type = 'daemonset'
+    object_type = "daemonset"
+
+    def get_list(self):
+        return self.manager.api.list_daemon_set_for_all_namespaces()
 
     @property
     def resource_data(self):

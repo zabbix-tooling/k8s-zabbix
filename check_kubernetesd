@@ -10,23 +10,21 @@ import logging
 import os
 import signal
 import sys
+import time
 from typing import List
 
 import coloredlogs as coloredlogs
 import sentry_sdk
-import time
 
-from base.daemon_thread import CheckKubernetesDaemon
 from base.config import Configuration
+from base.daemon_thread import CheckKubernetesDaemon
 
-KNOWN_ACTIONS = ['discover', 'get']
+KNOWN_ACTIONS = ["discover", "get"]
 
 formatter_string = '%(asctime)s - %(threadName)s : {%(name)s:%(lineno)d} : %(levelname)s : %(message)s'
-formatter = logging.Formatter(formatter_string)
-stream = logging.StreamHandler(sys.stdout)
-stream.setFormatter(formatter)
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger("k8s-zabbix")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -44,8 +42,6 @@ if __name__ == '__main__':
                              "(environment variables take precedence) or execute a " +
                              "binary with a fully qualified file path")
     args = parser.parse_args()
-
-    coloredlogs.install(fmt=formatter_string, isatty=(not args.disable_colors))
 
     config = Configuration()
 
@@ -72,50 +68,70 @@ if __name__ == '__main__':
         sentry_sdk.init(config.sentry_dsn)
 
     if config.zabbix_debug:
-        logger.info("starting with zabbix debug")
         config.zabbix_debug = True
-        log = logging.getLogger('pyzabbix')
+        log = logging.getLogger("pyzabbix")
         log.setLevel(logging.DEBUG)
     else:
-        log = logging.getLogger('pyzabbix')
+        log = logging.getLogger("pyzabbix")
         log.setLevel(logging.INFO)
 
     if config.debug:
-        stream.setLevel(logging.DEBUG)
         logger.setLevel(logging.DEBUG)
     else:
         logger.setLevel(logging.INFO)
-    logger.addHandler(stream)
+
+    coloredlogs.install(level=logging.getLevelName(logger.getEffectiveLevel()),
+                        fmt=formatter_string,
+                        isatty=(not args.disable_colors))
+
+    if config.debug:
+        logger.debug("Starting with DEBUG enabled")
+    if config.zabbix_debug:
+        logger.info("starting with zabbix debug")
+    if config.zabbix_dry_run:
+        logger.warning("starting with zabbix_dry_run True, not sending to Zabbix!")
 
     daemons: List[CheckKubernetesDaemon] = list()
 
     mgmt_daemon = CheckKubernetesDaemon(config,
                                         ['nodes'],
-                                        config.discovery_interval_slow, config.resend_data_interval_slow)
+                                        config.discovery_interval_slow,
+                                        config.resend_data_interval_slow,
+                                        config.data_refresh_interval)
     daemons.append(mgmt_daemon)
 
     daemons.append(
         CheckKubernetesDaemon(config,
-                              # ['components', 'services', 'pvcs'],
-                              ['components', 'pvcs'],
-                              config.discovery_interval_slow, config.resend_data_interval_fast))
+                              ['components', 'services', 'pvcs'],
+                              # ['components', 'pvcs'],
+                              config.discovery_interval_slow,
+                              config.resend_data_interval_fast,
+                              config.data_refresh_interval))
+
+    daemons.append(
+        CheckKubernetesDaemon(config,
+                              # ['deployments', 'statefulsets', 'daemonsets', 'pods', 'containers',
+                              ["statefulsets", "deployments", "daemonsets"],
+                              config.discovery_interval_slow,
+                              config.resend_data_interval_slow,
+                              config.data_refresh_interval))
 
     daemons.append(
         CheckKubernetesDaemon(config,
                               # ['deployments', 'statefulsets', 'daemonsets', 'pods', 'containers',
                               # 'ingresses', 'containers', 'pods'],
-                              ['deployments', 'statefulsets', "daemonsets", "pods"],
-                              config.discovery_interval_slow, config.resend_data_interval_slow))
+                              ["pods", "containers"],
+                              config.discovery_interval_fast,
+                              config.resend_data_interval_fast,
+                              config.data_refresh_interval))
 
     if config.debug_k8s_events:
         for daemon in daemons:
             daemon.debug_k8s_events = True
 
-
     # SIGNAL processing
     def _signal_handler(signum, *args):
         mgmt_daemon.handler(signum)
-
 
     def stacktraces_and_terminate(signum, frame):
         print("#" * 80)
@@ -124,7 +140,6 @@ if __name__ == '__main__':
         print("#")
         print("#" * 80)
         sys.exit(1)
-
 
     signal.signal(signal.SIGQUIT, stacktraces_and_terminate)
     signal.signal(signal.SIGUSR1, _signal_handler)
